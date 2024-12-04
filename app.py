@@ -5,7 +5,8 @@ from hx711 import HX711
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
-hx = HX711(dout_pin=9, pd_sck_pin=10)
+# Initialize HX711 with DOUT=9 and SCK=10
+hx = HX711(9, 10)
 
 calibration_factor = 102.372
 zero_offset = 0
@@ -19,7 +20,7 @@ def tare_scale():
 
         raw_readings = []
         for _ in range(50):
-            reading = hx.get_raw_data_mean()
+            reading = hx.read_average(times=10)  # Use correct method for averaging
             if reading is not None:
                 raw_readings.append(reading)
             time.sleep(0.1)  # Add delay between readings to reduce noise
@@ -35,10 +36,10 @@ def tare_scale():
 
 def calibrate_scale(known_weight_grams):
     try:
-        hx.set_scale_ratio(1)
+        hx.set_scale(1)
         time.sleep(2)  # Allow some time for the sensor to stabilize
 
-        raw_value = hx.get_weight_mean(readings=20)
+        raw_value = hx.get_raw_data_mean()
         if raw_value is None:
             raise ValueError("Failed to get valid data from HX711")
 
@@ -46,7 +47,7 @@ def calibrate_scale(known_weight_grams):
         calibration_factor = abs(raw_value / known_weight_grams)
         print(f"Calibration complete. Calibration factor: {calibration_factor}")
 
-        hx.set_scale_ratio(calibration_factor)
+        hx.set_scale(calibration_factor)
     except Exception as e:
         print(f"Error during calibration: {e}")
 
@@ -54,7 +55,7 @@ def get_weight_filtered():
     try:
         readings = []
         for _ in range(15):
-            reading = hx.get_weight_mean(readings=10)
+            reading = hx.get_weight_mean(readings=10)  # Use correct method
             if reading is not None:
                 readings.append(reading)
             time.sleep(0.1)  # Add delay between readings to reduce noise
@@ -76,7 +77,7 @@ def get_weight_filtered():
 
 if __name__ == '__main__':
     tare_scale()
-    calibrate_scale(1000)
+    calibrate_scale(1000)  # Use a known weight in grams for calibration
     while True:
         get_weight_filtered()
         time.sleep(2)
