@@ -41,9 +41,12 @@ def get_weight():
     try:
         if hx is None:
             raise ValueError("HX711 not initialized")
-        raw_value = hx.read_average()
+        raw_value = hx.get_raw_data_mean(10)
         logging.debug(f"Raw HX711 reading: {raw_value}")
-        weight = raw_value / 1000  # Adjust scale as needed
+        if raw_value is None:
+            raise ValueError("HX711 returned None")
+        weight = (raw_value - hx.OFFSET) / hx.SCALE  # Adjust calibration if needed
+        logging.debug(f"Calculated weight: {weight}")
         return round(weight, 2)
     except Exception as e:
         logging.error(f"Error getting weight: {e}")
@@ -75,6 +78,16 @@ def data():
 # Main entry point
 if __name__ == "__main__":
     try:
+        logging.info("Starting application")
+        # Test sensors on startup
+        logging.info("Testing HX711...")
+        weight = get_weight()
+        logging.info(f"Initial weight reading: {weight}")
+
+        logging.info("Testing DHT11...")
+        temp_humidity = get_temperature_humidity()
+        logging.info(f"Initial temperature and humidity reading: {temp_humidity}")
+
         app.run(host="0.0.0.0", port=5000)
     finally:
         logging.info("Cleaning up GPIO")
