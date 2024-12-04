@@ -22,7 +22,7 @@ try:
     logging.info(f"Initializing HX711 on GPIO DOUT={HX711_DOUT}, SCK={HX711_SCK}")
     hx = HX711(HX711_DOUT, HX711_SCK)
 
-    # Read zero offset using a basic method
+    # Read zero offset using `read`
     zero_offset = None
     for _ in range(5):  # Retry up to 5 times to get a valid reading
         raw_value = hx.read()
