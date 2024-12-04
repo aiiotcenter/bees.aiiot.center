@@ -1,83 +1,71 @@
+from flask import Flask, jsonify
 import RPi.GPIO as GPIO
-import time
+import logging
 from hx711 import HX711
+import threading
+import time
 
-GPIO.setwarnings(False)
+# Logging configuration
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
+
+# Flask app
+app = Flask(__name__)
+
+# GPIO Pins
 GPIO.setmode(GPIO.BCM)
+HX711_DOUT = 9
+HX711_SCK = 10
 
-hx = HX711(9, 10)  
+# Initialize HX711
+try:
+    logging.info(f"Initializing HX711 on GPIO DOUT={HX711_DOUT}, SCK={HX711_SCK}")
+    hx = HX711(HX711_DOUT, HX711_SCK)
+    hx.set_reading_format("MSB", "MSB")
+    hx.tare()
+    zero_offset = hx.read_long()  # Capture zero offset
+    calibration_factor = 102.372
+  # Adjust based on your calibration
+    logging.info("HX711 initialized and tared successfully.")
+except Exception as e:
+    logging.error(f"Error initializing HX711: {e}")
+    hx = None
 
+# Variable to hold the latest weight reading
+current_weight = None
 
-calibration_factor = 102.372
-zero_offset = 0
-
-def tare_scale():
-    global zero_offset
-    try:
-        print("Taring the scale... Please make sure it's empty and stable.")
-        hx.reset()
-        time.sleep(2)  # Allow some time for the sensor to stabilize
-
-        raw_readings = []
-        for _ in range(50):
-            reading = hx.get_raw_data_mean()
-            if reading is not None:
-                raw_readings.append(reading)
-            time.sleep(0.1)  # Add delay between readings to reduce noise
-
-        if not raw_readings:
-            raise ValueError("Failed to get valid readings during taring.")
-
-        zero_offset = int(sum(raw_readings) / len(raw_readings))
-        hx.set_offset(zero_offset)
-        print(f"Taring complete. Zero offset: {zero_offset}")
-    except Exception as e:
-        print(f"Error during tare: {e}")
-
-def calibrate_scale(known_weight_grams):
-    try:
-        hx.set_scale_ratio(1)
-        time.sleep(2)  # Allow some time for the sensor to stabilize
-
-        raw_value = hx.get_weight_mean(readings=20)
-        if raw_value is None:
-            raise ValueError("Failed to get valid data from HX711")
-
-        global calibration_factor
-        calibration_factor = abs(raw_value / known_weight_grams)
-        print(f"Calibration complete. Calibration factor: {calibration_factor}")
-
-        hx.set_scale_ratio(calibration_factor)
-    except Exception as e:
-        print(f"Error during calibration: {e}")
-
-def get_weight_filtered():
-    try:
-        readings = []
-        for _ in range(15):
-            reading = hx.get_weight_mean(readings=10)
-            if reading is not None:
-                readings.append(reading)
-            time.sleep(0.1)  # Add delay between readings to reduce noise
-
-        if len(readings) < 10:
-            raise ValueError("Not enough valid readings for filtering")
-
-        readings.sort()
-        filtered_readings = readings[len(readings) // 10: -len(readings) // 10]
-
-        weight = sum(filtered_readings) / len(filtered_readings)
-        weight_kg = weight / 1000
-
-        print(f"Weight (filtered): {weight_kg:.2f} kg")
-        return weight_kg
-    except Exception as e:
-        print(f"Error getting filtered weight: {e}")
-        return None
-
-if __name__ == '__main__':
-    tare_scale()
-    calibrate_scale(1000)
+# Function to continuously update weight
+def monitor_weight():
+    global current_weight
     while True:
-        get_weight_filtered()
-        time.sleep(2)
+        try:
+            if hx:
+                raw_value = hx.read_long()
+                logging.debug(f"Raw HX711 reading: {raw_value}")
+                if raw_value is not None:
+                    weight = (raw_value - zero_offset) / calibration_factor
+                    current_weight = round(weight, 2)
+                    logging.info(f"Updated weight: {current_weight} kg")
+                else:
+                    logging.warning("HX711 returned None")
+            time.sleep(1)  # Adjust the interval for reading weight
+        except Exception as e:
+            logging.error(f"Error reading weight: {e}")
+
+# Flask route
+@app.route("/data", methods=["GET"])
+def data():
+    return jsonify({"weight": current_weight})
+
+# Main entry point
+if __name__ == "__main__":
+    try:
+        logging.info("Starting application")
+        # Start the weight monitoring thread
+        monitor_thread = threading.Thread(target=monitor_weight, daemon=True)
+        monitor_thread.start()
+
+        # Start Flask server
+        app.run(host="0.0.0.0", port=5000)
+    finally:
+        logging.info("Cleaning up GPIO")
+        GPIO.cleanup()
