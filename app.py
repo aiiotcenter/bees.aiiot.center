@@ -29,7 +29,7 @@ except Exception as e:
 try:
     logging.info(f"Initializing HX711 on GPIO DOUT={HX711_DOUT}, SCK={HX711_SCK}")
     hx = HX711(HX711_DOUT, HX711_SCK)
-    hx.reset()
+    hx.set_reading_format("MSB", "MSB")
     hx.tare()
     logging.info("HX711 initialized and tared successfully.")
 except Exception as e:
@@ -41,12 +41,12 @@ def get_weight():
     try:
         if hx is None:
             raise ValueError("HX711 not initialized")
-        raw_value = hx.get_raw_data_mean(10)
+        raw_value = hx.read_long()
         logging.debug(f"Raw HX711 reading: {raw_value}")
         if raw_value is None:
             raise ValueError("HX711 returned None")
-        weight = (raw_value - hx.OFFSET) / hx.SCALE  # Adjust calibration if needed
-        logging.debug(f"Calculated weight: {weight}")
+        weight = raw_value / 1000.0  # Adjust this calculation for your scale calibration
+        logging.debug(f"Calculated weight: {weight} kg")
         return round(weight, 2)
     except Exception as e:
         logging.error(f"Error getting weight: {e}")
