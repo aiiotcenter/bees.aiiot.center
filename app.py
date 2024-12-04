@@ -19,7 +19,8 @@ try:
     logging.info(f"Initializing HX711 on GPIO DOUT={HX711_DOUT}, SCK={HX711_SCK}")
     hx = HX711(HX711_DOUT, HX711_SCK)
     hx.set_reading_format("MSB", "MSB")
-    hx.tare()
+    hx.tare()  # Tare the scale to set zero offset
+    calibration_factor = 1000  # Set a default calibration factor (adjust this for your setup)
     logging.info("HX711 initialized and tared successfully.")
 except Exception as e:
     logging.error(f"Error initializing HX711: {e}")
@@ -34,7 +35,7 @@ def get_weight():
         logging.debug(f"Raw HX711 reading: {raw_value}")
         if raw_value is None:
             raise ValueError("HX711 returned None")
-        weight = raw_value / 1000.0  # Adjust this calculation for your scale calibration
+        weight = raw_value / calibration_factor  # Adjust this calculation for your scale calibration
         logging.debug(f"Calculated weight: {weight} kg")
         return round(weight, 2)
     except Exception as e:
@@ -44,8 +45,9 @@ def get_weight():
 # Flask route
 @app.route("/data", methods=["GET"])
 def data():
+    weight = get_weight()
     sensor_data = {
-        "weight": get_weight(),
+        "weight": weight,
     }
     logging.info(f"Providing sensor data: {sensor_data}")
     return jsonify(sensor_data)
@@ -59,6 +61,7 @@ if __name__ == "__main__":
         weight = get_weight()
         logging.info(f"Initial weight reading: {weight}")
 
+        # Start Flask server
         app.run(host="0.0.0.0", port=5000)
     finally:
         logging.info("Cleaning up GPIO")
