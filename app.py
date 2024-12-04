@@ -6,7 +6,7 @@ import time
 import requests
 import threading
 import logging
-from hx711 import HX711  # Ensure you are using a compatible HX711 library
+from hx711 import HX711
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -46,24 +46,29 @@ except Exception as e:
 calibration_factor = 102.372
 zero_offset = 0
 
+# Retry decorator for sensor reading functions
+def retry(times, delay=0.2):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            for attempt in range(times):
+                result = func(*args, **kwargs)
+                if result is not None:
+                    return result
+                logging.warning(f"Retrying {func.__name__} (Attempt {attempt + 1}/{times})")
+                time.sleep(delay)
+            logging.error(f"{func.__name__} failed after {times} attempts.")
+            return None
+        return wrapper
+    return decorator
+
 # Function to tare (zero) the scale manually
 def tare_scale():
     global zero_offset
     try:
         logging.info("Taring the scale... Please ensure the scale is empty.")
-        time.sleep(2)  # Allow some time for the scale to stabilize
-        hx.reset()  # Reset the HX711
-        raw_readings = []
-
-        for i in range(10):
-            raw_value = hx.read()
-            if raw_value is not None:
-                raw_readings.append(raw_value)
-                logging.debug(f"Tare reading {i+1}: {raw_value}")
-            else:
-                logging.warning(f"Tare reading {i+1} failed: None")
-            time.sleep(0.1)
-
+        time.sleep(2)  # Allow time for stabilization
+        hx.reset()  # Reset HX711
+        raw_readings = [hx.read() for _ in range(10) if hx.read() is not None]
         if raw_readings:
             zero_offset = sum(raw_readings) / len(raw_readings)
             logging.info(f"Scale tared successfully. Zero offset: {zero_offset}")
@@ -73,62 +78,61 @@ def tare_scale():
         logging.error(f"Error during tare: {e}")
 
 # Function to get weight measurement from HX711
+@retry(times=5)
 def get_weight():
     try:
         raw_value = hx.read()
-        logging.debug(f"Raw HX711 reading: {raw_value}")
         if raw_value is None:
             raise ValueError("Failed to get data from HX711")
-
         weight = (raw_value - zero_offset) / calibration_factor
-        return weight / 1000  # Convert to kg
+        return round(weight / 1000, 3)  # Convert to kg and round
     except Exception as e:
         logging.error(f"Error getting weight: {e}")
         return None
 
 # Function to get distance from the ultrasonic sensor
+@retry(times=5)
 def get_distance():
     try:
-        logging.info("Measuring distance with ultrasonic sensor")
         GPIO.output(TRIG, False)
         time.sleep(0.000002)
         GPIO.output(TRIG, True)
         time.sleep(0.00001)
         GPIO.output(TRIG, False)
 
+        start_time = time.time()
         while GPIO.input(ECHO) == 0:
-            pass
+            if time.time() - start_time > 1:
+                raise TimeoutError("Ultrasonic sensor timeout while waiting for pulse start.")
         pulse_start = time.time()
 
         while GPIO.input(ECHO) == 1:
-            pass
+            if time.time() - pulse_start > 1:
+                raise TimeoutError("Ultrasonic sensor timeout while waiting for pulse end.")
         pulse_end = time.time()
 
         pulse_duration = pulse_end - pulse_start
         distance = (pulse_duration * 34300) / 2  # cm
-        logging.debug(f"Measured distance: {distance} cm")
         return round(distance, 1)
     except Exception as e:
         logging.error(f"Error getting distance: {e}")
         return None
 
 # Function to read temperature and humidity from DHT11
+@retry(times=5)
 def temperature_humidity():
     try:
         temperature = dht_device.temperature
         humidity = dht_device.humidity
-        logging.debug(f"Temperature: {temperature}, Humidity: {humidity}")
-        return {"temperature": temperature, "humidity": humidity}
+        return {"temperature": temperature, "humidity": humidity, "success": True}
     except RuntimeError as error:
         logging.error(f"Error reading DHT11: {error}")
-        return {"error": str(error)}
+        return {"error": str(error), "success": False}
 
 # Function to check if bees are alive using the sound sensor
 def is_bee_alive():
     try:
-        state = GPIO.input(SOUND) == 0
-        logging.debug(f"Bee sound sensor state: {state}")
-        return state
+        return GPIO.input(SOUND) == 0
     except Exception as e:
         logging.error(f"Error checking bee sound sensor: {e}")
         return None
@@ -136,9 +140,7 @@ def is_bee_alive():
 # Function to check if hive is open using the light sensor
 def is_hive_open():
     try:
-        state = GPIO.input(LIGHT) == GPIO.HIGH
-        logging.debug(f"Hive light sensor state: {state}")
-        return state
+        return GPIO.input(LIGHT) == GPIO.HIGH
     except Exception as e:
         logging.error(f"Error checking hive light sensor: {e}")
         return None
