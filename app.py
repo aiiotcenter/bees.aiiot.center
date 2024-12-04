@@ -22,10 +22,10 @@ try:
     logging.info(f"Initializing HX711 on GPIO DOUT={HX711_DOUT}, SCK={HX711_SCK}")
     hx = HX711(HX711_DOUT, HX711_SCK)
 
-    # Read zero offset using get_data_mean
+    # Read zero offset using a basic method
     zero_offset = None
     for _ in range(5):  # Retry up to 5 times to get a valid reading
-        raw_value = hx.get_data_mean()
+        raw_value = hx.read()
         if raw_value is not None and raw_value != 8388607:
             zero_offset = raw_value
             break
@@ -50,7 +50,7 @@ def monitor_weight():
     while True:
         try:
             if hx:
-                raw_value = hx.get_data_mean()
+                raw_value = hx.read()
                 if raw_value is not None and raw_value != 8388607:
                     weight = (raw_value - zero_offset) / calibration_factor
                     current_weight = round(weight, 2)
