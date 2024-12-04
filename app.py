@@ -22,17 +22,19 @@ try:
     logging.info(f"Initializing HX711 on GPIO DOUT={HX711_DOUT}, SCK={HX711_SCK}")
     hx = HX711(HX711_DOUT, HX711_SCK)
 
-    # Tare the scale (if supported by the library)
-    if hasattr(hx, 'tare'):
-        hx.tare()
-        logging.info("Scale tared successfully.")
-    else:
-        logging.warning("HX711 library does not support 'tare'. Skipping.")
-
-    # Capture zero offset
-    zero_offset = hx.get_raw_data_mean()
+    # Read zero offset (using read_long)
+    zero_offset = None
+    for _ in range(5):  # Retry up to 5 times to get a valid reading
+        raw_value = hx.read_long()
+        if raw_value is not None and raw_value != 8388607:
+            zero_offset = raw_value
+            break
+        logging.warning("Invalid data detected during initialization. Retrying...")
+        time.sleep(0.1)
+    
     if zero_offset is None:
-        raise ValueError("Failed to get zero offset from HX711.")
+        raise ValueError("Failed to initialize HX711: Invalid readings from the sensor.")
+
     calibration_factor = 102.372  # Adjust based on your calibration
     logging.info(f"HX711 initialized. Zero offset: {zero_offset}, Calibration factor: {calibration_factor}")
 except Exception as e:
@@ -48,14 +50,13 @@ def monitor_weight():
     while True:
         try:
             if hx:
-                raw_value = hx.get_raw_data_mean()
-                logging.debug(f"Raw HX711 reading: {raw_value}")
-                if raw_value is not None:
+                raw_value = hx.read_long()
+                if raw_value is not None and raw_value != 8388607:
                     weight = (raw_value - zero_offset) / calibration_factor
                     current_weight = round(weight, 2)
                     logging.info(f"Updated weight: {current_weight} kg")
                 else:
-                    logging.warning("HX711 returned None for weight reading.")
+                    logging.warning("Invalid data received from HX711.")
             time.sleep(1)  # Adjust the interval for reading weight
         except Exception as e:
             logging.error(f"Error reading weight: {e}")
