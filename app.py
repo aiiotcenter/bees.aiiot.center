@@ -6,7 +6,7 @@ import time
 import requests
 import threading
 import logging
-from hx711_multi import HX711  # Correct library
+from hx711_multi import HX711
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -39,16 +39,20 @@ GPIO.setup(LIGHT, GPIO.IN)
 
 # Initialize HX711 for weight measurement
 hx = None
+calibration_factor = 102.372
+zero_offset = 0
+
 try:
     logging.info("Initializing HX711 on GPIO 9 and 10")
     hx = HX711(HX711_DOUT, HX711_SCK)
     hx.reset()
-    hx.tare()
+    time.sleep(1)  # Allow time for the HX711 to stabilize
+    logging.info("Taring HX711 by calculating zero offset")
+    readings = [hx.get_raw_data_mean() for _ in range(10)]
+    zero_offset = sum(readings) / len(readings) if readings else 0
+    logging.info(f"Calculated zero offset: {zero_offset}")
 except Exception as e:
     logging.error(f"Error initializing HX711: {e}")
-
-# Calibration factor for the load cell (adjust based on calibration)
-calibration_factor = 102.372
 
 # Retry decorator for sensor reading functions
 def retry(times, delay=0.2):
@@ -71,8 +75,10 @@ def get_weight():
     try:
         if hx is None:
             raise ValueError("HX711 not initialized")
-        raw_value = hx.get_weight()  # Adjusted to match method signature
-        weight = raw_value / calibration_factor
+        raw_value = hx.get_raw_data_mean()
+        if raw_value is None:
+            raise ValueError("Failed to read HX711 data")
+        weight = (raw_value - zero_offset) / calibration_factor
         return round(weight, 3)  # Convert to kg and round
     except Exception as e:
         logging.error(f"Error getting weight: {e}")
