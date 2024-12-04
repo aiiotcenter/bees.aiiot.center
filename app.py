@@ -6,7 +6,7 @@ import time
 import requests
 import threading
 import logging
-from hx711 import HX711
+from hx711_multi import HX711  # Ensure you are using a compatible HX711 library
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -38,7 +38,7 @@ GPIO.setup(LIGHT, GPIO.IN)
 # Initialize HX711 for weight measurement
 try:
     logging.info("Initializing HX711 on GPIO 9 and 10")
-    hx = HX711(dout_pin=9, pd_sck_pin=10)
+    hx = HX711(dout_pin=9, pd_sck_pin=10, gain=128)
 except Exception as e:
     logging.error(f"Error initializing HX711: {e}")
 
@@ -66,14 +66,12 @@ def tare_scale():
     global zero_offset
     try:
         logging.info("Taring the scale... Please ensure the scale is empty.")
-        time.sleep(2)  # Allow time for stabilization
-        hx.reset()  # Reset HX711
-        raw_readings = [hx.read() for _ in range(10) if hx.read() is not None]
-        if raw_readings:
-            zero_offset = sum(raw_readings) / len(raw_readings)
-            logging.info(f"Scale tared successfully. Zero offset: {zero_offset}")
-        else:
-            raise ValueError("Failed to get valid readings during taring.")
+        hx.reset()
+        time.sleep(2)
+        zero_offset = hx.get_raw_data_mean()
+        if zero_offset is None:
+            raise ValueError("Failed to get valid tare readings.")
+        logging.info(f"Scale tared successfully. Zero offset: {zero_offset}")
     except Exception as e:
         logging.error(f"Error during tare: {e}")
 
@@ -81,7 +79,7 @@ def tare_scale():
 @retry(times=5)
 def get_weight():
     try:
-        raw_value = hx.read()
+        raw_value = hx.get_raw_data_mean()
         if raw_value is None:
             raise ValueError("Failed to get data from HX711")
         weight = (raw_value - zero_offset) / calibration_factor
@@ -102,13 +100,13 @@ def get_distance():
 
         start_time = time.time()
         while GPIO.input(ECHO) == 0:
-            if time.time() - start_time > 1:
-                raise TimeoutError("Ultrasonic sensor timeout while waiting for pulse start.")
+            if time.time() - start_time > 0.5:
+                raise TimeoutError("Ultrasonic sensor timeout waiting for pulse start.")
         pulse_start = time.time()
 
         while GPIO.input(ECHO) == 1:
-            if time.time() - pulse_start > 1:
-                raise TimeoutError("Ultrasonic sensor timeout while waiting for pulse end.")
+            if time.time() - pulse_start > 0.5:
+                raise TimeoutError("Ultrasonic sensor timeout waiting for pulse end.")
         pulse_end = time.time()
 
         pulse_duration = pulse_end - pulse_start
