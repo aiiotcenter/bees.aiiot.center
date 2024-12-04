@@ -6,7 +6,7 @@ import time
 import requests
 import threading
 import logging
-from hx711_multi import HX711
+from hx711_multi import HX711  # Ensure you're using the correct library
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -46,11 +46,10 @@ try:
     logging.info("Initializing HX711 on GPIO 9 and 10")
     hx = HX711(HX711_DOUT, HX711_SCK)
     hx.reset()
-    time.sleep(1)  # Allow time for the HX711 to stabilize
-    logging.info("Taring HX711 by calculating zero offset")
-    readings = [hx.get_raw_data_mean() for _ in range(10)]
-    zero_offset = sum(readings) / len(readings) if readings else 0
-    logging.info(f"Calculated zero offset: {zero_offset}")
+    hx.set_scale(calibration_factor)
+    hx.tare()
+    zero_offset = hx.get_offset()
+    logging.info(f"HX711 zero offset set to: {zero_offset}")
 except Exception as e:
     logging.error(f"Error initializing HX711: {e}")
 
@@ -75,7 +74,7 @@ def get_weight():
     try:
         if hx is None:
             raise ValueError("HX711 not initialized")
-        raw_value = hx.get_raw_data_mean()
+        raw_value = hx.get_weight_mean(10)  # Average over 10 readings
         if raw_value is None:
             raise ValueError("Failed to read HX711 data")
         weight = (raw_value - zero_offset) / calibration_factor
