@@ -23,7 +23,8 @@ try:
     hx.set_reading_format("MSB", "MSB")
     hx.tare()
     zero_offset = hx.read_long()  # Capture zero offset
-    calibration_factor = 1000  # Adjust based on your calibration
+    calibration_factor = 102.372
+  # Adjust based on your calibration
     logging.info("HX711 initialized and tared successfully.")
 except Exception as e:
     logging.error(f"Error initializing HX711: {e}")
