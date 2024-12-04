@@ -6,7 +6,7 @@ import time
 import requests
 import threading
 import logging
-from hx711_multi import HX711  # Ensure you are using a compatible HX711 library
+from hx711_multi import HX711  # Correct library
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -25,6 +25,8 @@ SOUND = 3
 TRIG = 17
 ECHO = 27
 LIGHT = 4
+HX711_DOUT = 9
+HX711_SCK = 10
 
 # GPIO setup
 logging.info("Setting up GPIO pins")
@@ -36,15 +38,18 @@ GPIO.setup(ECHO, GPIO.IN)
 GPIO.setup(LIGHT, GPIO.IN)
 
 # Initialize HX711 for weight measurement
+hx = None
 try:
     logging.info("Initializing HX711 on GPIO 9 and 10")
-    hx = HX711(dout_pin=9, pd_sck_pin=10, gain=128)
+    hx = HX711(HX711_DOUT, HX711_SCK)
+    hx.set_reading_format("MSB", "MSB")
+    hx.reset()
+    hx.tare()
 except Exception as e:
     logging.error(f"Error initializing HX711: {e}")
 
 # Calibration factor for the load cell (adjust based on calibration)
 calibration_factor = 102.372
-zero_offset = 0
 
 # Retry decorator for sensor reading functions
 def retry(times, delay=0.2):
@@ -61,29 +66,15 @@ def retry(times, delay=0.2):
         return wrapper
     return decorator
 
-# Function to tare (zero) the scale manually
-def tare_scale():
-    global zero_offset
-    try:
-        logging.info("Taring the scale... Please ensure the scale is empty.")
-        hx.reset()
-        time.sleep(2)
-        zero_offset = hx.get_raw_data_mean()
-        if zero_offset is None:
-            raise ValueError("Failed to get valid tare readings.")
-        logging.info(f"Scale tared successfully. Zero offset: {zero_offset}")
-    except Exception as e:
-        logging.error(f"Error during tare: {e}")
-
 # Function to get weight measurement from HX711
 @retry(times=5)
 def get_weight():
     try:
-        raw_value = hx.get_raw_data_mean()
-        if raw_value is None:
-            raise ValueError("Failed to get data from HX711")
-        weight = (raw_value - zero_offset) / calibration_factor
-        return round(weight / 1000, 3)  # Convert to kg and round
+        if hx is None:
+            raise ValueError("HX711 not initialized")
+        raw_value = hx.get_weight(5)  # Read 5 samples for better accuracy
+        weight = raw_value / calibration_factor
+        return round(weight, 3)  # Convert to kg and round
     except Exception as e:
         logging.error(f"Error getting weight: {e}")
         return None
@@ -179,10 +170,9 @@ def get_data():
     logging.info(f"Providing sensor data via API: {data}")
     return jsonify(data)
 
-# Main function to run the Flask server and tare the scale
+# Main function to run the Flask server
 if __name__ == '__main__':
     try:
-        tare_scale()  # Tare the scale on startup
         data_thread = threading.Thread(target=send_data)
         data_thread.daemon = True  # Set thread as daemon to close with main program
         data_thread.start()
