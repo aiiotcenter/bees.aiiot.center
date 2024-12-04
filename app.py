@@ -2,6 +2,8 @@ from flask import Flask, jsonify
 import RPi.GPIO as GPIO
 import logging
 from hx711 import HX711
+import threading
+import time
 
 # Logging configuration
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -19,47 +21,47 @@ try:
     logging.info(f"Initializing HX711 on GPIO DOUT={HX711_DOUT}, SCK={HX711_SCK}")
     hx = HX711(HX711_DOUT, HX711_SCK)
     hx.set_reading_format("MSB", "MSB")
-    hx.tare()  # Tare the scale to set zero offset
-    calibration_factor = 10  # Set a default calibration factor (adjust this for your setup)
+    hx.tare()
+    zero_offset = hx.read_long()  # Capture zero offset
+    calibration_factor = 1000  # Adjust based on your calibration
     logging.info("HX711 initialized and tared successfully.")
 except Exception as e:
     logging.error(f"Error initializing HX711: {e}")
     hx = None
 
-# Get weight
-def get_weight():
-    try:
-        if hx is None:
-            raise ValueError("HX711 not initialized")
-        raw_value = hx.read_long()
-        logging.debug(f"Raw HX711 reading: {raw_value}")
-        if raw_value is None:
-            raise ValueError("HX711 returned None")
-        weight = raw_value / calibration_factor  # Adjust this calculation for your scale calibration
-        logging.debug(f"Calculated weight: {weight} kg")
-        return round(weight, 2)
-    except Exception as e:
-        logging.error(f"Error getting weight: {e}")
-        return None
+# Variable to hold the latest weight reading
+current_weight = None
+
+# Function to continuously update weight
+def monitor_weight():
+    global current_weight
+    while True:
+        try:
+            if hx:
+                raw_value = hx.read_long()
+                logging.debug(f"Raw HX711 reading: {raw_value}")
+                if raw_value is not None:
+                    weight = (raw_value - zero_offset) / calibration_factor
+                    current_weight = round(weight, 2)
+                    logging.info(f"Updated weight: {current_weight} kg")
+                else:
+                    logging.warning("HX711 returned None")
+            time.sleep(1)  # Adjust the interval for reading weight
+        except Exception as e:
+            logging.error(f"Error reading weight: {e}")
 
 # Flask route
 @app.route("/data", methods=["GET"])
 def data():
-    weight = get_weight()
-    sensor_data = {
-        "weight": weight,
-    }
-    logging.info(f"Providing sensor data: {sensor_data}")
-    return jsonify(sensor_data)
+    return jsonify({"weight": current_weight})
 
 # Main entry point
 if __name__ == "__main__":
     try:
         logging.info("Starting application")
-        # Test HX711 on startup
-        logging.info("Testing HX711...")
-        weight = get_weight()
-        logging.info(f"Initial weight reading: {weight}")
+        # Start the weight monitoring thread
+        monitor_thread = threading.Thread(target=monitor_weight, daemon=True)
+        monitor_thread.start()
 
         # Start Flask server
         app.run(host="0.0.0.0", port=5000)
