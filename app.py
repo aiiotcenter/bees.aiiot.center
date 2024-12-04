@@ -4,9 +4,6 @@ import adafruit_dht
 import board
 import logging
 from hx711 import HX711
-import threading
-import requests
-import time
 
 # Logging configuration
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -45,7 +42,9 @@ def get_weight():
         if hx is None:
             raise ValueError("HX711 not initialized")
         raw_value = hx.read_average()
-        return round(raw_value / 1000, 2)
+        logging.debug(f"Raw HX711 reading: {raw_value}")
+        weight = raw_value / 1000  # Adjust scale as needed
+        return round(weight, 2)
     except Exception as e:
         logging.error(f"Error getting weight: {e}")
         return None
@@ -53,8 +52,11 @@ def get_weight():
 # Get temperature and humidity
 def get_temperature_humidity():
     try:
+        if dht_device is None:
+            raise RuntimeError("DHT11 not initialized")
         temperature = dht_device.temperature
         humidity = dht_device.humidity
+        logging.debug(f"Temperature: {temperature}, Humidity: {humidity}")
         return {"temperature": temperature, "humidity": humidity}
     except RuntimeError as e:
         logging.error(f"Error reading DHT11: {e}")
@@ -67,27 +69,12 @@ def data():
         "temperature_humidity": get_temperature_humidity(),
         "weight": get_weight(),
     }
+    logging.info(f"Providing sensor data: {sensor_data}")
     return jsonify(sensor_data)
 
-# Background data sender
-def send_data():
-    while True:
-        payload = {
-            "temperature_humidity": get_temperature_humidity(),
-            "weight": get_weight(),
-        }
-        try:
-            response = requests.post("http://bees.aiiot.center/", json=payload)
-            response.raise_for_status()
-            logging.info(f"Data sent successfully: {response.json()}")
-        except Exception as e:
-            logging.error(f"Error sending data: {e}")
-        time.sleep(5)
-
+# Main entry point
 if __name__ == "__main__":
     try:
-        data_thread = threading.Thread(target=send_data, daemon=True)
-        data_thread.start()
         app.run(host="0.0.0.0", port=5000)
     finally:
         logging.info("Cleaning up GPIO")
