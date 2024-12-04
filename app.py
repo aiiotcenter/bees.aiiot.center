@@ -5,7 +5,8 @@ from hx711 import HX711
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
-hx = HX711(dout_pin=9, pd_sck_pin=10)
+hx = HX711(9, 10)  
+
 
 calibration_factor = 102.372
 zero_offset = 0
