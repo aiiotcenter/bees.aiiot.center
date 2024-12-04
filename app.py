@@ -1,27 +1,33 @@
+import time
 import board
 import digitalio
-import adafruit_hx711
+from adafruit_hx711 import HX711  # Correct import
 
-# Setup
-dout = board.D9
-sck = board.D10
-hx = adafruit_hx711.HX711(dout, sck)
+# Setup for HX711
+print("Initializing HX711...")
+dout = board.D9  # GPIO 9
+sck = board.D10  # GPIO 10
 
-# Tare the scale
-hx.set_scale(1)
-hx.tare()
+try:
+    hx = HX711(dout, sck)
+    hx.set_scale(1)  # Set an initial scale factor
+    hx.tare()  # Tare the scale (set zero)
+    print("HX711 initialized and tared successfully.")
+except Exception as e:
+    print(f"Error initializing HX711: {e}")
+    exit(1)
 
-# Read Weight
 def get_weight():
     try:
-        weight = hx.weight  # Read the weight
+        weight = hx.weight  # Read the weight directly
         print(f"Weight: {weight:.2f} grams")
         return weight
     except Exception as e:
-        print(f"Error getting weight: {e}")
+        print(f"Error reading weight: {e}")
         return None
 
 if __name__ == "__main__":
+    print("Starting weight measurement...")
     while True:
-        get_weight()
-        time.sleep(2)
+        weight = get_weight()
+        time.sleep(1)  # Update every second
