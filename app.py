@@ -20,7 +20,7 @@ try:
     hx = HX711(HX711_DOUT, HX711_SCK)
     hx.set_reading_format("MSB", "MSB")
     hx.tare()  # Tare the scale to set zero offset
-    calibration_factor = 1000  # Set a default calibration factor (adjust this for your setup)
+    calibration_factor = 10  # Set a default calibration factor (adjust this for your setup)
     logging.info("HX711 initialized and tared successfully.")
 except Exception as e:
     logging.error(f"Error initializing HX711: {e}")
