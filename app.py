@@ -42,7 +42,6 @@ hx = None
 try:
     logging.info("Initializing HX711 on GPIO 9 and 10")
     hx = HX711(HX711_DOUT, HX711_SCK)
-    hx.set_reading_format("MSB", "MSB")
     hx.reset()
     hx.tare()
 except Exception as e:
@@ -72,7 +71,7 @@ def get_weight():
     try:
         if hx is None:
             raise ValueError("HX711 not initialized")
-        raw_value = hx.get_weight(5)  # Read 5 samples for better accuracy
+        raw_value = hx.get_weight()  # Adjusted to match method signature
         weight = raw_value / calibration_factor
         return round(weight, 3)  # Convert to kg and round
     except Exception as e:
