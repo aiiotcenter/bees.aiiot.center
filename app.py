@@ -21,14 +21,17 @@ HX711_SCK = 10
 try:
     logging.info(f"Initializing HX711 on GPIO DOUT={HX711_DOUT}, SCK={HX711_SCK}")
     hx = HX711(dout_pin=HX711_DOUT, pd_sck_pin=HX711_SCK)
-    hx.set_reading_format("MSB", "MSB")  # Ensure the correct bit order
+
+    # Reset and tare the scale
     hx.reset()
-    hx.tare()  # Tare the scale to zero
+    hx.tare()
 
     # Get zero offset and initialize calibration
-    zero_offset = hx.get_raw_data_mean()  # Average of raw data for zero offset
-    calibration_factor = 102.372  # Adjust based on your calibration
-    hx.set_reference_unit(calibration_factor)
+    zero_offset = hx.get_raw_data_mean()
+    if zero_offset is None or zero_offset == 8388607:
+        raise ValueError("Failed to initialize HX711: Invalid readings during zero offset calculation.")
+
+    calibration_factor = 102.372  # Adjust based on calibration
     logging.info(f"HX711 initialized. Zero offset: {zero_offset}, Calibration factor: {calibration_factor}")
 except Exception as e:
     logging.error(f"Error initializing HX711: {e}")
