@@ -23,15 +23,15 @@ try:
     logging.info(f"Initializing HX711 on GPIO DOUT={HX711_DOUT}, SCK={HX711_SCK}")
     hx = HX711(dout_pin=HX711_DOUT, pd_sck_pin=HX711_SCK)
     hx.reset()
-    
-    # Calculate zero offset manually
+
+    # Collect valid raw readings and calculate offset
     zero_offset = None
     retries = 10
     valid_readings = []
-    
+
     for _ in range(retries):
-        raw_value = hx.get_raw_data_mean()
-        if raw_value is not None and raw_value != 8388607:
+        raw_value = hx.get_raw_data()
+        if raw_value is not None and raw_value != 8388607:  # Ensure the data is valid
             valid_readings.append(raw_value)
         else:
             logging.warning("Invalid data during zero offset calculation. Retrying...")
@@ -78,7 +78,7 @@ def monitor_weight():
                 retries = 10
                 raw_data = None
                 for _ in range(retries):
-                    raw_data = hx.get_raw_data_mean()
+                    raw_data = hx.get_raw_data()
                     raw_data = validate_reading(raw_data)
                     if raw_data is not None:
                         break
