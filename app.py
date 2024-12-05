@@ -21,17 +21,25 @@ HX711_SCK = 10
 try:
     logging.info(f"Initializing HX711 on GPIO DOUT={HX711_DOUT}, SCK={HX711_SCK}")
     hx = HX711(dout_pin=HX711_DOUT, pd_sck_pin=HX711_SCK)
-
-    # Reset and tare the scale
     hx.reset()
-    hx.tare()
+    hx.tare()  # Tare the scale to zero
 
-    # Get zero offset and initialize calibration
-    zero_offset = hx.get_raw_data_mean()
-    if zero_offset is None or zero_offset == 8388607:
-        raise ValueError("Failed to initialize HX711: Invalid readings during zero offset calculation.")
+    # Retry to get a valid zero offset
+    retries = 10
+    zero_offset = None
+    for _ in range(retries):
+        raw_value = hx.get_raw_data_mean()
+        if raw_value is not None and raw_value != 8388607:
+            zero_offset = raw_value
+            break
+        logging.warning("Invalid data detected during initialization. Retrying...")
+        time.sleep(0.1)
 
-    calibration_factor = 102.372  # Adjust based on calibration
+    if zero_offset is None:
+        raise ValueError("Failed to initialize HX711: Invalid readings from the sensor.")
+
+    calibration_factor = 102.372  # Adjust based on your calibration
+    hx.set_scale_ratio(calibration_factor)
     logging.info(f"HX711 initialized. Zero offset: {zero_offset}, Calibration factor: {calibration_factor}")
 except Exception as e:
     logging.error(f"Error initializing HX711: {e}")
@@ -46,18 +54,26 @@ def monitor_weight():
     while True:
         try:
             if hx:
-                raw_data = hx.get_raw_data_mean()
+                raw_data = None
+                retries = 10  # Maximum retries for valid data
+                for _ in range(retries):
+                    raw_data = hx.get_raw_data_mean()
+                    if raw_data is not None and raw_data != 8388607:
+                        break
+                    logging.warning("Invalid data received. Retrying...")
+                    time.sleep(0.1)
+
                 if raw_data is not None and raw_data != 8388607:
                     weight = (raw_data - zero_offset) / calibration_factor
                     current_weight = round(weight, 2)
                     logging.info(f"Updated weight: {current_weight} kg")
                 else:
-                    logging.warning("Invalid data received from HX711.")
+                    logging.warning("Failed to get a valid reading after retries.")
             time.sleep(1)  # Adjust the interval for reading weight
         except Exception as e:
             logging.error(f"Error reading weight: {e}")
 
-# Flask route
+# Flask route to return weight data
 @app.route("/data", methods=["GET"])
 def data():
     return jsonify({"weight": current_weight})
