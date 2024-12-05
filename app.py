@@ -20,22 +20,15 @@ HX711_SCK = 10
 # Initialize HX711
 try:
     logging.info(f"Initializing HX711 on GPIO DOUT={HX711_DOUT}, SCK={HX711_SCK}")
-    hx = HX711(HX711_DOUT, HX711_SCK)
+    hx = HX711(dout_pin=HX711_DOUT, pd_sck_pin=HX711_SCK)
+    hx.set_reading_format("MSB", "MSB")  # Ensure the correct bit order
+    hx.reset()
+    hx.tare()  # Tare the scale to zero
 
-    # Read zero offset using `read`
-    zero_offset = None
-    for _ in range(5):  # Retry up to 5 times to get a valid reading
-        raw_value = hx.read()
-        if raw_value is not None and raw_value != 8388607:
-            zero_offset = raw_value
-            break
-        logging.warning("Invalid data detected during initialization. Retrying...")
-        time.sleep(0.1)
-    
-    if zero_offset is None:
-        raise ValueError("Failed to initialize HX711: Invalid readings from the sensor.")
-
+    # Get zero offset and initialize calibration
+    zero_offset = hx.get_raw_data_mean()  # Average of raw data for zero offset
     calibration_factor = 102.372  # Adjust based on your calibration
+    hx.set_reference_unit(calibration_factor)
     logging.info(f"HX711 initialized. Zero offset: {zero_offset}, Calibration factor: {calibration_factor}")
 except Exception as e:
     logging.error(f"Error initializing HX711: {e}")
@@ -50,9 +43,9 @@ def monitor_weight():
     while True:
         try:
             if hx:
-                raw_value = hx.read()
-                if raw_value is not None and raw_value != 8388607:
-                    weight = (raw_value - zero_offset) / calibration_factor
+                raw_data = hx.get_raw_data_mean()
+                if raw_data is not None and raw_data != 8388607:
+                    weight = (raw_data - zero_offset) / calibration_factor
                     current_weight = round(weight, 2)
                     logging.info(f"Updated weight: {current_weight} kg")
                 else:
