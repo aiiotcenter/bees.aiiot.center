@@ -54,29 +54,37 @@ def monitor_weight():
     while True:
         try:
             if hx:
-                raw_data = None
-                retries = 10  # Maximum retries for valid data
+                valid_data = False
+                retries = 10
                 for _ in range(retries):
+                    start_time = time.time()
                     raw_data = hx.get_raw_data_mean()
+                    elapsed_time = time.time() - start_time
                     if raw_data is not None and raw_data != 8388607:
+                        valid_data = True
                         break
-                    logging.warning("Invalid data received. Retrying...")
+                    logging.warning(f"Invalid data received. Retrying... (Elapsed: {elapsed_time:.6f}s)")
                     time.sleep(0.1)
 
-                if raw_data is not None and raw_data != 8388607:
+                if valid_data:
                     weight = (raw_data - zero_offset) / calibration_factor
                     current_weight = round(weight, 2)
                     logging.info(f"Updated weight: {current_weight} kg")
                 else:
                     logging.warning("Failed to get a valid reading after retries.")
+                    current_weight = None
             time.sleep(1)  # Adjust the interval for reading weight
         except Exception as e:
             logging.error(f"Error reading weight: {e}")
+            current_weight = None
 
 # Flask route to return weight data
 @app.route("/data", methods=["GET"])
 def data():
-    return jsonify({"weight": current_weight})
+    if current_weight is not None:
+        return jsonify({"weight": current_weight})
+    else:
+        return jsonify({"error": "Sensor data unavailable"}), 503
 
 # Main entry point
 if __name__ == "__main__":
