@@ -4,6 +4,7 @@ import logging
 from hx711 import HX711
 import threading
 import time
+from collections import deque
 
 # Logging configuration
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -48,30 +49,44 @@ except Exception as e:
 # Variable to hold the latest weight reading
 current_weight = None
 
+# Moving average buffer
+readings_buffer = deque(maxlen=10)  # Holds the last 10 readings
+
+# Function to validate raw data
+def validate_reading(raw_data):
+    """Validate the raw data from the HX711."""
+    if raw_data is None or raw_data == 8388607 or abs(raw_data) > 1e6:
+        return None
+    return raw_data
+
+# Function to calculate moving average
+def calculate_moving_average(new_value, buffer):
+    """Update the moving average with a new value."""
+    buffer.append(new_value)
+    return sum(buffer) / len(buffer)
+
 # Function to continuously update weight
 def monitor_weight():
     global current_weight
     while True:
         try:
             if hx:
-                valid_data = False
                 retries = 10
+                raw_data = None
                 for _ in range(retries):
-                    start_time = time.time()
                     raw_data = hx.get_raw_data_mean()
-                    elapsed_time = time.time() - start_time
-                    if raw_data is not None and raw_data != 8388607:
-                        valid_data = True
+                    raw_data = validate_reading(raw_data)
+                    if raw_data is not None:
                         break
-                    logging.warning(f"Invalid data received. Retrying... (Elapsed: {elapsed_time:.6f}s)")
-                    time.sleep(0.1)
+                    logging.warning("Invalid data received. Retrying...")
+                    time.sleep(0.2)
 
-                if valid_data:
+                if raw_data is not None:
                     weight = (raw_data - zero_offset) / calibration_factor
-                    current_weight = round(weight, 2)
-                    logging.info(f"Updated weight: {current_weight} kg")
+                    current_weight = round(calculate_moving_average(weight, readings_buffer), 2)
+                    logging.info(f"Updated smoothed weight: {current_weight} kg")
                 else:
-                    logging.warning("Failed to get a valid reading after retries.")
+                    logging.error("Failed to get valid reading after retries. Setting weight to None.")
                     current_weight = None
             time.sleep(1)  # Adjust the interval for reading weight
         except Exception as e:
