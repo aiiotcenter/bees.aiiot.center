@@ -23,25 +23,29 @@ try:
     logging.info(f"Initializing HX711 on GPIO DOUT={HX711_DOUT}, SCK={HX711_SCK}")
     hx = HX711(dout_pin=HX711_DOUT, pd_sck_pin=HX711_SCK)
     hx.reset()
-    hx.tare()  # Tare the scale to zero
-
-    # Retry to get a valid zero offset
-    retries = 10
+    
+    # Calculate zero offset manually
     zero_offset = None
+    retries = 10
+    valid_readings = []
+    
     for _ in range(retries):
         raw_value = hx.get_raw_data_mean()
         if raw_value is not None and raw_value != 8388607:
-            zero_offset = raw_value
-            break
-        logging.warning("Invalid data detected during initialization. Retrying...")
-        time.sleep(0.1)
+            valid_readings.append(raw_value)
+        else:
+            logging.warning("Invalid data during zero offset calculation. Retrying...")
+            time.sleep(0.1)
 
-    if zero_offset is None:
-        raise ValueError("Failed to initialize HX711: Invalid readings from the sensor.")
+    if valid_readings:
+        zero_offset = sum(valid_readings) / len(valid_readings)
+        logging.info(f"Zero offset calculated: {zero_offset}")
+    else:
+        raise ValueError("Failed to calculate zero offset: No valid readings.")
 
     calibration_factor = 102.372  # Adjust based on your calibration
     hx.set_scale_ratio(calibration_factor)
-    logging.info(f"HX711 initialized. Zero offset: {zero_offset}, Calibration factor: {calibration_factor}")
+    logging.info(f"HX711 initialized. Calibration factor: {calibration_factor}")
 except Exception as e:
     logging.error(f"Error initializing HX711: {e}")
     hx = None
