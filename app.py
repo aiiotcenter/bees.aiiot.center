@@ -24,20 +24,17 @@ def cleanAndExit():
     sys.exit()
 
 def get_distance():
-    # Trigger the ultrasonic sensor
     GPIO.output(TRIG, True)
     time.sleep(0.00001)
     GPIO.output(TRIG, False)
 
-    # Measure the time of the echo
     while GPIO.input(ECHO) == 0:
         start_time = time.time()
     while GPIO.input(ECHO) == 1:
         end_time = time.time()
 
-    # Calculate distance in cm
     elapsed_time = end_time - start_time
-    distance = (elapsed_time * 34300) / 2  # Speed of sound is 343 m/s
+    distance = (elapsed_time * 34300) / 2
     return distance
 
 def get_temp_humidity():
@@ -63,33 +60,32 @@ setup()
 
 while True:
     try:
-        # Get weight readings
+        # Continuous Weight Reading
         raw_value = hx.get_weight(5)
         grams = raw_value
         kilograms = grams / 1000.0
         print(f"Weight: {grams:.2f} g ({kilograms:.3f} kg)")
 
-        # Get distance readings
+        # Distance Reading
         distance = get_distance()
         print(f"Distance: {distance:.2f} cm")
         if distance < 7:
             print("Alert: Someone is near!")
 
-        # Get temperature and humidity readings
+        # Temperature and Humidity Reading
         temperature, humidity = get_temp_humidity()
         if temperature is not None and humidity is not None:
             print(f"Temperature: {temperature:.1f} °C, Humidity: {humidity:.1f} %")
         else:
             print("Failed to read temperature and humidity!")
 
-        # Monitor sound sensor
+        # Sound Sensor Monitoring
         if monitor_sound():
             print("Bees are alive!")
         else:
             print("Something is going wrong!")
 
-        hx.power_down()
-        hx.power_up()
+        # Reduce Sensor Polling Frequency
         time.sleep(1)
 
     except (KeyboardInterrupt, SystemExit):
