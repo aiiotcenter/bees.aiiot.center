@@ -2,7 +2,7 @@ import time
 import sys
 import RPi.GPIO as GPIO
 import Adafruit_DHT
-from hx711 import HX711
+from raspberry.hx711 import HX711
 
 # GPIO Pin Configuration
 TRIG = 14
