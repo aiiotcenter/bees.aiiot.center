@@ -79,6 +79,7 @@ setup()
 while True:
     try:
         # Continuous Weight Reading
+        print("Reading weight...")
         try:
             raw_value = hx.get_weight(5)
             grams = raw_value
@@ -88,6 +89,7 @@ while True:
             print(f"Error in HX711 weight reading: {e}")
 
         # Distance Reading
+        print("Reading distance...")
         distance = get_distance()
         if distance is not None:
             print(f"Distance: {distance:.2f} cm")
@@ -95,11 +97,13 @@ while True:
                 print("Alert: Someone is near!")
 
         # Temperature and Humidity Reading
+        print("Reading temperature and humidity...")
         temperature, humidity = get_temp_humidity()
         if temperature is not None and humidity is not None:
             print(f"Temperature: {temperature:.1f} °C, Humidity: {humidity:.1f} %")
 
         # Sound Sensor Monitoring
+        print("Monitoring sound sensor...")
         sound_detected = monitor_sound()
         if sound_detected:
             print("Bees are alive!")
