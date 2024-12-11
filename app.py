@@ -24,69 +24,93 @@ def cleanAndExit():
     sys.exit()
 
 def get_distance():
-    GPIO.output(TRIG, True)
-    time.sleep(0.00001)
-    GPIO.output(TRIG, False)
+    try:
+        GPIO.output(TRIG, True)
+        time.sleep(0.00001)
+        GPIO.output(TRIG, False)
 
-    while GPIO.input(ECHO) == 0:
-        start_time = time.time()
-    while GPIO.input(ECHO) == 1:
-        end_time = time.time()
+        while GPIO.input(ECHO) == 0:
+            start_time = time.time()
+        while GPIO.input(ECHO) == 1:
+            end_time = time.time()
 
-    elapsed_time = end_time - start_time
-    distance = (elapsed_time * 34300) / 2
-    return distance
+        elapsed_time = end_time - start_time
+        distance = (elapsed_time * 34300) / 2
+        return distance
+    except Exception as e:
+        print(f"Error in get_distance: {e}")
+        return None
 
 def get_temp_humidity():
-    humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, DHT_PIN)
-    if humidity is not None and temperature is not None:
-        return temperature, humidity
-    else:
+    try:
+        humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, DHT_PIN)
+        if humidity is not None and temperature is not None:
+            return temperature, humidity
+        else:
+            print("Temperature and Humidity sensor failed to read!")
+            return None, None
+    except Exception as e:
+        print(f"Error in get_temp_humidity: {e}")
         return None, None
 
 def monitor_sound():
-    return GPIO.input(SOUND_SENSOR_PIN) == GPIO.HIGH
+    try:
+        return GPIO.input(SOUND_SENSOR_PIN) == GPIO.HIGH
+    except Exception as e:
+        print(f"Error in monitor_sound: {e}")
+        return False
 
 # Initialize HX711
 hx = HX711(5, 6)
 hx.set_reading_format("MSB", "MSB")
 referenceUnit = 114
 hx.set_reference_unit(referenceUnit)
-hx.reset()
-hx.tare()
-print("Tare done! Add weight now...")
+
+try:
+    hx.reset()
+    hx.tare()
+    print("Tare done! Add weight now...")
+except Exception as e:
+    print(f"Error initializing HX711: {e}")
+    cleanAndExit()
 
 setup()
 
 while True:
     try:
         # Continuous Weight Reading
-        raw_value = hx.get_weight(5)
-        grams = raw_value
-        kilograms = grams / 1000.0
-        print(f"Weight: {grams:.2f} g ({kilograms:.3f} kg)")
+        try:
+            raw_value = hx.get_weight(5)
+            grams = raw_value
+            kilograms = grams / 1000.0
+            print(f"Weight: {grams:.2f} g ({kilograms:.3f} kg)")
+        except Exception as e:
+            print(f"Error in HX711 weight reading: {e}")
 
         # Distance Reading
         distance = get_distance()
-        print(f"Distance: {distance:.2f} cm")
-        if distance < 7:
-            print("Alert: Someone is near!")
+        if distance is not None:
+            print(f"Distance: {distance:.2f} cm")
+            if distance < 7:
+                print("Alert: Someone is near!")
 
         # Temperature and Humidity Reading
         temperature, humidity = get_temp_humidity()
         if temperature is not None and humidity is not None:
             print(f"Temperature: {temperature:.1f} °C, Humidity: {humidity:.1f} %")
-        else:
-            print("Failed to read temperature and humidity!")
 
         # Sound Sensor Monitoring
-        if monitor_sound():
+        sound_detected = monitor_sound()
+        if sound_detected:
             print("Bees are alive!")
         else:
             print("Something is going wrong!")
 
-        # Reduce Sensor Polling Frequency
+        # Delay between readings
         time.sleep(1)
 
     except (KeyboardInterrupt, SystemExit):
+        cleanAndExit()
+    except Exception as e:
+        print(f"Unexpected error in main loop: {e}")
         cleanAndExit()
