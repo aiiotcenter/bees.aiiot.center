@@ -1,0 +1,75 @@
+{
+    "beeStatus": [
+      {
+        "status": "Endangered or Declining",
+        "isThreatened": "Yes"
+      },
+      {
+        "status": "Stable or Healthy",
+        "isThreatened": "No"
+      },
+      {
+        "status": "Threatened",
+        "isThreatened": "Yes"
+      },
+      {
+        "status": "Recovered",
+        "isThreatened": "No"
+      }
+    ],
+    "hiveStatus": [
+      {
+        "status": "Healthy Hive",
+        "details": "No"
+      },
+      {
+        "status": "Weak Hive",
+        "details": "No"
+      },
+      {
+        "status": "Swarming Hive",
+        "details": "No"
+      },
+      {
+        "status": "Queenless Hive",
+        "details": "No"
+      }
+    ],
+    "diseaseDetection": [
+      {
+        "status": "No Disease Detected",
+        "details": "No"
+      },
+      {
+        "status": "Mite Infestation",
+        "details": "No"
+      },
+      {
+        "status": "Foulbrood Disease",
+        "details": "No"
+      },
+      {
+        "status": "Nosema Infection",
+        "details": "No"
+      }
+    ],
+    "hiveWeight": [
+      {
+        "status": "Light Hive",
+        "details": "20kg"
+      },
+      {
+        "status": "Normal Hive",
+        "details": "15kg"
+      },
+      {
+        "status": "Heavy Hive",
+        "details": "10kg"
+      },
+      {
+        "status": "Overweight Hive",
+        "details": "5kg"
+      }
+    ]
+  }
+  
