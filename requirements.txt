@@ -1,5 +1,0 @@
-Flask
-adafruit-circuitpython-dht
-RPi.GPIO
-requests
-hx711
