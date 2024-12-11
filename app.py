@@ -54,8 +54,18 @@ def get_temp_humidity():
         return None, None
 
 def monitor_sound():
+    """
+    Checks the state of the LM393 sound sensor's digital output pin.
+    If sound is detected, the function returns True; otherwise, it returns False.
+    """
     try:
-        return GPIO.input(SOUND_SENSOR_PIN) == GPIO.HIGH
+        sound_detected = GPIO.input(SOUND_SENSOR_PIN)
+        if sound_detected == GPIO.HIGH:
+            print("Sound detected by LM393.")
+            return True
+        else:
+            print("No sound detected by LM393.")
+            return False
     except Exception as e:
         print(f"Error in monitor_sound: {e}")
         return False
@@ -106,9 +116,9 @@ while True:
         print("Monitoring sound sensor...")
         sound_detected = monitor_sound()
         if sound_detected:
-            print("Bees are alive!")
+            print("Bees are alive!")  # Positive detection message
         else:
-            print("Something is going wrong!")
+            print("Something is going wrong!")  # No sound detection
 
         # Delay between readings
         time.sleep(1)
