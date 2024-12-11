@@ -10,12 +10,14 @@ ECHO = 15
 DHT_PIN = 18
 DHT_SENSOR = Adafruit_DHT.DHT22
 SOUND_SENSOR_PIN = 23
+LDR_PIN = 24  # GPIO pin for the LDR circuit
 
 def setup():
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(TRIG, GPIO.OUT)
     GPIO.setup(ECHO, GPIO.IN)
     GPIO.setup(SOUND_SENSOR_PIN, GPIO.IN)
+    GPIO.setup(LDR_PIN, GPIO.IN)  # LDR is configured as input
 
 def cleanAndExit():
     print("Cleaning up...")
@@ -70,6 +72,23 @@ def monitor_sound():
         print(f"Error in monitor_sound: {e}")
         return False
 
+def monitor_light():
+    """
+    Checks the state of the LDR (photoresistor) circuit.
+    If light is detected, it returns True; otherwise, it returns False.
+    """
+    try:
+        light_detected = GPIO.input(LDR_PIN)
+        if light_detected == GPIO.HIGH:
+            print("Hive is open!")  # Light detected
+            return True
+        else:
+            print("Hive is closed!")  # No light detected
+            return False
+    except Exception as e:
+        print(f"Error in monitor_light: {e}")
+        return False
+
 # Initialize HX711
 hx = HX711(5, 6)
 hx.set_reading_format("MSB", "MSB")
@@ -119,6 +138,14 @@ while True:
             print("Bees are alive!")  # Positive detection message
         else:
             print("Something is going wrong!")  # No sound detection
+
+        # Light Sensor Monitoring
+        print("Monitoring light sensor...")
+        light_detected = monitor_light()
+        if light_detected:
+            print("Hive is open!")
+        else:
+            print("Hive is closed!")
 
         # Delay between readings
         time.sleep(1)
