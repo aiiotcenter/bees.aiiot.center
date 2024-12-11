@@ -1,0 +1,286 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@media screen and (min-width: 320px) {
+  .login-page-wrapper {
+    background-image: url("https://mhkit.rometheme.pro/madoe/wp-content/uploads/sites/21/2022/12/the-beekeeper-uses-a-bee-brush-the-process-of-har-2022-01-18-23-45-28-E6HA8BP-1536x1024.jpg");
+    width: 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    z-index: 1;
+    align-items: center;
+  }
+  .login-page-wrapper::before {
+    content: "";
+    height: 100%;
+    width: 100%;
+    background-color: lch(1 4.13 285.26/0.42);
+    left: 0;
+    top: 0;
+    position: absolute;
+    z-index: -1;
+  }
+  .login-page-wrapper .login-page-wrapper-inner {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    max-width: 1320px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 15px;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-detail {
+    max-width: 660px;
+    width: 100%;
+    text-align: left;
+    padding: 10px 30px 10px 0px;
+    display: none;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-detail figure {
+    margin-bottom: 20px;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-detail figure img {
+    width: 200px;
+    display: flex;
+    justify-content: flex-start;
+    margin: 0;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-detail h1 {
+    font-size: 36px;
+    padding-bottom: 10px;
+    color: #fff;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-detail p {
+    font-size: 16px;
+    color: #fff;
+    font-weight: normal;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form {
+    padding: 40px 30px;
+    width: 100%;
+    background-color: #fff;
+    max-width: 660px;
+    width: 100%;
+    height: auto;
+    border-radius: 2px;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form h2 {
+    text-align: center;
+    font-size: 40px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: #6f2036;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form p {
+    font-size: 18px;
+    text-align: center;
+    padding-bottom: 40px;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form form .input-wrapper {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form form .input-wrapper label {
+    color: #979696;
+    margin-bottom: 8px;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form form .input-wrapper input {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form form .login-session {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    gap: 5px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form form .login-session .keep-login {
+    display: flex;
+    align-items: center;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form form .login-session .keep-login input {
+    width: 24px;
+    height: 16px;
+    margin: 0px;
+    display: flex;
+    justify-content: flex-start;
+    margin-left: -2px;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form form .login-session .keep-login label {
+    color: #808080;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form form .login-session .forgot-password a {
+    color: #6f2036;
+    font-size: 15px;
+    margin-bottom: 5px;
+    display: block;
+    transition: all 0.3s ease-in-out;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form form button {
+    border: 0px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 17px;
+    font-weight: 500;
+    color: #fff;
+    border-radius: 3px;
+    background-color: #6f2036;
+    padding: 10px 36px;
+    margin-bottom: 10px;
+    width: 100%;
+    -webkit-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 400ms;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form form button:focus {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px !important;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form form button:hover {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px !important;
+    background: #980a25;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form form .register {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form form .register p {
+    margin-bottom: 0px;
+    padding: 0;
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 15px;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form form .register p a {
+    color: #6f2036;
+    font-size: 15px;
+    display: inline-block;
+    transition: all 0.3s ease-in-out;
+    margin-left: 3px;
+  }
+}
+@media screen and (min-width: 767px) {
+  .login-page-wrapper .login-page-wrapper-inner {
+    max-width: 1320px;
+    flex-direction: row;
+    padding: 0px;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-detail {
+    display: block;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form {
+    padding: 65px 90px 45px;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form p {
+    padding-bottom: 48px;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form form .input-wrapper input {
+    box-sizing: border-box;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form form .login-session {
+    gap: unset;
+    flex-direction: row;
+    align-items: center;
+  }
+  .login-page-wrapper .login-page-wrapper-inner .login-form form .register p {
+    margin-bottom: 10px;
+  }
+}
+@keyframes ripple {
+  to {
+    transform: scale(4); /* Scale the ripple to 4x its size */
+    opacity: 0; /* Fade it out */
+  }
+}
+span.ripple {
+  position: absolute; /* The absolute position we mentioned earlier */
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 600ms linear;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.input-error {
+  color: red;
+  font-size: 14px;
+}
+
+/* Universal reset */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: unset;
+}
+
+/* Reset margins and paddings for text elements */
+p, h1, h2, h3, h4, figure {
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  color: #808080;
+}
+
+.input-error {
+  color: red;
+  font-size: 14px;
+}
+
+/* Input field styles */
+input {
+  transition: border-color 0.3s ease-in-out, border-width 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth transition for box-shadow */
+  outline: unset;
+}
+input::-moz-placeholder {
+  font-size: 14px;
+  color: rgba(151, 150, 150, 0.4784313725); /* Light grayish placeholder text */
+}
+input::placeholder {
+  font-size: 14px;
+  color: rgba(151, 150, 150, 0.4784313725); /* Light grayish placeholder text */
+}
+input:focus-visible {
+  outline: unset;
+}
+input:focus-within {
+  outline: unset;
+}
+input:focus {
+  outline: unset;
+  border-color: #6f2036 !important;
+  border-width: 1.5px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px !important;
+}/*# sourceMappingURL=style.css.map */

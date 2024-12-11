@@ -1,0 +1,120 @@
+@media screen and (min-width: 320px) {
+	.box-wrapper {
+		display: flex;
+		justify-content: left;
+		flex-wrap: wrap;
+		align-items: center;
+		flex-direction: column;
+		width: 100%;
+		margin: 0 auto;
+		gap: 15px;
+
+
+		.box {
+			display: flex;
+			flex-direction: column;
+			background-color: #ffffff;
+			border: 1px solid rgba(0, 0, 0, 0.125);
+			// max-width: 331px;
+			width: 100%;
+			// padding: 15px;
+			border-radius: 8px;
+			box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
+			.box-wrapper-top {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 10px;
+
+				strong {
+					font-size: 18px;
+					color: #6f2036;
+				}
+
+				figure {
+					margin: 0;
+					// background-color: #ff4b4b !important;
+					width: 30px;
+					height: 30px;
+
+
+					img {
+						width: 38px;
+						height: 38px;
+						padding: 0px;
+						border-radius: 5px;
+
+
+					}
+				}
+			}
+
+			ul {
+				list-style-type: none;
+				padding: 0;
+				margin: 0;
+
+				li {
+					display: flex;
+					justify-content: space-between;
+					padding: 0px 0px 7px 0px;
+
+					&:last-child {
+						padding-bottom: 0px;
+					}
+
+					span {
+						font-size: 16px;
+						font-weight: 500;
+						color: #303030;
+
+						&:last-child {
+							font-size: 14px;
+							font-weight: 400;
+							color: #535f6b;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	body {
+		padding: 0px;
+		box-sizing: border-box;
+	}
+}
+
+@media screen and (min-width: 1000px) {
+	.box-wrapper {
+
+		width: 100%;
+
+	}
+}
+
+@media screen and (min-width: 767px) {
+	.box-wrapper {
+		flex-direction: row;
+		width: 58%;
+		align-items: flex-start;
+		gap: 15px;
+
+		.box {
+			// max-width: 331px;
+			width: 48%;
+		}
+
+	}
+
+	body {
+		padding: 0;
+		// background-image: url('https://static.vecteezy.com/system/resources/thumbnails/000/532/210/small/3-01.jpg');
+	}
+}
+
+
+.page-wrapper {
+	height: 100vh;
+}
