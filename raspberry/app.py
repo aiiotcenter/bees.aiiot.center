@@ -3,7 +3,7 @@ import random
 import time
 import RPi.GPIO as GPIO
 import Adafruit_DHT
-from raspberry.hx711 import HX711
+from hx711 import HX711
 
 # API Endpoint
 API_URL = "https://bees.aiiot.center/api.php"
