@@ -113,12 +113,14 @@ def send_data_to_api(data):
     try:
         print(f"Sending data to API: {data}")
         response = requests.post(API_URL, data=data)
-        response_json = response.json()
-        print(f"API Response: {response_json}")
+        print(f"Request Method: POST")
+        print(f"Request URL: {response.request.url}")
+        print(f"Request Headers: {response.request.headers}")
+        print(f"Request Body: {response.request.body}")
+        print(f"API Response: {response.status_code} - {response.text}")
     except Exception as e:
         print(f"Error sending data to API: {e}")
 
-# Main Function
 def main():
     setup_gpio()
     hx = initialize_hx711()
