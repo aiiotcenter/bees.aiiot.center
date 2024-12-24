@@ -32,7 +32,7 @@ export default function Live() {
         ></Frame>        
         {/* If you're using an image instead of iframe */}
         <Image theme={theme}
-          src="https://beesscamera.serveo.net/?action=stream"
+          src="https://beesscamera.pagekite.me/?action=stream"
           alt="Live Stream"
         />
       </ScreenWrapper>
