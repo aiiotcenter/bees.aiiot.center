@@ -62,7 +62,7 @@ export const NotificationWrapper = styled.div`
     height: 33px;
     /* color: #fff; */
     color:${({ theme }) => (theme === 'light' ? '#6f2036' : 'none')};
-    background:${({ theme }) => (theme === 'light' ? '#6f2036' : 'none')};
+    background:${({ theme }) => (theme === 'light' ? '#fff' : 'none')};
     padding: 0.5rem;
     border-radius: 8px;
     display: flex;
@@ -127,24 +127,19 @@ export const Paper = styled.span`
 
 export const NotificationWrapperBox = styled.div`
   position: absolute;
-  pointer-events: ${({ isOpen }) => (isOpen ? 'auto' : 'none')};  /* Ensure interaction only when open */
-  box-sizing: border-box;
-  z-index: ${({ isOpen }) => (isOpen ? 9 : -1)};  /* Apply z-index: 9 when open, -1 when closed */
-  display: flex;
-  max-width: 100%;
-  max-height: 100%;
-  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, z-index 0s linear; /* Ensure transition for opacity and visibility */
-  opacity: ${({ isOpen }) => (isOpen ? 1 : 1)}; /* Set opacity: 1 when open, 0 when closed */
-
-  /* background: #fff; */
-  top: 4px;
-  width: 100px;
-  min-width: 400px !important;
-  top: 55px;
+  top: 55px;  // Adjust positioning for NotificationWrapperBox
   right: 50px;
-  min-height: 300px;
-  padding: 0px;
-  box-shadow: none;
+  width: 300px;
+  background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#333')};
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  opacity: ${({ isOpen }) => (isOpen ? '1' : '0')};
+  visibility: ${({ isOpen }) => (isOpen ? 'visible' : 'hidden')};
 `;
 
 
@@ -249,4 +244,40 @@ export const MRPaper = styled.span`
 `;
 export const NBottom = styled.div`
  
+`;
+
+
+// export const UserWrapper = styled.div`
+//   position: relative;
+//   svg {
+//     color: ${({ theme }) => (theme === 'light' ? '#6f2036' : '#fff')};
+//     fill: ${({ theme }) => (theme === 'light' ? '#6f2036' : '#fff')};
+//     cursor: pointer;
+//   }
+// `;
+
+export const DropdownWrapper = styled.div`
+  position: absolute;
+  top: 62px;  /* Adjust based on your header height */
+  right: 10px;
+  width: 150px;
+  background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#2c3e50')};
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+`;
+
+export const DropdownItem = styled.div`
+  padding: 10px 20px;
+  font-size: 16px;
+  color: ${({ theme }) => (theme === 'light' ? '#333' : '#fff')};
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  
+  &:hover {
+    background-color: ${({ theme }) => (theme === 'light' ? '#f1f1f1' : '#34495e')};
+  }
 `;
