@@ -111,9 +111,36 @@ const Header = ({ isCollapsed }) => {
                         </MLWrapper>
                       </MLeft>
                     </NMiddle>
+                    <NMiddle>
+                      <MLeft>
+                        <MLWrapper>
+                          <div className="left">
+                            <ErrorOutlineIcon />
+                          </div>
+                          <div className="right">
+                            <MRText>A new user added in Daxa</MRText>
+                            <MRPaper>3 hrs ago</MRPaper>
+                          </div>
+                        </MLWrapper>
+                      </MLeft>
+                    </NMiddle>
+                    <NMiddle>
+                      <MLeft>
+                        <MLWrapper>
+                          <div className="left">
+                            <ErrorOutlineIcon />
+                          </div>
+                          <div className="right">
+                            <MRText>A new user added in Daxa</MRText>
+                            <MRPaper>3 hrs ago</MRPaper>
+                          </div>
+                        </MLWrapper>
+                      </MLeft>
+                    </NMiddle>
                     <NBottom></NBottom>
                   </NInner>
                 </NBox>
+                
               </NotificationWrapperBox>
             )}
           </NotificationWrapper>

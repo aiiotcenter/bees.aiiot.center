@@ -127,25 +127,26 @@ export const Paper = styled.span`
 
 export const NotificationWrapperBox = styled.div`
   position: absolute;
-  top: 55px;  // Adjust positioning for NotificationWrapperBox
-  right: 50px;
-  width: 300px;
-  background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#333')};
+  top: 62px;
+    right: 130px;
+    width: 375px;
+  background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#2c3e50')};
   border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   z-index: 10;
-  padding: 10px;
   display: flex;
   flex-direction: column;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-  opacity: ${({ isOpen }) => (isOpen ? '1' : '0')};
-  visibility: ${({ isOpen }) => (isOpen ? 'visible' : 'hidden')};
+  padding: 0;
+  /* min-height: 300px; */
+  height: auto;
+  margin: 0px;
+  background-color: #fff !important;
 `;
 
 
 
 export const NBox = styled.div`
-  width: 375px;
+  /* width: 375px;
   padding: 25px 0;
   max-width: 375px;
   overflow: hidden;
@@ -155,7 +156,7 @@ export const NBox = styled.div`
   height: 300px;
 
   background-color: #fff !important;
-  box-shadow: 0 4px 34px #6560f01a !important;
+  box-shadow: 0 4px 34px #6560f01a !important; */
 
 `;
 
@@ -198,6 +199,10 @@ export const NMiddle = styled.div`
     width: 100%;
     padding: 18px 25px;
     border-bottom: 1px solid #e3e3e378;
+    transition: 0.3s ease all;
+    &:hover{
+      background-color: #f1f1f1;
+    }
 `;
 export const MLeft = styled.div`
   display: flex;
