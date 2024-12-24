@@ -1,0 +1,55 @@
+{
+    "beeStatus": [
+      { "status": "67.5", "isThreatened": "0" },
+      { "status": "63.2", "isThreatened": "0" },
+      { "status": "61.9", "isThreatened": "0" },
+      { "status": "59.8", "isThreatened": "0" },
+      { "status": "54.5", "isThreatened": "0" },
+      { "status": "51.7", "isThreatened": "0" },
+      { "status": "52.7", "isThreatened": "0" },
+      { "status": "52.7", "isThreatened": "0" },
+      { "status": "57.2", "isThreatened": "0" },
+      { "status": "57.3", "isThreatened": "0" },
+      { "status": "62.3", "isThreatened": "0" }
+    ],
+    "hiveStatus": [
+      { "status": "0.196881", "details": "Healthy" },
+      { "status": "0.468811", "details": "Healthy" },
+      { "status": "0.258825", "details": "Healthy" },
+      { "status": "-2.39084", "details": "Unstable" },
+      { "status": "4.33821", "details": "Healthy" },
+      { "status": "6.26803", "details": "Healthy" },
+      { "status": "3.43372", "details": "Healthy" },
+      { "status": "2702.31", "details": "Overloaded" },
+      { "status": "145.135", "details": "Stable" },
+      { "status": "142.618", "details": "Stable" },
+      { "status": "156.881", "details": "Stable" }
+    ],
+    "diseaseDetection": [
+      { "status": "No disease", "details": "0" },
+      { "status": "No disease", "details": "0" },
+      { "status": "No disease", "details": "0" },
+      { "status": "No disease", "details": "0" },
+      { "status": "No disease", "details": "0" },
+      { "status": "No disease", "details": "0" },
+      { "status": "No disease", "details": "0" },
+      { "status": "No disease", "details": "0" },
+      { "status": "No disease", "details": "0" },
+      { "status": "No disease", "details": "0" },
+      { "status": "No disease", "details": "0" }
+    ],
+    "hiveWeight": [
+      { "status": "0.196881", "details": "kg" },
+      { "status": "0.468811", "details": "kg" },
+      { "status": "0.258825", "details": "kg" },
+      { "status": "-2.39084", "details": "kg" },
+      { "status": "4.33821", "details": "kg" },
+      { "status": "6.26803", "details": "kg" },
+      { "status": "3.43372", "details": "kg" },
+      { "status": "2702.31", "details": "kg" },
+      { "status": "145.135", "details": "kg" },
+      { "status": "142.618", "details": "kg" },
+      { "status": "156.881", "details": "kg" }
+    ]
+  }
+  

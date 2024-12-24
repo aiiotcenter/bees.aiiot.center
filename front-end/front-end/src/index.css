@@ -1,0 +1,54 @@
+body{
+  margin: 0;
+  padding: 0;
+}
+img{
+  width: 100%;
+  height: auto;
+}
+
+/* src/index.css */
+
+/* Light theme styles */
+body.light {
+  background-color: #fff;
+  color: #6f2036;
+}
+
+/* Dark theme styles */
+body.dark {
+  background-color: #05070a;
+  color: #f5f5f5;
+}
+
+/* body.light h2,h1,p,span,strong{
+  color: #6f2036;
+}
+
+body.dark h2,h1,p,span,strong{
+  color: #6f2036;
+} */
+
+/* Additional styles for components when dark mode is active */
+button {
+  background-color: transparent;
+  color: inherit;
+  border: 1px solid;
+}
+
+button.dark {
+  border-color: #fff;
+  color: #fff;
+}
+
+
+/* Hide scrollbar for Webkit browsers */
+*::-webkit-scrollbar {
+  display: none; /* Hides the scrollbar */
+}
+
+/* Optional: Ensures scroll still works */
+.box-wrapper {
+  -ms-overflow-style: none;  /* Hides scrollbar in IE/Edge */
+  scrollbar-width: none;     /* Hides scrollbar in Firefox */
+}
