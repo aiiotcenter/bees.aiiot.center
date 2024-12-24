@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTheme } from '../context/ThemeContext';
-import { Container, ExpandWrapper, Icon, Left, ModeWrapper, NotificationWrapper, Right, Title, Wrapper, ToggleButtonWrapper, Paper, NotificationWrapperBox, NBox, NInner, NTop, NMiddle, NBottom, NLeft, NRight, MLeft, MRight, MLWrapper, MLFigure, MLImage, MRText, MRPaper, UserWrapper, DropdownWrapper, DropdownItem } from '../style/header/Style'; 
+import { Container, ExpandWrapper, Icon, Left, ModeWrapper, NotificationWrapper, Right, Title, Wrapper, ToggleButtonWrapper, NotificationWrapperBox, NBox, NInner, NTop, NMiddle, NBottom, NLeft, NRight, MLeft, MRight, MLWrapper, MLFigure, MLImage, MRText, MRPaper, UserWrapper, DropdownWrapper, DropdownItem } from '../style/header/Style'; 
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AllOutIcon from '@mui/icons-material/AllOut';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -12,9 +12,9 @@ const Header = ({ isCollapsed }) => {
   const { theme, toggleTheme } = useTheme();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false); // State for notification visibility
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State for dropdown visibility
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State for user dropdown visibility
   const notificationRef = useRef(null); // Ref for NotificationWrapperBox
-  const dropdownRef = useRef(null); // Ref for DropdownWrapper
+  const dropdownRef = useRef(null); // Ref for UserDropdownWrapper
 
   // Toggle FullScreen
   const toggleFullScreen = () => {
@@ -43,17 +43,17 @@ const Header = ({ isCollapsed }) => {
     setIsFullScreen(!isFullScreen);
   };
 
-  // Toggle Notification
+  // Toggle Notification visibility
   const toggleNotification = () => {
     setIsNotificationOpen((prevState) => !prevState);
   };
 
-  // Toggle Dropdown
+  // Toggle User Profile Dropdown visibility
   const toggleDropdown = () => {
     setIsDropdownOpen((prevState) => !prevState);
   };
 
-  // Close Dropdown if clicked outside
+  // Close dropdown and notification if clicked outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -79,8 +79,12 @@ const Header = ({ isCollapsed }) => {
               {theme === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
             </ToggleButtonWrapper>
           </ModeWrapper>
-          {/* <NotificationWrapper onClick={toggleNotification}>
-            <Icon><NotificationsIcon /></Icon>
+
+          {/* Notification Box */}
+          <NotificationWrapper theme={theme} onClick={toggleNotification}>
+            <Icon>
+              <NotificationsIcon />
+            </Icon>
             {isNotificationOpen && (
               <NotificationWrapperBox ref={notificationRef}>
                 <NBox>
@@ -112,20 +116,14 @@ const Header = ({ isCollapsed }) => {
                 </NBox>
               </NotificationWrapperBox>
             )}
-          </NotificationWrapper> */}
-          <NotificationWrapper theme={theme} onClick={toggleNotification}>
-          <Icon> <NotificationsIcon onClick={toggleDropdown} /></Icon>
-            {isDropdownOpen && (
-              <DropdownWrapper ref={dropdownRef} theme={theme}>
-                <DropdownItem theme={theme}>Profile</DropdownItem>
-                <DropdownItem theme={theme}>Settings</DropdownItem>
-                <DropdownItem theme={theme}>Logout</DropdownItem>
-              </DropdownWrapper>
-            )}
           </NotificationWrapper>
+
+          {/* Fullscreen Toggle */}
           <ExpandWrapper onClick={toggleFullScreen}>
             <AllOutIcon />
           </ExpandWrapper>
+
+          {/* User Profile Box */}
           <UserWrapper theme={theme}>
             <AccountCircleIcon style={{ fontSize: '48px' }} onClick={toggleDropdown} />
             {isDropdownOpen && (
