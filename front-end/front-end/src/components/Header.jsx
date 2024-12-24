@@ -7,14 +7,16 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { Alert } from '../style/common/style';
 
 const Header = ({ isCollapsed }) => {
   const { theme, toggleTheme } = useTheme();
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [isNotificationOpen, setIsNotificationOpen] = useState(false); // State for notification visibility
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State for user dropdown visibility
-  const notificationRef = useRef(null); // Ref for NotificationWrapperBox
-  const dropdownRef = useRef(null); // Ref for UserDropdownWrapper
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); 
+  const [notifications, setNotifications] = useState([]); // Add notifications state
+  const notificationRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   // Toggle FullScreen
   const toggleFullScreen = () => {
@@ -44,12 +46,14 @@ const Header = ({ isCollapsed }) => {
   };
 
   // Toggle Notification visibility
-  const toggleNotification = () => {
+  const toggleNotification = (event) => {
+    event.stopPropagation(); // Prevent event propagation to parent elements
     setIsNotificationOpen((prevState) => !prevState);
   };
 
   // Toggle User Profile Dropdown visibility
-  const toggleDropdown = () => {
+  const toggleDropdown = (event) => {
+    event.stopPropagation(); // Prevent event propagation to parent elements
     setIsDropdownOpen((prevState) => !prevState);
   };
 
@@ -67,6 +71,60 @@ const Header = ({ isCollapsed }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/data')  // Update this with your API endpoint
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then((text) => {
+            throw new Error(`HTTP error! Status: ${response.status}, Message: ${text}`);
+          });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Variables to track highest values
+        let maxTemperature = -Infinity;
+        let maxHumidity = -Infinity;
+        let maxWeight = -Infinity;
+        let maxDistance = -Infinity;
+        let maxSoundStatus = -Infinity;
+
+        // Iterate through the data to find the highest values
+        data.forEach(item => {
+          maxTemperature = Math.max(maxTemperature, item.temperature);
+          maxHumidity = Math.max(maxHumidity, item.humidity);
+          maxWeight = Math.max(maxWeight, item.weight);
+          maxDistance = Math.max(maxDistance, item.distance);
+          maxSoundStatus = Math.max(maxSoundStatus, item.sound_status);
+        });
+
+        // Log the highest values
+        console.log('Highest Temperature:', maxTemperature);
+        console.log('Highest Humidity:', maxHumidity);
+        console.log('Highest Weight:', maxWeight);
+        console.log('Highest Distance:', maxDistance);
+        console.log('Highest Sound Status:', maxSoundStatus);
+
+        // Map the fetched data into notifications
+        const notificationsData = data.map((item, index) => ({
+          id: index,  // Ensure unique id for each notification
+          message: `Temperature: ${item.temperature}°C, Humidity: ${item.humidity}%`, // Customize the message
+          time: 'Just now' // Customize time if needed, you can use timestamps if available
+        }));
+
+        // Update notifications state
+        setNotifications(notificationsData);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+  
+
+
+
   return (
     <Container isCollapsed={isCollapsed} theme={theme}>
       <Wrapper>
@@ -81,66 +139,49 @@ const Header = ({ isCollapsed }) => {
           </ModeWrapper>
 
           {/* Notification Box */}
-          <NotificationWrapper theme={theme} onClick={toggleNotification}>
+          <NotificationWrapper 
+            theme={theme} 
+            onClick={toggleNotification} // This will toggle notification visibility
+          >
             <Icon>
               <NotificationsIcon />
             </Icon>
+            <Alert theme={theme} className="alert">3</Alert>
+
             {isNotificationOpen && (
-              <NotificationWrapperBox ref={notificationRef}>
-                <NBox>
-                  <NInner>
-                    <NTop>
-                      <NLeft>
-                        <strong>Notifications</strong>
-                        <span>(03)</span>
+              <NotificationWrapperBox theme={theme} ref={notificationRef} onClick={(e) => e.stopPropagation()}>
+                {/* Prevent event propagation inside the notification box */}
+                <NBox theme={theme}>
+                  <NInner theme={theme}>
+                    <NTop theme={theme}>
+                      <NLeft theme={theme}>
+                      <strong>Notifications</strong>
+                      <span>({notifications.length})</span>
                       </NLeft>
-                      <NRight>
+                      <NRight theme={theme}>
                         <strong style={{ cursor: 'pointer' }}>Clear All</strong>
                       </NRight>
                     </NTop>
-                    <NMiddle>
-                      <MLeft>
-                        <MLWrapper>
+
+                    {notifications.map((notification) => (
+                    <NMiddle theme={theme} key={notification.id}>
+                      <MLeft theme={theme}>
+                        <MLWrapper theme={theme}>
                           <div className="left">
                             <ErrorOutlineIcon />
                           </div>
                           <div className="right">
-                            <MRText>A new user added in Daxa</MRText>
-                            <MRPaper>3 hrs ago</MRPaper>
+                            <MRText theme={theme}>{notification.message}</MRText>
+                            <MRPaper theme={theme}>{notification.time}</MRPaper>
                           </div>
                         </MLWrapper>
                       </MLeft>
                     </NMiddle>
-                    <NMiddle>
-                      <MLeft>
-                        <MLWrapper>
-                          <div className="left">
-                            <ErrorOutlineIcon />
-                          </div>
-                          <div className="right">
-                            <MRText>A new user added in Daxa</MRText>
-                            <MRPaper>3 hrs ago</MRPaper>
-                          </div>
-                        </MLWrapper>
-                      </MLeft>
-                    </NMiddle>
-                    <NMiddle>
-                      <MLeft>
-                        <MLWrapper>
-                          <div className="left">
-                            <ErrorOutlineIcon />
-                          </div>
-                          <div className="right">
-                            <MRText>A new user added in Daxa</MRText>
-                            <MRPaper>3 hrs ago</MRPaper>
-                          </div>
-                        </MLWrapper>
-                      </MLeft>
-                    </NMiddle>
+                  ))}
+
                     <NBottom></NBottom>
                   </NInner>
                 </NBox>
-                
               </NotificationWrapperBox>
             )}
           </NotificationWrapper>
@@ -154,7 +195,8 @@ const Header = ({ isCollapsed }) => {
           <UserWrapper theme={theme}>
             <AccountCircleIcon style={{ fontSize: '48px' }} onClick={toggleDropdown} />
             {isDropdownOpen && (
-              <DropdownWrapper ref={dropdownRef} theme={theme}>
+              <DropdownWrapper ref={dropdownRef} theme={theme} onClick={(e) => e.stopPropagation()}>
+                {/* Prevent event propagation inside the dropdown */}
                 <DropdownItem theme={theme}>Profile</DropdownItem>
                 <DropdownItem theme={theme}>Settings</DropdownItem>
                 <DropdownItem theme={theme}>Logout</DropdownItem>

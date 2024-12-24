@@ -69,7 +69,12 @@ export const NotificationWrapper = styled.div`
     align-items: center;
     justify-content: center;
     border:1px solid ${({ theme }) => (theme === 'light' ? '#80808021' : '#80808021')};
-     
+    position: relative;
+     .alert{
+      position: absolute;
+      right:-13px;
+      top: -5px;
+     }
 `;
 
 export const ExpandWrapper = styled.div`
@@ -127,10 +132,10 @@ export const Paper = styled.span`
 
 export const NotificationWrapperBox = styled.div`
   position: absolute;
-  top: 62px;
-    right: 130px;
+  top: 40px;
+  right: -2px;
     width: 375px;
-  background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#2c3e50')};
+    background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#2c3e50')};
   border-radius: 8px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   z-index: 10;
@@ -138,38 +143,27 @@ export const NotificationWrapperBox = styled.div`
   flex-direction: column;
   padding: 0;
   /* min-height: 300px; */
-  height: auto;
+  /* height: auto; */
   margin: 0px;
-  background-color: #fff !important;
+  /* background-color: #fff; */
+  overflow: scroll;
+  max-height: 300px;
 `;
 
 
 
 export const NBox = styled.div`
-  /* width: 375px;
-  padding: 25px 0;
-  max-width: 375px;
-  overflow: hidden;
-  margin-top: 10px;
-  border-radius: 15px;
-  box-shadow: none !important;
-  height: 300px;
-
-  background-color: #fff !important;
-  box-shadow: 0 4px 34px #6560f01a !important; */
-
+/* background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#2c3e50')}; */
+padding-top: 10px;
 `;
 
 export const NInner = styled.div`
   margin-top: 10px;
   width: 100%;
-    min-width: unset !important;
-    max-width: unset !important;
-  overflow: hidden !important;
-  border-radius: 10px !important;
-  background-color: none;
+  border-radius: 10px;
+  background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#2c3e50')};
   box-shadow: unset;
-  border-bottom: 1px solid #fff;
+  /* border-bottom: 1px solid #fff; */
 `;
 
 export const NTop = styled.div`
@@ -177,20 +171,21 @@ export const NTop = styled.div`
     align-items: center;
     justify-content: space-between;
     padding: 0px 25px 25px;
+    /* background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#2c3e50')}; */
     
 `;
 export const NLeft = styled.div`
  font-size: 16px; 
  strong{
-    color: #212121;
+  color: ${({ theme }) => (theme === 'light' ? '#333' : '#fff')};
  }
  span{
- color: #919aa3;
+  color: ${({ theme }) => (theme === 'light' ? '#333' : '#fff')};
  }
 `;
 export const NRight = styled.div`
  strong{
-    color: #0f79f3;
+  color: ${({ theme }) => (theme === 'light' ? '#333' : '#fff')};
  }
 `;
 export const NMiddle = styled.div`
@@ -198,10 +193,10 @@ export const NMiddle = styled.div`
     align-items: center;
     width: 100%;
     padding: 18px 25px;
-    border-bottom: 1px solid #e3e3e378;
+    /* border-bottom: 1px solid #e3e3e378; */
     transition: 0.3s ease all;
     &:hover{
-      background-color: #f1f1f1;
+      background-color: ${({ theme }) => (theme === 'light' ? '#f1f1f1' : '#34495e')};
     }
 `;
 export const MLeft = styled.div`
@@ -240,30 +235,20 @@ export const MRight = styled.div`
 `;
 export const MRText = styled.p`
  font-size: 16px;
- color: #477569;
+ color: ${({ theme }) => (theme === 'light' ? '#333' : '#fff')};
  margin-bottom: 5px;
 `;
 export const MRPaper = styled.span`
  font-size: 14px; 
- color: #919AA3;
+ color: ${({ theme }) => (theme === 'light' ? '#333' : '#fff')};
 `;
 export const NBottom = styled.div`
  
 `;
 
-
-// export const UserWrapper = styled.div`
-//   position: relative;
-//   svg {
-//     color: ${({ theme }) => (theme === 'light' ? '#6f2036' : '#fff')};
-//     fill: ${({ theme }) => (theme === 'light' ? '#6f2036' : '#fff')};
-//     cursor: pointer;
-//   }
-// `;
-
 export const DropdownWrapper = styled.div`
   position: absolute;
-  top: 62px;  /* Adjust based on your header height */
+  top: 62px;  
   right: 10px;
   width: 150px;
   background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#2c3e50')};

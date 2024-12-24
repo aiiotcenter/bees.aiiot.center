@@ -38,3 +38,17 @@ export const Wrapper = styled.div`
       transform: translateX(80px); /* Using translateX for smoother transition */
     }
 `;
+
+export const Alert = styled.div`
+  border-radius: 50%;
+  /* background: #6f2036; */
+  border: 0px;
+  color: ${({ theme }) => (theme === 'light' ? '#fff' : '#000')};
+  font-size: 13px;
+  width: 20px;
+  height: 20px;
+  background-color: ${({ theme }) => (theme === 'light' ? '#6f2036' : '#fff')};
+  display: flex;
+    align-items: center;
+    justify-content: center;
+`;
