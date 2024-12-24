@@ -24,6 +24,7 @@ export const Boxs = styled.div`
         padding: 15px;
         transition: 0.3s;
         transition: transform 0.3s ease; 
+        min-height: 185px;
         &:hover{
                 background: ${({ theme }) => (theme === 'light' ? '#fff' : '#0b0e14')};
                 transform: scale(1.05);

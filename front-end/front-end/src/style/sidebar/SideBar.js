@@ -32,11 +32,12 @@ export const SidebarContainer = styled.div`
 export const SideBarHeader = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   margin-bottom: 15px;
   padding-bottom: 15px;
   width: 100%;
   border-bottom: 1px solid ${({ theme }) => (theme === 'light' ? '#80808021' : '#333b4d99')};
+  
 `;
 
 export const Figure = styled.figure`

@@ -57,7 +57,7 @@ const Header = ({ isCollapsed }) => {
           </ModeWrapper>
           <NotificationWrapper onClick={toggleNotification}>
             <Icon><NotificationsIcon /></Icon>
-            {/* <NotificationWrapperBox>
+            <NotificationWrapperBox>
               {isNotificationOpen && (
                 <NBox>
                   <NInner>
@@ -67,7 +67,7 @@ const Header = ({ isCollapsed }) => {
                       <span>(03)</span>
                       </NLeft>
                       <NRight>
-                        <strong>Clear All</strong>
+                        <strong style={{cursor:'pointer'}}>Clear All</strong>
                       </NRight>
                     </NTop>
 
@@ -110,7 +110,7 @@ const Header = ({ isCollapsed }) => {
                   </NInner>
                 </NBox>
               )}
-            </NotificationWrapperBox> */}
+            </NotificationWrapperBox>
           </NotificationWrapper>
           <ExpandWrapper onClick={toggleFullScreen}>
             <AllOutIcon />

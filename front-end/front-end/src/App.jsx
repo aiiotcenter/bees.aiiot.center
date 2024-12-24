@@ -5,6 +5,7 @@ import GlobalStyles from './style/common/GlobalStyles';
 import { useState, useEffect } from 'react';
 import { ThemeProvider } from './context/ThemeContext'; // Use the ThemeContext provider
 import Test from './components/Test';
+import HomePage from './pages/HomePage';
 
 function App() {
   const [theme, setTheme] = useState('light');
@@ -30,6 +31,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<LoginPage />} />
+          {/* <Route path="/dashboard" element={<HomePage />} /> */}
           <Route path="/dashboard" element={<MainPage />} />
         </Routes>
       </Router>

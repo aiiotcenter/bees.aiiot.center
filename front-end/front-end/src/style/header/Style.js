@@ -136,14 +136,14 @@ export const NotificationWrapperBox = styled.div`
   transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, z-index 0s linear; /* Ensure transition for opacity and visibility */
   opacity: ${({ isOpen }) => (isOpen ? 1 : 1)}; /* Set opacity: 1 when open, 0 when closed */
 
-  background: #fff;
+  /* background: #fff; */
   top: 4px;
   width: 100px;
   min-width: 400px !important;
   top: 55px;
   right: 50px;
-  height: 300px;
-  padding: 25px;
+  min-height: 300px;
+  padding: 0px;
   box-shadow: none;
 `;
 

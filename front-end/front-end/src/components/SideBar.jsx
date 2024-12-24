@@ -15,27 +15,26 @@ import SlideshowIcon from '@mui/icons-material/Slideshow';
 import Header from './Header';
 import { useTheme } from '../context/ThemeContext'; // Import useTheme hook
 
-const SideBar = ({ onMenuClick }) => {
+const SideBar = ({ isCollapsed, toggleSidebar, onMenuClick }) => {
   const { theme } = useTheme(); // Get the current theme
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  // const [isCollapsed, setIsCollapsed] = useState(false);
 
   // Handle the toggle of the sidebar (collapsed or expanded)
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
-  };
+  // const toggleSidebar = () => {
+  //   setIsCollapsed(!isCollapsed);
+  // };
 
   return (
     <>
-
-      <Header isCollapsed={isCollapsed} />
-
       <SidebarContainer style={{ width: isCollapsed ? '60px' : '260px', alignItems: isCollapsed ? 'center' : 'flex-start', gap: isCollapsed ? '15px' : '0' }}  theme={theme}>
-        <SideBarHeader  theme={theme}>
-          <Figure style={{ display: isCollapsed ? 'none' : 'block' }}>
-            <Image src="https://profdux.aiiot.center/assets/images/air-logo.png" alt='Logo' width={200} height={200} />
-          </Figure>
-          <Toggle onClick={toggleSidebar}  theme={theme}><MenuIcon /></Toggle>
-        </SideBarHeader>
+      <SideBarHeader theme={theme} style={{ display: 'flex', justifyContent: isCollapsed ? 'center' : 'space-between' }}>
+        <Figure style={{ display: isCollapsed ? 'none' : 'block' }}>
+          <Image src="https://profdux.aiiot.center/assets/images/air-logo.png" alt="Logo" width={200} height={200} />
+        </Figure>
+        <Toggle onClick={toggleSidebar} theme={theme}>
+          <MenuIcon />
+        </Toggle>
+      </SideBarHeader>
 
         <SidebarWrapper onClick={() => onMenuClick('hivePage')} style={{ padding: isCollapsed ? '15px 15px' : '15px' }}  theme={theme}>
           <SidebarItem><HomeIcon sx={{ fontSize: 15 }} /><Paper style={{ display: isCollapsed ? 'none' : 'flex' }}  theme={theme}>Dashboard</Paper></SidebarItem><ArrowForwardIosIcon sx={{ fontSize: 15 }} style={{ display: isCollapsed ? 'none' : 'flex' }} />
@@ -66,6 +65,8 @@ const SideBar = ({ onMenuClick }) => {
         </SidebarWrapper>
 
       </SidebarContainer>
+
+      <Header isCollapsed={isCollapsed} />
     </>
   );
 };
