@@ -8,6 +8,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { Alert } from '../style/common/style';
+import { Link } from 'react-router-dom'; 
 
 const Header = ({ isCollapsed }) => {
   const { theme, toggleTheme } = useTheme();
@@ -196,7 +197,7 @@ const Header = ({ isCollapsed }) => {
               <DropdownWrapper ref={dropdownRef} theme={theme} onClick={(e) => e.stopPropagation()}>
                 <DropdownItem theme={theme}>Profile</DropdownItem>
                 <DropdownItem theme={theme}>Settings</DropdownItem>
-                <DropdownItem theme={theme}>Logout</DropdownItem>
+                <DropdownItem theme={theme}><Link to='/'>Logout</Link></DropdownItem>
               </DropdownWrapper>
             )}
           </UserWrapper>
