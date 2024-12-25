@@ -68,7 +68,7 @@ export default function Box() {
               <li>No bee data available</li>
             ) : (
               beeStatus.map((item, index) => (
-                <ListItems key={index}>
+                <ListItems theme={theme} key={index}>
                   <Paper theme={theme}>{item.status}</Paper>
                   <Paper theme={theme}>{item.isThreatened}</Paper>
                 </ListItems>
@@ -90,7 +90,7 @@ export default function Box() {
               <li>No hive data available</li>
             ) : (
               hiveStatus.map((item, index) => (
-                <ListItems key={index}>
+                <ListItems theme={theme} key={index}>
                   <Paper theme={theme}>{item.status}</Paper>
                   <Paper theme={theme}>{item.details}</Paper>
                 </ListItems>
@@ -112,7 +112,7 @@ export default function Box() {
               <li>No disease detection data available</li>
             ) : (
               diseaseDetection.map((item, index) => (
-                <ListItems key={index}>
+                <ListItems theme={theme} key={index}>
                   <Paper theme={theme}>{item.status}</Paper>
                   <Paper theme={theme}>{item.details}</Paper>
                 </ListItems>
@@ -134,7 +134,7 @@ export default function Box() {
               <li>No hive weight data available</li>
             ) : (
               hiveWeight.map((item, index) => (
-                <ListItems key={index}>
+                <ListItems theme={theme} key={index}>
                   <Paper theme={theme}>{item.status}</Paper>
                   <Paper theme={theme}>{item.details}</Paper>
                 </ListItems>

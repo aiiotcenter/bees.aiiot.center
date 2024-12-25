@@ -18,9 +18,10 @@ export const Container = styled.div`
   margin-left: auto;
   color: ${({ theme }) => (theme === 'light' ? '#6f2036' : '#fff')}; /* Change text color */
     /* Conditional shadow based on the theme */
-    /* box-shadow: ${({ theme }) => theme === 'light' ? '0px 4px 6px rgba(0, 0, 0, 0.1)' : '0px 4px 6px rgba(255, 255, 255, 0.2)'}; */
+    box-shadow: ${({ theme }) => theme === 'light' ? 'rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px' : 'none'};
   transition: all 0.3s ease-in-out;
   border-bottom: 1px solid hsla(210, 14%, 28%, 0.3);
+  /* box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px; */
   
 `;
 
@@ -193,7 +194,8 @@ export const NMiddle = styled.div`
     align-items: center;
     width: 100%;
     padding: 18px 25px;
-    /* border-bottom: 1px solid #e3e3e378; */
+    border-bottom: 1px solid #80808014;
+    
     transition: 0.3s ease all;
     &:hover{
       background-color: ${({ theme }) => (theme === 'light' ? '#f1f1f1' : '#34495e')};

@@ -71,8 +71,6 @@ const Header = ({ isCollapsed }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-
-
   useEffect(() => {
     fetch('http://localhost:5000/api/data')  // Update this with your API endpoint
       .then((response) => {
@@ -121,9 +119,6 @@ const Header = ({ isCollapsed }) => {
         console.error('Error fetching data:', error);
       });
   }, []);
-  
-
-
 
   return (
     <Container isCollapsed={isCollapsed} theme={theme}>
@@ -146,38 +141,41 @@ const Header = ({ isCollapsed }) => {
             <Icon>
               <NotificationsIcon />
             </Icon>
-            <Alert theme={theme} className="alert">3</Alert>
+
+            {/* Dynamic Alert Badge */}
+            <Alert theme={theme} className="alert">
+              {notifications.length}
+            </Alert>
 
             {isNotificationOpen && (
               <NotificationWrapperBox theme={theme} ref={notificationRef} onClick={(e) => e.stopPropagation()}>
-                {/* Prevent event propagation inside the notification box */}
                 <NBox theme={theme}>
                   <NInner theme={theme}>
                     <NTop theme={theme}>
                       <NLeft theme={theme}>
-                      <strong>Notifications</strong>
-                      <span>({notifications.length})</span>
+                        <strong>Notifications</strong>
+                        <span>({notifications.length})</span>
                       </NLeft>
                       <NRight theme={theme}>
-                        <strong style={{ cursor: 'pointer' }}>Clear All</strong>
+                        {/* <strong style={{ cursor: 'pointer' }}>Clear All</strong> */}
                       </NRight>
                     </NTop>
 
                     {notifications.map((notification) => (
-                    <NMiddle theme={theme} key={notification.id}>
-                      <MLeft theme={theme}>
-                        <MLWrapper theme={theme}>
-                          <div className="left">
-                            <ErrorOutlineIcon />
-                          </div>
-                          <div className="right">
-                            <MRText theme={theme}>{notification.message}</MRText>
-                            <MRPaper theme={theme}>{notification.time}</MRPaper>
-                          </div>
-                        </MLWrapper>
-                      </MLeft>
-                    </NMiddle>
-                  ))}
+                      <NMiddle theme={theme} key={notification.id}>
+                        <MLeft theme={theme}>
+                          <MLWrapper theme={theme}>
+                            <div className="left">
+                              <ErrorOutlineIcon />
+                            </div>
+                            <div className="right">
+                              <MRText theme={theme}>{notification.message}</MRText>
+                              <MRPaper theme={theme}>{notification.time}</MRPaper>
+                            </div>
+                          </MLWrapper>
+                        </MLeft>
+                      </NMiddle>
+                    ))}
 
                     <NBottom></NBottom>
                   </NInner>
@@ -196,7 +194,6 @@ const Header = ({ isCollapsed }) => {
             <AccountCircleIcon style={{ fontSize: '48px' }} onClick={toggleDropdown} />
             {isDropdownOpen && (
               <DropdownWrapper ref={dropdownRef} theme={theme} onClick={(e) => e.stopPropagation()}>
-                {/* Prevent event propagation inside the dropdown */}
                 <DropdownItem theme={theme}>Profile</DropdownItem>
                 <DropdownItem theme={theme}>Settings</DropdownItem>
                 <DropdownItem theme={theme}>Logout</DropdownItem>
