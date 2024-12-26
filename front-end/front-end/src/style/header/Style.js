@@ -18,9 +18,10 @@ export const Container = styled.div`
   margin-left: auto;
   color: ${({ theme }) => (theme === 'light' ? '#6f2036' : '#fff')}; /* Change text color */
     /* Conditional shadow based on the theme */
-    /* box-shadow: ${({ theme }) => theme === 'light' ? '0px 4px 6px rgba(0, 0, 0, 0.1)' : '0px 4px 6px rgba(255, 255, 255, 0.2)'}; */
+    box-shadow: ${({ theme }) => theme === 'light' ? 'rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px' : 'none'};
   transition: all 0.3s ease-in-out;
   border-bottom: 1px solid hsla(210, 14%, 28%, 0.3);
+  /* box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px; */
   
 `;
 
@@ -62,14 +63,19 @@ export const NotificationWrapper = styled.div`
     height: 33px;
     /* color: #fff; */
     color:${({ theme }) => (theme === 'light' ? '#6f2036' : 'none')};
-    background:${({ theme }) => (theme === 'light' ? '#6f2036' : 'none')};
+    background:${({ theme }) => (theme === 'light' ? '#fff' : 'none')};
     padding: 0.5rem;
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     border:1px solid ${({ theme }) => (theme === 'light' ? '#80808021' : '#80808021')};
-     
+    position: relative;
+     .alert{
+      position: absolute;
+      right:-13px;
+      top: -5px;
+     }
 `;
 
 export const ExpandWrapper = styled.div`
@@ -127,53 +133,38 @@ export const Paper = styled.span`
 
 export const NotificationWrapperBox = styled.div`
   position: absolute;
-  pointer-events: ${({ isOpen }) => (isOpen ? 'auto' : 'none')};  /* Ensure interaction only when open */
-  box-sizing: border-box;
-  z-index: ${({ isOpen }) => (isOpen ? 9 : -1)};  /* Apply z-index: 9 when open, -1 when closed */
+  top: 40px;
+  right: -2px;
+    width: 375px;
+    background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#2c3e50')};
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
   display: flex;
-  max-width: 100%;
-  max-height: 100%;
-  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, z-index 0s linear; /* Ensure transition for opacity and visibility */
-  opacity: ${({ isOpen }) => (isOpen ? 1 : 1)}; /* Set opacity: 1 when open, 0 when closed */
-
-  background: #fff;
-  top: 4px;
-  width: 100px;
-  min-width: 400px !important;
-  top: 55px;
-  right: 50px;
-  height: 300px;
-  padding: 25px;
-  box-shadow: none;
+  flex-direction: column;
+  padding: 0;
+  /* min-height: 300px; */
+  /* height: auto; */
+  margin: 0px;
+  /* background-color: #fff; */
+  overflow: scroll;
+  max-height: 300px;
 `;
 
 
 
 export const NBox = styled.div`
-  width: 375px;
-  padding: 25px 0;
-  max-width: 375px;
-  overflow: hidden;
-  margin-top: 10px;
-  border-radius: 15px;
-  box-shadow: none !important;
-  height: 300px;
-
-  background-color: #fff !important;
-  box-shadow: 0 4px 34px #6560f01a !important;
-
+/* background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#2c3e50')}; */
+padding-top: 10px;
 `;
 
 export const NInner = styled.div`
   margin-top: 10px;
   width: 100%;
-    min-width: unset !important;
-    max-width: unset !important;
-  overflow: hidden !important;
-  border-radius: 10px !important;
-  background-color: none;
+  border-radius: 10px;
+  background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#2c3e50')};
   box-shadow: unset;
-  border-bottom: 1px solid #fff;
+  /* border-bottom: 1px solid #fff; */
 `;
 
 export const NTop = styled.div`
@@ -181,20 +172,21 @@ export const NTop = styled.div`
     align-items: center;
     justify-content: space-between;
     padding: 0px 25px 25px;
+    /* background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#2c3e50')}; */
     
 `;
 export const NLeft = styled.div`
  font-size: 16px; 
  strong{
-    color: #212121;
+  color: ${({ theme }) => (theme === 'light' ? '#333' : '#fff')};
  }
  span{
- color: #919aa3;
+  color: ${({ theme }) => (theme === 'light' ? '#333' : '#fff')};
  }
 `;
 export const NRight = styled.div`
  strong{
-    color: #0f79f3;
+  color: ${({ theme }) => (theme === 'light' ? '#333' : '#fff')};
  }
 `;
 export const NMiddle = styled.div`
@@ -202,7 +194,12 @@ export const NMiddle = styled.div`
     align-items: center;
     width: 100%;
     padding: 18px 25px;
-    border-bottom: 1px solid #e3e3e378;
+    border-bottom: 1px solid #80808014;
+    
+    transition: 0.3s ease all;
+    &:hover{
+      background-color: ${({ theme }) => (theme === 'light' ? '#f1f1f1' : '#34495e')};
+    }
 `;
 export const MLeft = styled.div`
   display: flex;
@@ -240,13 +237,39 @@ export const MRight = styled.div`
 `;
 export const MRText = styled.p`
  font-size: 16px;
- color: #477569;
+ color: ${({ theme }) => (theme === 'light' ? '#333' : '#fff')};
  margin-bottom: 5px;
 `;
 export const MRPaper = styled.span`
  font-size: 14px; 
- color: #919AA3;
+ color: ${({ theme }) => (theme === 'light' ? '#333' : '#fff')};
 `;
 export const NBottom = styled.div`
  
+`;
+
+export const DropdownWrapper = styled.div`
+  position: absolute;
+  top: 62px;  
+  right: 10px;
+  width: 150px;
+  background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#2c3e50')};
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+`;
+
+export const DropdownItem = styled.div`
+  padding: 10px 20px;
+  font-size: 16px;
+  color: ${({ theme }) => (theme === 'light' ? '#333' : '#fff')};
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  
+  &:hover {
+    background-color: ${({ theme }) => (theme === 'light' ? '#f1f1f1' : '#34495e')};
+  }
 `;

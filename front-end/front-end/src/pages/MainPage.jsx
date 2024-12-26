@@ -1,4 +1,3 @@
-// HomePage.js
 import React, { useState } from 'react';
 import Layout from '../components/Layout';  // The Layout component (includes sidebar and header)
 import SideBar from '../components/SideBar';
@@ -7,13 +6,14 @@ import LivePage from './LivePage';
 import Box from '../components/Box';
 import MissingPage from './MissingPage';
 import AiModel from '../components/AIModel/AiModel';
+import { Wrapper } from '../style/common/style';
 
 const MainPage = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false); // Track sidebar state
   const [selectedComponent, setSelectedComponent] = useState('LivePage'); // Default selected component
 
   const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
+    setIsCollapsed(!isCollapsed); // Toggle sidebar state
   };
 
   // Handle menu item clicks to change the content
@@ -25,9 +25,9 @@ const MainPage = () => {
   const renderContent = () => {
     switch (selectedComponent) {
       case 'dashboard':
-        return <MainPage />;
+        return <HivePage />;
       case 'hive':
-        return <MissingPage />;
+        return <HivePage />;
       case 'bee':
         return <MissingPage />;
       case 'disease':
@@ -37,16 +37,22 @@ const MainPage = () => {
       case 'live':
         return <LivePage />;
       case 'model':
-        return <AiModel />;  
+        return <AiModel />;
       default:
-        return <HivePage />; 
+        return <HivePage />;
     }
   };
 
   return (
     <Layout>
-      <SideBar isCollapsed={isCollapsed} toggleSidebar={toggleSidebar} onMenuClick={handleMenuClick} />
+      <SideBar 
+        isCollapsed={isCollapsed} 
+        toggleSidebar={toggleSidebar} 
+        onMenuClick={handleMenuClick} 
+      />
+      <Wrapper className={isCollapsed ? 'sidebar-collapsed' : 'sidebar-expanded'}>
         {renderContent()}
+      </Wrapper>
     </Layout>
   );
 };
