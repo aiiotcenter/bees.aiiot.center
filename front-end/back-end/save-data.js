@@ -3,16 +3,13 @@ const express = require('express');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const fs = require('fs');
+const pool = require('./config/database.js'); // Import the pool
 
 // Create an Express application
 const app = express();
 
 // Middleware to parse JSON body
 app.use(bodyParser.json());
-
-const db = require('./config/database.js');
-
-
 
 // Endpoint to handle POST requests
 app.post('/save-data', (req, res) => {
@@ -47,3 +44,18 @@ const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+// config/database.js
+const mysql = require('mysql2');
+
+// Create a connection pool
+const pool = mysql.createPool({
+  host: 'localhost',
+  user: 'root',
+  password: 'FadiFadi2020',
+  database: 'aiiovdft_bees',
+  port: 3306,
+  connectionLimit: 10
+});
+
+module.exports = pool;
