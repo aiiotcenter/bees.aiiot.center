@@ -5,7 +5,7 @@ function Test() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/data')  // Call the backend API
+    fetch('https://localhost:5000/api/data')  // Call the backend API
       .then((response) => {
         if (!response.ok) {
           return response.text().then((text) => {

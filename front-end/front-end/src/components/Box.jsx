@@ -13,7 +13,7 @@ export default function Box() {
 
   // Fetch data from backend API
   useEffect(() => {
-    fetch('http://bees.aiiot.center:5000/api/data')  // Update this with your API endpoint
+    fetch('https://bees.aiiot.center:5000/api/data')  // Update this with your API endpoint
       .then((response) => {
         if (!response.ok) {
           return response.text().then((text) => {
