@@ -52,3 +52,17 @@ button.dark {
   -ms-overflow-style: none;  /* Hides scrollbar in IE/Edge */
   scrollbar-width: none;     /* Hides scrollbar in Firefox */
 }
+
+
+.unity-work{
+  width: 100%;
+  margin: 0 auto;
+  max-width: 124px;
+}
+.unity-work iframe{
+  min-width: 1240px;
+  width: 100%;
+  min-height: 700px;
+  
+  overflow: hidden;
+}
