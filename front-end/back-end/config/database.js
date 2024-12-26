@@ -6,7 +6,7 @@ const pool = mysql.createPool({
   user: 'root',
   password: 'root',  // Default password for MAMP MySQL
   database: 'aiiovdt_bees',  // Your database name
-  port: 8889,  // Default port for MAMP MySQL
+  port: 3306,  // Default port for MAMP MySQL
   connectionLimit: 10  // Limit on the number of connections in the pool
 });
 
