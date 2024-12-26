@@ -63,9 +63,9 @@ export default function Box() {
             </Figure>
           </TopSegment>
           <List>
-            {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error message */}
+            {/* {error && <p style={{ color: 'red' }}>{error}</p>}  */}
             {beeStatus.length === 0 ? (
-              <li>No bee data available</li>
+            <ListItems theme={theme} style={{borderBottom:'0px', alignItems:'center', justifyContent:'center'}}>No bee data available</ListItems>
             ) : (
               beeStatus.map((item, index) => (
                 <ListItems theme={theme} key={index}>
@@ -87,7 +87,7 @@ export default function Box() {
           </TopSegment>
           <List>
             {hiveStatus.length === 0 ? (
-              <li>No hive data available</li>
+           <ListItems theme={theme} style={{borderBottom:'0px', alignItems:'center', justifyContent:'center'}}>No bee data available</ListItems>
             ) : (
               hiveStatus.map((item, index) => (
                 <ListItems theme={theme} key={index}>
@@ -109,7 +109,7 @@ export default function Box() {
           </TopSegment>
           <List>
             {diseaseDetection.length === 0 ? (
-              <li>No disease detection data available</li>
+           <ListItems theme={theme} style={{borderBottom:'0px', alignItems:'center', justifyContent:'center'}}>No bee data available</ListItems>
             ) : (
               diseaseDetection.map((item, index) => (
                 <ListItems theme={theme} key={index}>
@@ -131,7 +131,7 @@ export default function Box() {
           </TopSegment>
           <List>
             {hiveWeight.length === 0 ? (
-              <li>No hive weight data available</li>
+           <ListItems theme={theme} style={{borderBottom:'0px', alignItems:'center', justifyContent:'center'}}>No bee data available</ListItems>
             ) : (
               hiveWeight.map((item, index) => (
                 <ListItems theme={theme} key={index}>

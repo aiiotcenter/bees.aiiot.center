@@ -14,6 +14,7 @@ import { Figure, Image, SidebarContainer, SideBarHeader, SidebarItem, SidebarWra
 import SlideshowIcon from '@mui/icons-material/Slideshow';
 import Header from './Header';
 import { useTheme } from '../context/ThemeContext'; // Import useTheme hook
+import ViewInArIcon from '@mui/icons-material/ViewInAr';
 
 const SideBar = ({ isCollapsed, toggleSidebar, onMenuClick }) => {
   const { theme } = useTheme(); // Get the current theme
@@ -23,6 +24,11 @@ const SideBar = ({ isCollapsed, toggleSidebar, onMenuClick }) => {
   // const toggleSidebar = () => {
   //   setIsCollapsed(!isCollapsed);
   // };
+
+  const openLink = () => {
+    window.open('https://temp.aiiot.center/', '_blank');
+  };
+
 
   return (
     <>
@@ -62,6 +68,10 @@ const SideBar = ({ isCollapsed, toggleSidebar, onMenuClick }) => {
 
         <SidebarWrapper onClick={() => onMenuClick('model')} style={{ padding: isCollapsed ? '15px 15px' : '15px' }}  theme={theme}>
           <SidebarItem><AcUnitIcon  sx={{ fontSize: 15 }} /><Paper style={{ display: isCollapsed ? 'none' : 'flex' }}  theme={theme}>AI</Paper></SidebarItem><ArrowForwardIosIcon sx={{ fontSize: 15 }} style={{ display: isCollapsed ? 'none' : 'flex' }} />
+        </SidebarWrapper>
+
+        <SidebarWrapper onClick={() => onMenuClick('swarm')} style={{ padding: isCollapsed ? '15px 15px' : '15px' }}  theme={theme}>
+          <SidebarItem><ViewInArIcon  sx={{ fontSize: 15 }} /><Paper style={{ display: isCollapsed ? 'none' : 'flex' }}  theme={theme}>Simulate Swarm</Paper></SidebarItem><ArrowForwardIosIcon sx={{ fontSize: 15 }} style={{ display: isCollapsed ? 'none' : 'flex' }} />
         </SidebarWrapper>
 
       </SidebarContainer>

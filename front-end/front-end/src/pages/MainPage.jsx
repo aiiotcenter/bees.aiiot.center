@@ -7,6 +7,8 @@ import Box from '../components/Box';
 import MissingPage from './MissingPage';
 import AiModel from '../components/AIModel/AiModel';
 import { Wrapper } from '../style/common/style';
+import Swarm from './SwarmPage';
+import SwarmPage from './SwarmPage';
 
 const MainPage = () => {
   const [isCollapsed, setIsCollapsed] = useState(false); // Track sidebar state
@@ -38,6 +40,8 @@ const MainPage = () => {
         return <LivePage />;
       case 'model':
         return <AiModel />;
+      case 'swarm':
+        return <SwarmPage />;
       default:
         return <HivePage />;
     }
