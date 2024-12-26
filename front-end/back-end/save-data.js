@@ -1,9 +1,8 @@
 // Import required modules
 const express = require('express');
-const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const fs = require('fs');
-const pool = require('./config/database.js'); // Import the pool
+const pool = require('./config/database'); // Import the database configuration
 
 // Create an Express application
 const app = express();
@@ -44,18 +43,3 @@ const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
-// config/database.js
-const mysql = require('mysql2');
-
-// Create a connection pool
-const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: 'FadiFadi2020',
-  database: 'aiiovdft_bees',
-  port: 3306,
-  connectionLimit: 10
-});
-
-module.exports = pool;
