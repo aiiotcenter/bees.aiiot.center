@@ -10,13 +10,7 @@ const app = express();
 // Middleware to parse JSON body
 app.use(bodyParser.json());
 
-// Database credentials
-const dbConfig = {
-  host: "localhost",
-  user: "aiiovdft_bees",
-  password: "FadiFadi2020",
-  database: "aiiovdft_bees"
-};
+const db = require('../config/db');
 
 // Create a MySQL connection pool
 const pool = mysql.createPool(dbConfig);
