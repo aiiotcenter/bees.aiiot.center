@@ -4,6 +4,11 @@ const db = require('./config/database');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const corsOptions = {
+  origin: 'http://bees.aiiot.center:5173', // Replace with the allowed origin
+  methods: ['GET', 'POST'], // Specify allowed HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
+};
 
 app.use(cors());
 app.use(express.json());
