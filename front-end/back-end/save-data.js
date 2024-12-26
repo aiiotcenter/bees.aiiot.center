@@ -10,7 +10,7 @@ const app = express();
 // Middleware to parse JSON body
 app.use(bodyParser.json());
 
-const db = require('config/db');
+const db = require('./config/db');
 
 // Create a MySQL connection pool
 const pool = mysql.createPool(dbConfig);
