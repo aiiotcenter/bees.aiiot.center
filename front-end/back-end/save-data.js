@@ -10,10 +10,9 @@ const app = express();
 // Middleware to parse JSON body
 app.use(bodyParser.json());
 
-const db = require('./config/db');
+const db = require('./config/database.js');
 
-// Create a MySQL connection pool
-const pool = mysql.createPool(dbConfig);
+
 
 // Endpoint to handle POST requests
 app.post('/save-data', (req, res) => {
