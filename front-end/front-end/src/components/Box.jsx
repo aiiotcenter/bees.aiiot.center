@@ -7,7 +7,7 @@ export default function Box() {
   const { theme } = useTheme(); // Get the current theme
   const [beeStatus, setBeeStatus] = useState([]);
   const [hiveStatus, setHiveStatus] = useState([]);
-  const [diseaseDetection, setDiseaseDetection] = useState([]);
+  const [distanceDectection, setdistanceDectection] = useState([]);
   const [hiveWeight, setHiveWeight] = useState([]);
   const [error, setError] = useState(null); // For handling errors
 
@@ -24,23 +24,27 @@ export default function Box() {
         return response.json();
       })
       .then((data) => {
+        // Limit to latest 50 records
+        const latestData = data.slice(0, 50);
+
         // Map data into the corresponding categories
-        setBeeStatus(data.map(item => ({
+        setBeeStatus(latestData.map(item => ({
+
+          isThreatened: item.sound_status === 1 ? 'Safe' : 'Not Normal'
+        })));
+
+        setHiveStatus(latestData.map(item => ({
+          // status: item.sound_status === 0 ? 'Died' : 'Alive',
           status: `Temperature: ${item.temperature}°C, Humidity: ${item.humidity}%`,
-          isThreatened: item.sound_status === 1 ? 'Threatened' : 'Safe'
+          details: item.light_status === 0 ? 'Close' : 'Open'
         })));
 
-        setHiveStatus(data.map(item => ({
-          status: item.distance === 0 ? 'No movement' : 'Movement detected',
-          details: `Weight: ${item.weight} kg`
+        setdistanceDectection(latestData.map(item => ({
+          status: item.distance > 13 ? 'Normal' : 'Threatened',
+          details: `${item.distance} cm`
         })));
 
-        setDiseaseDetection(data.map(item => ({
-          status: item.temperature > 30 ? 'High Risk' : 'Normal',
-          details: 'Monitor hive activity'
-        })));
-
-        setHiveWeight(data.map(item => ({
+        setHiveWeight(latestData.map(item => ({
           status: item.weight > 0 ? 'Normal' : 'Underweight',
           details: `Current Weight: ${item.weight} kg`
         })));
@@ -63,14 +67,14 @@ export default function Box() {
             </Figure>
           </TopSegment>
           <List>
-            {/* {error && <p style={{ color: 'red' }}>{error}</p>}  */}
             {beeStatus.length === 0 ? (
-            <ListItems theme={theme} style={{borderBottom:'0px', alignItems:'center', justifyContent:'center'}}>No bee data available</ListItems>
+              <ListItems theme={theme} style={{ borderBottom: '0px', alignItems: 'center', justifyContent: 'center' }}>No bee data available</ListItems>
             ) : (
               beeStatus.map((item, index) => (
                 <ListItems theme={theme} key={index}>
+                   <Paper theme={theme}>{item.isThreatened}</Paper>
                   <Paper theme={theme}>{item.status}</Paper>
-                  <Paper theme={theme}>{item.isThreatened}</Paper>
+                 
                 </ListItems>
               ))
             )}
@@ -87,19 +91,20 @@ export default function Box() {
           </TopSegment>
           <List>
             {hiveStatus.length === 0 ? (
-           <ListItems theme={theme} style={{borderBottom:'0px', alignItems:'center', justifyContent:'center'}}>No bee data available</ListItems>
+              <ListItems theme={theme} style={{ borderBottom: '0px', alignItems: 'center', justifyContent: 'center' }}>No bee data available</ListItems>
             ) : (
               hiveStatus.map((item, index) => (
                 <ListItems theme={theme} key={index}>
+                    <Paper theme={theme}>{item.details}</Paper>
                   <Paper theme={theme}>{item.status}</Paper>
-                  <Paper theme={theme}>{item.details}</Paper>
+                
                 </ListItems>
               ))
             )}
           </List>
         </Boxs>
 
-        {/* Disease Detection Box */}
+        {/* Distance Detection Box */}
         <Boxs theme={theme}>
           <TopSegment>
             <Strong theme={theme}>Dis. Detection</Strong>
@@ -108,13 +113,14 @@ export default function Box() {
             </Figure>
           </TopSegment>
           <List>
-            {diseaseDetection.length === 0 ? (
-           <ListItems theme={theme} style={{borderBottom:'0px', alignItems:'center', justifyContent:'center'}}>No bee data available</ListItems>
+            {distanceDectection.length === 0 ? (
+              <ListItems theme={theme} style={{ borderBottom: '0px', alignItems: 'center', justifyContent: 'center' }}>No bee data available</ListItems>
             ) : (
-              diseaseDetection.map((item, index) => (
+              distanceDectection.map((item, index) => (
                 <ListItems theme={theme} key={index}>
-                  <Paper theme={theme}>{item.status}</Paper>
-                  <Paper theme={theme}>{item.details}</Paper>
+                   <Paper theme={theme}>{item.status}</Paper>
+                   <Paper theme={theme}>{item.details}</Paper>
+                   {/* <Paper theme={theme}>{item.details}</Paper> */}
                 </ListItems>
               ))
             )}
@@ -131,7 +137,7 @@ export default function Box() {
           </TopSegment>
           <List>
             {hiveWeight.length === 0 ? (
-           <ListItems theme={theme} style={{borderBottom:'0px', alignItems:'center', justifyContent:'center'}}>No bee data available</ListItems>
+              <ListItems theme={theme} style={{ borderBottom: '0px', alignItems: 'center', justifyContent: 'center' }}>No bee data available</ListItems>
             ) : (
               hiveWeight.map((item, index) => (
                 <ListItems theme={theme} key={index}>

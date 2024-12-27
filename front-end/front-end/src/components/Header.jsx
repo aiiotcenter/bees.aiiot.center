@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTheme } from '../context/ThemeContext';
-import { Container, ExpandWrapper, Icon, Left, ModeWrapper, NotificationWrapper, Right, Title, Wrapper, ToggleButtonWrapper, NotificationWrapperBox, NBox, NInner, NTop, NMiddle, NBottom, NLeft, NRight, MLeft, MRight, MLWrapper, MLFigure, MLImage, MRText, MRPaper, UserWrapper, DropdownWrapper, DropdownItem } from '../style/header/Style'; 
+import { Container, ExpandWrapper, Icon, Left, ModeWrapper, NotificationWrapper, Right, Title, Wrapper, ToggleButtonWrapper, NotificationWrapperBox, NBox, NInner, NTop, NMiddle, NBottom, NLeft, NRight, MLeft, MRight, MLWrapper, MRText, MRPaper, UserWrapper, DropdownWrapper, DropdownItem, MiddleWrapper } from '../style/header/Style'; 
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AllOutIcon from '@mui/icons-material/AllOut';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -15,110 +15,74 @@ const Header = ({ isCollapsed }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); 
-  const [notifications, setNotifications] = useState([]); // Add notifications state
+  const [notifications, setNotifications] = useState([]);
   const notificationRef = useRef(null);
   const dropdownRef = useRef(null);
 
-  // Toggle FullScreen
   const toggleFullScreen = () => {
     if (isFullScreen) {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      }
+      document.exitFullscreen?.();
     } else {
-      const element = document.documentElement;
-      if (element.requestFullscreen) {
-        element.requestFullscreen();
-      } else if (element.webkitRequestFullscreen) {
-        element.webkitRequestFullscreen();
-      } else if (element.mozRequestFullScreen) {
-        element.mozRequestFullScreen();
-      } else if (element.msRequestFullscreen) {
-        element.msRequestFullscreen();
-      }
+      document.documentElement.requestFullscreen?.();
     }
     setIsFullScreen(!isFullScreen);
   };
 
-  // Toggle Notification visibility
   const toggleNotification = (event) => {
-    event.stopPropagation(); // Prevent event propagation to parent elements
+    event.stopPropagation();
     setIsNotificationOpen((prevState) => !prevState);
   };
 
-  // Toggle User Profile Dropdown visibility
   const toggleDropdown = (event) => {
-    event.stopPropagation(); // Prevent event propagation to parent elements
+    event.stopPropagation();
     setIsDropdownOpen((prevState) => !prevState);
   };
 
-  // Close dropdown and notification if clicked outside
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setIsDropdownOpen(false);
-      }
-      if (notificationRef.current && !notificationRef.current.contains(e.target)) {
+    const handleClickOutside = (event) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
         setIsNotificationOpen(false);
       }
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
   }, []);
 
   useEffect(() => {
-    fetch('http://bees.aiiot.center:5000/api/data')  // Update this with your API endpoint
-      .then((response) => {
+    const fetchNotifications = async () => {
+      try {
+        const currentTime = new Date();
+        const oneHourAgo = new Date(currentTime.getTime() - 60 * 60 * 1000);
+        const fromTimestamp = oneHourAgo.toISOString();
+        const toTimestamp = currentTime.toISOString();
+
+        const response = await fetch(`http://bees.aiiot.center:5000/api/data?from=${fromTimestamp}&to=${toTimestamp}`);
         if (!response.ok) {
-          return response.text().then((text) => {
-            throw new Error(`HTTP error! Status: ${response.status}, Message: ${text}`);
-          });
+          const errorMessage = await response.text();
+          throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorMessage}`);
         }
-        return response.json();
-      })
-      .then((data) => {
-        // Variables to track highest values
-        let maxTemperature = -Infinity;
-        let maxHumidity = -Infinity;
-        let maxWeight = -Infinity;
-        let maxDistance = -Infinity;
-        let maxSoundStatus = -Infinity;
 
-        // Iterate through the data to find the highest values
-        data.forEach(item => {
-          maxTemperature = Math.max(maxTemperature, item.temperature);
-          maxHumidity = Math.max(maxHumidity, item.humidity);
-          maxWeight = Math.max(maxWeight, item.weight);
-          maxDistance = Math.max(maxDistance, item.distance);
-          maxSoundStatus = Math.max(maxSoundStatus, item.sound_status);
-        });
-
-        // Log the highest values
-        console.log('Highest Temperature:', maxTemperature);
-        console.log('Highest Humidity:', maxHumidity);
-        console.log('Highest Weight:', maxWeight);
-        console.log('Highest Distance:', maxDistance);
-        console.log('Highest Sound Status:', maxSoundStatus);
-
-        // Map the fetched data into notifications
+        const data = await response.json();
         const notificationsData = data.map((item, index) => ({
-          id: index,  // Ensure unique id for each notification
-          message: `Temperature: ${item.temperature}°C, Humidity: ${item.humidity}%`, // Customize the message
-          time: 'Just now' // Customize time if needed, you can use timestamps if available
-        }));
+          id: index,
+          message: `Temperature: ${item.temperature}°C, Humidity: ${item.humidity}%`,
+          time: new Date(item.timestamp).toLocaleTimeString(),
+        })).slice(0, 10);
 
-        // Update notifications state
         setNotifications(notificationsData);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    };
+
+    fetchNotifications();
   }, []);
 
   return (
@@ -134,20 +98,13 @@ const Header = ({ isCollapsed }) => {
             </ToggleButtonWrapper>
           </ModeWrapper>
 
-          {/* Notification Box */}
-          <NotificationWrapper 
-            theme={theme} 
-            onClick={toggleNotification} // This will toggle notification visibility
-          >
+          <NotificationWrapper theme={theme} onClick={toggleNotification}>
             <Icon>
               <NotificationsIcon />
             </Icon>
-
-            {/* Dynamic Alert Badge */}
             <Alert theme={theme} className="alert">
               {notifications.length}
             </Alert>
-
             {isNotificationOpen && (
               <NotificationWrapperBox theme={theme} ref={notificationRef} onClick={(e) => e.stopPropagation()}>
                 <NBox theme={theme}>
@@ -157,47 +114,41 @@ const Header = ({ isCollapsed }) => {
                         <strong>Notifications</strong>
                         <span>({notifications.length})</span>
                       </NLeft>
-                      <NRight theme={theme}>
-                        {/* <strong style={{ cursor: 'pointer' }}>Clear All</strong> */}
-                      </NRight>
                     </NTop>
-
-                    {notifications.map((notification) => (
-                      <NMiddle theme={theme} key={notification.id}>
-                        <MLeft theme={theme}>
-                          <MLWrapper theme={theme}>
-                            <div className="left">
+                    <MiddleWrapper>
+                      {notifications.map(({ id, message, time }) => (
+                        <NMiddle theme={theme} key={id}>
+                          <MLeft theme={theme}>
+                            <MLWrapper theme={theme}>
                               <ErrorOutlineIcon />
-                            </div>
-                            <div className="right">
-                              <MRText theme={theme}>{notification.message}</MRText>
-                              <MRPaper theme={theme}>{notification.time}</MRPaper>
-                            </div>
-                          </MLWrapper>
-                        </MLeft>
-                      </NMiddle>
-                    ))}
-
-                    <NBottom></NBottom>
+                              <div>
+                                <MRText theme={theme}>{message}</MRText>
+                                <MRPaper theme={theme}>{time}</MRPaper>
+                              </div>
+                            </MLWrapper>
+                          </MLeft>
+                        </NMiddle>
+                      ))}
+                    </MiddleWrapper>
                   </NInner>
                 </NBox>
               </NotificationWrapperBox>
             )}
           </NotificationWrapper>
 
-          {/* Fullscreen Toggle */}
           <ExpandWrapper onClick={toggleFullScreen}>
             <AllOutIcon />
           </ExpandWrapper>
 
-          {/* User Profile Box */}
           <UserWrapper theme={theme}>
             <AccountCircleIcon style={{ fontSize: '48px' }} onClick={toggleDropdown} />
             {isDropdownOpen && (
               <DropdownWrapper ref={dropdownRef} theme={theme} onClick={(e) => e.stopPropagation()}>
                 <DropdownItem theme={theme}>Profile</DropdownItem>
                 <DropdownItem theme={theme}>Settings</DropdownItem>
-                <DropdownItem theme={theme}><Link to='/'>Logout</Link></DropdownItem>
+                <DropdownItem theme={theme}>
+                  <Link to="/">Logout</Link>
+                </DropdownItem>
               </DropdownWrapper>
             )}
           </UserWrapper>
