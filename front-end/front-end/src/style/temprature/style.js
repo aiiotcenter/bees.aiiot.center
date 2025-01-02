@@ -14,8 +14,12 @@ export const Container = styled.section`
         transition: 0.3s ease all;
         /* box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; */
         &:hover{
-                background: ${({ theme }) => (theme === 'light' ? '#fff' : '#0b0e14')};
+                /* background: ${({ theme }) => (theme === 'light' ? '#fff' : '#0b0e14')};
+                transform: scale(1.05); */
                 transform: scale(1.05);
+    /* border-image: linear-gradient(45deg, #00DBDE 0%, #FC00FF 100%) 1;  */
+                background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#0b0e14')};
+                box-shadow: 0 0 5px 2px rgba(0, 219, 222, 0.3), 0 0 10px 4px rgba(252, 0, 255, 0.3); 
         }
         @media screen and (max-width: 767px) {
             width: 100%;
