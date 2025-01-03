@@ -1,24 +1,24 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Container, InnerWrapper, Wrapper, Box, Heading, Text, List, ListItems, Div } from '../../style/beesTypes/Style'
 import AppBar from '@mui/material/AppBar';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import QueenGraph from './QueenGraph';
 
 
 function TabPanel({ children, value, index }) {
     return (
         <>
             <div hidden={value !== index}>
-            {value === index && (
-                <InnerWrapper>
-                    {children}
-                </InnerWrapper>
-            )}
-        </div>
+                {value === index && (
+                    <InnerWrapper>
+                        {children}
+                    </InnerWrapper>
+                )}
+            </div>
         </>
     );
 }
-
 
 export default function BeesTypes() {
     const [queenTab, setQueenTab] = React.useState(0);
@@ -39,14 +39,14 @@ export default function BeesTypes() {
         setDroneTab(newValue);
     };
 
-      // Apply the animation class when the tab changes
-  useEffect(() => {
-    setTabChangeClass('tab-change-animation');
-    const timeout = setTimeout(() => {
-      setTabChangeClass(''); // Remove the animation class after it completes
-    }, 300); // Duration of the animation
-    return () => clearTimeout(timeout); // Cleanup on component unmount or before next tab change
-  }, [queenTab]);
+    // Apply the animation class when the tab changes
+    useEffect(() => {
+        setTabChangeClass('tab-change-animation');
+        const timeout = setTimeout(() => {
+            setTabChangeClass(''); // Remove the animation class after it completes
+        }, 300); // Duration of the animation
+        return () => clearTimeout(timeout); // Cleanup on component unmount or before next tab change
+    }, [queenTab]);
 
     return (
         <Container>
@@ -57,16 +57,16 @@ export default function BeesTypes() {
 
                 <Box>
                     <AppBar position="static" className='app-bar'>
-                    <Tabs value={queenTab} onChange={handleQueenChange} aria-label="Queen Bee Tabs">
-                            <Tab className={tabChangeClass} label="Bee Insights" 
-                            
+                        <Tabs value={queenTab} onChange={handleQueenChange} aria-label="Queen Bee Tabs">
+                            <Tab className={tabChangeClass} label="Bee Insights"
+
                             />
                             <Tab className={tabChangeClass} label="Bee Analytics" />
                             <Tab className={tabChangeClass} label="3D Bee Model" />
                         </Tabs>
                     </AppBar>
                     <TabPanel value={queenTab} index={0}>
-                        <Div>
+                        <Div style={{ minHeight: '547px' }}>
                             <Heading>Queen bee?</Heading>
                             <Text>She can be recognized by her abdomen, which is usually smooth and elongated, extending well beyond her folded wings.</Text>
                             What is the queen bee's role?
@@ -81,16 +81,22 @@ export default function BeesTypes() {
                             <Text>Queen bees also produce a pheromone known as queen substance. This mixture of chemicals is passed individually from bee to bee throughout the entire hive as they share food. If a queen bee is removed from a colony, the workers will notice her absence within several hours because of the drop in the level of this pheromone. This queenless state quickly initiates the urge to rear a new "emergency" queen from the youngest available larvae (1-3 days old). The presence of this pheromone also inhibits the development of the workers' ovaries. After a period of queenlessness, some may become laying workers. Workers also evaluate their queen based on the quantity of the pheromones she produces. If workers begin to receive an insufficient dose each day, they may perceive her as poor quality, and begin making preparations to supersede her. Beekeepers often mark the queen's thorax with a dot of paint to make her easy to find, and to determine if she has been replaced. </Text>
                         </Div>
                     </TabPanel>
-                    <TabPanel value={queenTab} index={1}></TabPanel>
-                    <TabPanel value={queenTab} index={2}></TabPanel>
+                    <TabPanel value={queenTab} index={1}>
+                        <Div style={{ minHeight: '547px' }}>
+                            <QueenGraph/>
+                        </Div>
+                    </TabPanel>
+                    <TabPanel value={queenTab} index={2}>
+                        <Div style={{ minHeight: '547px' }}></Div>
+                    </TabPanel>
 
 
                 </Box>
 
                 <Box>
                     <AppBar position="static" className='app-bar'>
-                    <Tabs value={workerTab} onChange={handleWorkerChange} aria-label="Worker Bee Tabs">
-                        <Tab label="Bee Insights" />
+                        <Tabs value={workerTab} onChange={handleWorkerChange} aria-label="Worker Bee Tabs">
+                            <Tab label="Bee Insights" />
                             <Tab label="Bee Analytics" />
                             <Tab label="3D Bee Model" />
                         </Tabs>
@@ -121,8 +127,8 @@ export default function BeesTypes() {
 
                 <Box>
                     <AppBar position="static" className='app-bar'>
-                    <Tabs value={droneTab} onChange={handleDroneChange} aria-label="Drone Bee Tabs">
-                        <Tab label="Bee Insights" />
+                        <Tabs value={droneTab} onChange={handleDroneChange} aria-label="Drone Bee Tabs">
+                            <Tab label="Bee Insights" />
                             <Tab label="Bee Analytics" />
                             <Tab label="3D Bee Model" />
                         </Tabs>
@@ -147,7 +153,6 @@ export default function BeesTypes() {
                     <TabPanel value={droneTab} index={1}></TabPanel>
                     <TabPanel value={droneTab} index={2}></TabPanel>
                 </Box>
-
 
             </Wrapper>
         </Container>

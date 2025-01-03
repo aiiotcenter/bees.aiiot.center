@@ -136,9 +136,10 @@ export const NotificationWrapperBox = styled.div`
   top: 40px;
   right: -2px;
     width: 375px;
-    background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#2c3e50')};
+    background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#0b0e14')};
   border-radius: 8px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #80808021;
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -162,7 +163,7 @@ export const NInner = styled.div`
   margin-top: 10px;
   width: 100%;
   border-radius: 10px;
-  background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#2c3e50')};
+  background-color: ${({ theme }) => (theme === 'light' ? '#fff' : 'transparent')};
   box-shadow: unset;
   /* border-bottom: 1px solid #fff; */
 `;
@@ -172,11 +173,11 @@ export const NTop = styled.div`
     align-items: center;
     justify-content: space-between;
     padding: 0px 25px 25px;
-    /* background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#2c3e50')}; */
+    background-color: ${({ theme }) => (theme === 'light' ? '#fff' : '#0b0e14')};
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px,rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
     position: sticky;
     top: 0px;
-    background: #fff;
+    /* background: #fff; */
     padding-top: 10px;
     
 `;
