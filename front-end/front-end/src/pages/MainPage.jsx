@@ -9,6 +9,7 @@ import AiModel from '../components/AIModel/AiModel';
 import { Wrapper } from '../style/common/style';
 import Swarm from './SwarmPage';
 import SwarmPage from './SwarmPage';
+import BeePage from '../pages/BeePage'
 
 const MainPage = () => {
   const [isCollapsed, setIsCollapsed] = useState(false); // Track sidebar state
@@ -31,7 +32,7 @@ const MainPage = () => {
       case 'hive':
         return <HivePage />;
       case 'bee':
-        return <MissingPage />;
+        return <BeePage />;
       case 'disease':
         return <MissingPage />;
       case 'weight':
