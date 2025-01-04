@@ -28,7 +28,7 @@ export default function QueenGraph() {
                 console.log('API Data:', data);
 
                 // Map temperature data to the ID
-                const tempData = data.slice(0, 25).map(item => ({
+                const tempData = data.slice(0, 100).map(item => ({
                     x: item.id.toString(), // Use id as x-axis value
                     y: item.temperature // Use temperature as y-axis value
                 }));
