@@ -63,7 +63,7 @@ const Header = ({ isCollapsed }) => {
         const fromTimestamp = oneHourAgo.toISOString();
         const toTimestamp = currentTime.toISOString();
 
-        const response = await fetch(`http://bees.aiiot.center:5000/api/data?from=${fromTimestamp}&to=${toTimestamp}`);
+        const response = await fetch(`http://bees.aiiot.center/api/data?from=${fromTimestamp}&to=${toTimestamp}`);
         if (!response.ok) {
           const errorMessage = await response.text();
           throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorMessage}`);
