@@ -9,7 +9,7 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('light'); // Default theme is light
+  const [theme, setTheme] = useState('dark'); // Default theme is light
 
   const toggleTheme = () => {
     setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));

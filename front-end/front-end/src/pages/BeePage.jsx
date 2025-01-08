@@ -1,7 +1,8 @@
 import React from 'react'
+import BeesTypes from '../components/Bees/BeesTypes'
 
-export default function BeePage() {
+export default function BeePage({theme}) {
   return (
-    <div>BeePage</div>
+    <BeesTypes/>
   )
 }

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart } from '@mui/x-charts/LineChart';
-import { Container, H2, P } from '../style/temprature/style';
-import { useTheme } from '../context/ThemeContext'; // Import useTheme hook
+import { Container, H2, P } from '../../style/temprature/style';
+import { useTheme } from '../../context/ThemeContext'; // Import useTheme hook
 import styled from 'styled-components';
 
-export default function Temperature() {
+export default function QueenGraph() {
     const { theme } = useTheme(); // Get the current theme
     const [temperatureData, setTemperatureData] = useState([]);
     const [error, setError] = useState(null);
@@ -28,7 +28,7 @@ export default function Temperature() {
                 console.log('API Data:', data);
 
                 // Map temperature data to the ID
-                const tempData = data.slice(0, 25).map(item => ({
+                const tempData = data.slice(0, 100).map(item => ({
                     x: item.id.toString(), // Use id as x-axis value
                     y: item.temperature // Use temperature as y-axis value
                 }));
@@ -43,25 +43,20 @@ export default function Temperature() {
                 setError(error.message);
             });
     }, []);
-
-    return (
-        <Container theme={theme}>
-            <H2 theme={theme}>Temperature</H2>
-            <P theme={theme}>
-                The honey bee temperature graph typically tracks the temperature variations within a beehive, helping beekeepers monitor the optimal conditions for hive health.
-            </P>
-            {error ? (
-                <P theme={theme} style={{ color: 'red' }}>Error: {error}</P>
-            ) : (
-                <StyledLineChart
-                    dataset={temperatureData}
-                    xAxis={[{ dataKey: 'x', label: 'ID' }]} // Use ID for the x-axis label
-                    series={[{ dataKey: 'y', label: 'Temperature (°C)' }]} // Display temperature
-                    height={300}
-                    margin={{ left: 30, right: 30, top: 30, bottom: 30 }}
-                    grid={{ vertical: true, horizontal: true }}
-                />
-            )}
-        </Container>
-    );
+  return (
+    <>
+        {error ? (
+                    <P theme={theme} style={{ color: 'red' }}>Error: {error}</P>
+                ) : (
+                    <StyledLineChart
+                        dataset={temperatureData}
+                        xAxis={[{ dataKey: 'x', label: 'ID' }]} // Use ID for the x-axis label
+                        series={[{ dataKey: 'y', label: 'Temperature (°C)' }]} // Display temperature
+                        height={300}
+                        margin={{ left: 30, right: 30, top: 30, bottom: 30 }}
+                        grid={{ vertical: true, horizontal: true }}
+                    />
+                )}
+    </>
+  )
 }
