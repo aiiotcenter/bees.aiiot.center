@@ -5,7 +5,7 @@ function Test() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('https://beesbackend.aiiot.center/api/data')  // Call the backend API
+    fetch('https://bees-backend.aiiot.center/api/data')  // Call the backend API
       .then((response) => {
         if (!response.ok) {
           return response.text().then((text) => {

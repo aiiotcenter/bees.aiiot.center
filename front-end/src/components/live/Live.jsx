@@ -4,11 +4,11 @@ import { useTheme } from '../../context/ThemeContext';
 
 export default function Live() {
   const { theme, toggleTheme } = useTheme(); 
-  const [videoSrc, setVideoSrc] = useState("https://beesscamera.serveo.net/?action=stream");
+  const [videoSrc, setVideoSrc] = useState("https://livebees.aiiot.center");
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setVideoSrc(`https://beesscamera.serveo.net/?action=stream&t=${new Date().getTime()}`);
+      setVideoSrc(`https://livebees.aiiot.center?timestamp=${new Date().getTime()}`);
     }, 60000);
 
     return () => clearInterval(interval);
@@ -25,16 +25,17 @@ export default function Live() {
       }}>
         {/* Use an iframe or image depending on your content */}
         <Frame
+          key={videoSrc}  // Add key to force re-render
           src={videoSrc}  // Dynamically change the src
           frameBorder="0"
           allowFullScreen
           title="Live Stream Video"
         ></Frame>        
         {/* If you're using an image instead of iframe */}
-        <Image theme={theme}
+        {/* <Image theme={theme}
           src="https://beesscamera.pagekite.me/?action=stream"
           alt="Live Stream"
-        />
+        /> */}
       </ScreenWrapper>
     </>
   );

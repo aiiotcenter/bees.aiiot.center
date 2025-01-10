@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "proxy": "https://beesbackend.aiiot.center/api/data",
+  "proxy": "https://bees-backend.aiiot.center/api/data",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

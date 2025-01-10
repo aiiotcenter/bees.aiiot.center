@@ -14,7 +14,7 @@ export default function Humidity() {
     `;
 
     useEffect(() => {
-        fetch('http://bees.aiiot.center:5000/api/data') // Replace with the correct humidity API endpoint if necessary
+        fetch('https://bees-backend.aiiot.center:5000/api/data') // Replace with the correct humidity API endpoint if necessary
             .then((response) => {
                 if (!response.ok) {
                     return response.text().then((text) => {
