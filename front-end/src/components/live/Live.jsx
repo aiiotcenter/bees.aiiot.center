@@ -7,7 +7,7 @@ export default function Live() {
   const [currentView, setCurrentView] = useState('live'); // Default to 'live'
 
   const views = {
-    live: "https://livebees.aiiot.center",
+    live: "https://livemybees.aiiot.center",
     disease: "https://avatar.aiiot.center/", // Replace with actual URL
     status: "https://health.aiiot.center/login/"   // Replace with actual URL
   };
