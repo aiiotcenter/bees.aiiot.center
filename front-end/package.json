@@ -2,7 +2,7 @@
   "name": "bee-keeping",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://mybees.aiiot.center/front-end",
+  "homepage": "http://mybees.aiiot.center/dashboard",
   "type": "module",
   "proxy": "https://bees-backend.aiiot.center/api/data",
   "scripts": {
