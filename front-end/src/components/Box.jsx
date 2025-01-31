@@ -35,7 +35,7 @@ export default function Box() {
 
         setHiveStatus(latestData.map(item => ({
           // status: item.sound_status === 0 ? 'Died' : 'Alive',
-          status: `Temperature: ${item.temperature}°C, Humidity: ${item.humidity}%`,
+          // status: `Temperature: ${item.temperature}°C, Humidity: ${item.humidity}%`,
           details: item.light_status === 0 ? 'Close' : 'Open'
         })));
 

@@ -15,6 +15,7 @@ export default function Temperature() {
 
     useEffect(() => {
         fetch('https://bees-backend.aiiot.center/api/data')
+
             .then((response) => {
                 if (!response.ok) {
                     return response.text().then((text) => {
