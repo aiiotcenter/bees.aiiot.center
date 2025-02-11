@@ -1,0 +1,27 @@
+
+
+h1,h2,h3,p{
+  margin: 0px;
+}
+#root{
+  width: 100%;
+}
+
+/* For Fonts  */
+
+/* src/index.css or src/App.css */
+
+/* Import the font files directly from the src/assets folder */
+@font-face {
+  font-family: 'GT Walsheim Pro';
+  src: url('~assets/gt-walsheim-pro/gt-walsheim-pro.woff2') format('woff2'),
+       url('~assets/gt-walsheim-pro/gt-walsheim-pro.woff') format('woff'),
+       url('~assets/gt-walsheim-pro/gt-walsheim-pro.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Apply the font to the body or other elements */
+body {
+  font-family: 'GT Walsheim Pro', sans-serif;
+}
