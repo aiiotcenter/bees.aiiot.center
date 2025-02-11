@@ -1,0 +1,29 @@
+{
+  "name": "aiiot-center-npm-pkg",
+  "version": "2.9.0",
+  "description": "A UI library with styled components",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "scripts": {
+    "build": "npx babel src --out-dir dist --copy-files",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "recharts": "^2.15.1",
+    "styled-components": "^5.3.11"
+  },
+  "peerDependencies": {
+    "react": ">=16.8",
+    "react-dom": ">=16.8"
+  },
+  "files": [
+    "dist"
+  ],
+  "author": "Hamza Haseeb",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.26.4",
+    "@babel/preset-env": "^7.26.7",
+    "@babel/preset-react": "^7.26.3"
+  }
+}
