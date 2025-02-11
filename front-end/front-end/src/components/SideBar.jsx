@@ -1,84 +1,65 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom'; // Import Link for routing
-import HomeIcon from '@mui/icons-material/Home';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import HiveIcon from '@mui/icons-material/Hive';
-import CoronavirusIcon from '@mui/icons-material/Coronavirus';
-import ScaleIcon from '@mui/icons-material/Scale';
-import EmojiNatureIcon from '@mui/icons-material/EmojiNature';
-import AcUnitIcon from '@mui/icons-material/AcUnit';
-import Logo from '../assets/images/neu-logo.png';
-import MenuIcon from '@mui/icons-material/Menu';
-import { Figure, Image, SidebarContainer, SideBarHeader, SidebarItem, SidebarWrapper, Toggle, Paper } from '../style/sidebar/SideBar';
-import SlideshowIcon from '@mui/icons-material/Slideshow';
-import Header from './Header';
-import { useTheme } from '../context/ThemeContext'; // Import useTheme hook
-import ViewInArIcon from '@mui/icons-material/ViewInAr';
+// src/components/Sidebar.js
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { BarChart2, FileText, Heart, Mail, BarChart, CreditCard, UserCircle, LogOut } from 'lucide-react';
+import { SidebarContainer, Logo, NavSection, NavSectionTitle, NavItem } from '../Style/SideBar/Style';
+import LogoImage from '../assets/logo.jpg';
 
-const SideBar = ({ isCollapsed, toggleSidebar, onMenuClick }) => {
-  const { theme } = useTheme(); // Get the current theme
-  // const [isCollapsed, setIsCollapsed] = useState(false);
-
-  // Handle the toggle of the sidebar (collapsed or expanded)
-  // const toggleSidebar = () => {
-  //   setIsCollapsed(!isCollapsed);
-  // };
-
-  const openLink = () => {
-    window.open('https://temp.aiiot.center/', '_blank');
-  };
-
+const Sidebar = () => {
+  const navigate = useNavigate(); // Hook for navigation
 
   return (
-    <>
-      <SidebarContainer style={{ width: isCollapsed ? '60px' : '260px', alignItems: isCollapsed ? 'center' : 'flex-start', gap: isCollapsed ? '15px' : '0' }}  theme={theme}>
-      <SideBarHeader theme={theme} style={{ display: 'flex', justifyContent: isCollapsed ? 'center' : 'space-between' }}>
-        <Figure style={{ display: isCollapsed ? 'none' : 'block' }}>
-          <Image src="https://profdux.aiiot.center/assets/images/air-logo.png" alt="Logo" width={200} height={200} />
-        </Figure>
-        <Toggle onClick={toggleSidebar} theme={theme}>
-          <MenuIcon />
-        </Toggle>
-      </SideBarHeader>
+    <SidebarContainer>
+      <Logo>
+        <img src={LogoImage} alt='logo' width={25} />
+        Bee-Keeping
+      </Logo>
 
-        <SidebarWrapper onClick={() => onMenuClick('hivePage')} style={{ padding: isCollapsed ? '15px 15px' : '15px' }}  theme={theme}>
-          <SidebarItem><HomeIcon sx={{ fontSize: 15 }} /><Paper style={{ display: isCollapsed ? 'none' : 'flex' }}  theme={theme}>Dashboard</Paper></SidebarItem><ArrowForwardIosIcon sx={{ fontSize: 15 }} style={{ display: isCollapsed ? 'none' : 'flex' }} />
-        </SidebarWrapper>
+      <NavSection>
+        <NavSectionTitle>Main</NavSectionTitle>
+        <NavItem onClick={() => navigate('/dashboard')}>
+          <BarChart2 size={20} />
+          Dashboard
+        </NavItem>
+        <NavItem onClick={() => navigate('/proposals')}>
+          <FileText size={20} />
+          My Proposals
+        </NavItem>
+        <NavItem onClick={() => navigate('/saved')}>
+          <Heart size={20} />
+          Saved
+        </NavItem>
+        <NavItem onClick={() => navigate('/messages')}>
+          <Mail size={20} />
+          Messages
+        </NavItem>
+      </NavSection>
 
-        <SidebarWrapper onClick={() => onMenuClick('hivePage')} style={{ padding: isCollapsed ? '15px 15px' : '15px' }}  theme={theme}>
-          <SidebarItem><HiveIcon sx={{ fontSize: 15 }} /><Paper style={{ display: isCollapsed ? 'none' : 'flex' }}  theme={theme}>Hive</Paper></SidebarItem><ArrowForwardIosIcon sx={{ fontSize: 15 }} style={{ display: isCollapsed ? 'none' : 'flex' }} />
-        </SidebarWrapper>
+      <NavSection>
+        <NavSectionTitle>Finance</NavSectionTitle>
+        <NavItem onClick={() => navigate('/reviews')}>
+          <BarChart size={20} />
+          Reviews
+        </NavItem>
+        <NavItem onClick={() => navigate('/invoices')}>
+          <CreditCard size={20} />
+          Invoices
+        </NavItem>
+      </NavSection>
 
-        <SidebarWrapper onClick={() => onMenuClick('bee')} style={{ padding: isCollapsed ? '15px 15px' : '15px' }}  theme={theme}>
-          <SidebarItem><EmojiNatureIcon sx={{ fontSize: 15 }} /><Paper style={{ display: isCollapsed ? 'none' : 'flex' }}  theme={theme}>Bee</Paper></SidebarItem><ArrowForwardIosIcon sx={{ fontSize: 15 }} style={{ display: isCollapsed ? 'none' : 'flex' }} />
-        </SidebarWrapper>
-
-        <SidebarWrapper style={{ padding: isCollapsed ? '15px 15px' : '15px' }}  theme={theme}>
-          <SidebarItem><CoronavirusIcon sx={{ fontSize: 15 }} /><Paper style={{ display: isCollapsed ? 'none' : 'flex' }}  theme={theme}>Diseases</Paper></SidebarItem><ArrowForwardIosIcon sx={{ fontSize: 15 }} style={{ display: isCollapsed ? 'none' : 'flex' }} />
-        </SidebarWrapper>
-
-        <SidebarWrapper style={{ padding: isCollapsed ? '15px 15px' : '15px' }}  theme={theme}>
-          <SidebarItem><ScaleIcon sx={{ fontSize: 15 }} /><Paper style={{ display: isCollapsed ? 'none' : 'flex' }}  theme={theme}>Weight</Paper></SidebarItem><ArrowForwardIosIcon sx={{ fontSize: 15 }} style={{ display: isCollapsed ? 'none' : 'flex' }} />
-        </SidebarWrapper>
-
-        <SidebarWrapper onClick={() => onMenuClick('live')} style={{ padding: isCollapsed ? '15px 15px' : '15px' }}  theme={theme}>
-          <SidebarItem><SlideshowIcon sx={{ fontSize: 15 }} /><Paper style={{ display: isCollapsed ? 'none' : 'flex' }}  theme={theme}>Live</Paper></SidebarItem><ArrowForwardIosIcon sx={{ fontSize: 15 }} style={{ display: isCollapsed ? 'none' : 'flex' }} />
-        </SidebarWrapper>
-
-        <SidebarWrapper onClick={() => onMenuClick('model')} style={{ padding: isCollapsed ? '15px 15px' : '15px' }}  theme={theme}>
-          <SidebarItem><AcUnitIcon  sx={{ fontSize: 15 }} /><Paper style={{ display: isCollapsed ? 'none' : 'flex' }}  theme={theme}>AI</Paper></SidebarItem><ArrowForwardIosIcon sx={{ fontSize: 15 }} style={{ display: isCollapsed ? 'none' : 'flex' }} />
-        </SidebarWrapper>
-
-        <SidebarWrapper onClick={() => onMenuClick('swarm')} style={{ padding: isCollapsed ? '15px 15px' : '15px' }}  theme={theme}>
-          <SidebarItem><ViewInArIcon  sx={{ fontSize: 15 }} /><Paper style={{ display: isCollapsed ? 'none' : 'flex' }}  theme={theme}>Simulate Swarm</Paper></SidebarItem><ArrowForwardIosIcon sx={{ fontSize: 15 }} style={{ display: isCollapsed ? 'none' : 'flex' }} />
-        </SidebarWrapper>
-
-      </SidebarContainer>
-
-      <Header isCollapsed={isCollapsed} />
-    </>
+      <NavSection>
+        <NavSectionTitle>Account</NavSectionTitle>
+        <NavItem onClick={() => navigate('/profile')}>
+          <UserCircle size={20} />
+          My Profile
+        </NavItem>
+        <NavItem onClick={() => navigate('/logout')}>
+          <LogOut size={20} />
+          Logout
+        </NavItem>
+      </NavSection>
+    </SidebarContainer>
   );
 };
 
-export default SideBar;
+export default Sidebar;

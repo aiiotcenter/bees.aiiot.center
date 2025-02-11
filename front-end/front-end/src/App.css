@@ -1,33 +1,27 @@
-::-webkit-scrollbar {
-    width: 4px;
-    height: 8px;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
+
+
+h1,h2,h3,p{
+  margin: 0px;
+}
+#root{
+  width: 100%;
 }
 
-::-webkit-scrollbar {
-    width: 4x;
-    height: 8px;
-    border-radius: 20px;
+/* For Fonts  */
+
+/* src/index.css or src/App.css */
+
+/* Import the font files directly from the src/assets folder */
+@font-face {
+  font-family: 'GT Walsheim Pro';
+  src: url('~assets/gt-walsheim-pro/gt-walsheim-pro.woff2') format('woff2'),
+       url('~assets/gt-walsheim-pro/gt-walsheim-pro.woff') format('woff'),
+       url('~assets/gt-walsheim-pro/gt-walsheim-pro.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
 
-::-webkit-scrollbar-thumb {
-    background: #6c757d;
-    border-radius: 20px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 20px;
-}
-
-.line{
-    stroke: rgba(0, 0, 0, 0.12) !important;
-}
-.kvmysi text tspan {
-    color: #02B2AF !important;
-    fill: #02B2AF !important;
+/* Apply the font to the body or other elements */
+body {
+  font-family: 'GT Walsheim Pro', sans-serif;
 }

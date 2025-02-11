@@ -14,7 +14,7 @@ export default function QueenGraph() {
     `;
 
     useEffect(() => {
-        fetch('http://bees.aiiot.center:5000/api/data')
+        fetch('https://bees.aiiot-backend.center:5000/api/data')
             .then((response) => {
                 if (!response.ok) {
                     return response.text().then((text) => {

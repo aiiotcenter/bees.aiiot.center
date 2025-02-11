@@ -1,0 +1,32 @@
+{
+  "cards": [
+    {
+      "title": "Services Offered",
+      "count": 25,
+      "newCount": 10,
+      "newLabel": "New Offered",
+      "icon": "service.svg"
+    },
+    {
+      "title": "Completed Services",
+      "count": 1292,
+      "newCount": 80,
+      "newLabel": "New Completed",
+      "icon": "success 2.svg"
+    },
+    {
+      "title": "In Queue Services",
+      "count": 182,
+      "newCount": 35,
+      "newLabel": "New Queue",
+      "icon": "sandclock 1.svg"
+    },
+    {
+      "title": "Total Review",
+      "count": 22786,
+      "newCount": 290,
+      "newLabel": "Review Increase",
+      "icon": "review.svg"
+    }
+  ]
+}
