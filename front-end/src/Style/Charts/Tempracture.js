@@ -12,6 +12,9 @@ export const Wrapper = styled.div`
         padding: 16px;
         width: 100%;
         box-shadow: none;
+        div{
+            padding: 5px 5px;
+        }
         h3{
             border-bottom: 1px solid #E9E9E9;
             padding-bottom: 17px;

@@ -14,49 +14,49 @@ export default function TrafficChart() {
 
   return (
     <>
-    <Wrapper>
-    <Box className='box'>
-      <Card sx={{ border: `0px solid ${theme.palette.divider}`, borderRadius: '8px' }}>
-        <CardContent>
-          <h3 style={{ color: theme.palette.text.primary }}>Humidity</h3>
-          <ResponsiveContainer width="100%" height={400}>
-            <PieChart>
-              <Pie
-                data={trafficData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={90}
-                fill="#8884d8"
-                paddingAngle={5}
-                label={({ name, value }) => `${value}%`}
-              >
-                {trafficData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: theme.palette.background.paper,
-                  color: theme.palette.text.primary,
-                }}
-              />
-              <Legend
-                layout="vertical"
-                align="right"
-                verticalAlign="middle"
-                formatter={(value, entry) => (
-                  <span style={{ color: theme.palette.text.primary }}>{value}</span>
-                )}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-    </Box>
-    </Wrapper>
+      <Wrapper>
+        <Box className='box'>
+          <Card sx={{ border: `0px solid ${theme.palette.divider}`, borderRadius: '8px' }}>
+            <CardContent>
+              <h3 style={{ color: theme.palette.text.primary }}>Humidity</h3>
+              <ResponsiveContainer width="100%" height={400}>
+                <PieChart>
+                  <Pie
+                    data={trafficData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={90}
+                    fill="#8884d8"
+                    paddingAngle={5}
+                    label={({ name, value }) => `${value}%`}
+                  >
+                    {trafficData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: theme.palette.background.paper,
+                      color: theme.palette.text.primary,
+                    }}
+                  />
+                  <Legend
+                    layout="vertical"
+                    align="right"
+                    verticalAlign="middle"
+                    formatter={(value, entry) => (
+                      <span style={{ color: theme.palette.text.primary }}>{value}</span>
+                    )}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </Box>
+      </Wrapper>
     </>
   );
 }

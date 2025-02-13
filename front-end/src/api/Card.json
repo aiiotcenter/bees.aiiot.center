@@ -1,28 +1,28 @@
 {
   "cards": [
     {
-      "title": "Services Offered",
+      "title": "Bee Status",
       "count": 25,
       "newCount": 10,
       "newLabel": "New Offered",
       "icon": "service.svg"
     },
     {
-      "title": "Completed Services",
+      "title": "Hive Status",
       "count": 1292,
       "newCount": 80,
       "newLabel": "New Completed",
       "icon": "success 2.svg"
     },
     {
-      "title": "In Queue Services",
+      "title": "Distance Measurement",
       "count": 182,
       "newCount": 35,
       "newLabel": "New Queue",
       "icon": "sandclock 1.svg"
     },
     {
-      "title": "Total Review",
+      "title": "Weight",
       "count": 22786,
       "newCount": 290,
       "newLabel": "Review Increase",
