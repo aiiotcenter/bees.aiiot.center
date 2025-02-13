@@ -6,6 +6,7 @@ import Card from './Card';
 import CardFetcher from './CardFetcher';
 import Tempracture from './Charts/Tempracture';
 import Humidity from './Charts/Humidity';
+import Notifications from '../Sections/Notifications';
 
 export default function DashBoard() {
     return (
@@ -25,6 +26,7 @@ export default function DashBoard() {
                     </CardsWrapper>
                 </Container>
             </PageWrapper>
+            <Notifications/>
         </>
     )
 }

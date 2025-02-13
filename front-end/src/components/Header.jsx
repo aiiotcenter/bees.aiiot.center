@@ -88,12 +88,6 @@ const Paper = styled.span`
     cursor: pointer;
   }
 
-  /* img {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    object-fit: cover;
-  } */
 `;
 
 const Header = ({ activeComponent }) => {

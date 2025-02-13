@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, DetailWrapper, Icon, Left, PlaceHolder, Right, TextWrapper, Wrapper } from '../Style/Card/Style';
 import Typography from '../Style/Typography';
-// import '../../src/assets/icons'
+
 export default function Card() {
     const [apiData, setApiData] = useState([]);
 
@@ -12,8 +12,8 @@ export default function Card() {
                 const response = await fetch('https://bees-backend.aiiot.center/api/data');
                 if (response.ok) {
                     const data = await response.json();
-                    console.log("API Response:", data); // Log full response for debugging
-                    setApiData(data || []); // Ensure valid state
+                    console.log("API Response:", data); 
+                    setApiData(data || []);
                 } else {
                     console.error('Failed to fetch data.');
                 }
@@ -27,17 +27,27 @@ export default function Card() {
 
     // Function to calculate the average of a given field
     const calculateAverage = (field) => {
-        if (!apiData.length) return 0; // Ensure there's data
+        if (!apiData.length) return 0; 
         const sum = apiData.reduce((acc, item) => acc + (item[field] || 0), 0);
-        return (sum / apiData.length).toFixed(2); // Return average with two decimal places
+        return (sum / apiData.length).toFixed(2);
     };
 
-    // Data mapping for card display
+    // Define Bee Status based on sound activity
+    const calculateBeeStatus = () => {
+        if (!apiData.length) return "Unknown";
+        const activeBees = apiData.filter(item => item.sound_status === 1).length;
+        const percentage = ((activeBees / apiData.length) * 100).toFixed(2);
+        return `${percentage}%`;
+    };
+
+    // Updated card data
     const cardInfo = [
-        { title: "Average Temperature", field: "temperature", icon: "service.svg" },
-        { title: "Average Humidity", field: "humidity", icon: "success 2.svg" },
-        { title: "Average Weight", field: "weight", icon: "sandclock 1.svg" },
-        { title: "Average Distance", field: "distance", icon: "review.svg" }
+        { title: "Bee Status", field: "sound_status", icon: "service.svg", customValue: calculateBeeStatus() },
+        { title: "Hive Status", field: "humidity", icon: "success 2.svg" },
+        { title: "Distance Detection", field: "weight", icon: "sandclock 1.svg" },
+        { title: "Hive Weight", field: "distance", icon: "review.svg" }
+
+        
     ];
 
     return (
@@ -47,11 +57,12 @@ export default function Card() {
                     <DetailWrapper>
                         <Left>
                             <Typography variant="p">{card.title}</Typography>
-                            {console.log('Data',card.title)}
-                            <Typography variant="h2">{calculateAverage(card.field)}</Typography> {/* Display computed average */}
+                            <Typography variant="h2">
+                                {card.customValue ? card.customValue : calculateAverage(card.field)}
+                            </Typography>
                             <TextWrapper>
                                 <Typography variant="span" style={{ color: '#5aa75a' }}>
-                                     {apiData.length}
+                                    {apiData.length}
                                 </Typography>
                                 <Typography variant="p" style={{ fontSize: '15px' }}>
                                     Updated Now
