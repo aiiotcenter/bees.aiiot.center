@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, DetailWrapper, Icon, Left, PlaceHolder, Right, TextWrapper, Wrapper } from '../Style/Card/Style';
 import Typography from '../Style/Typography';
-
+// import '../../src/assets/icons'
 export default function Card() {
     const [apiData, setApiData] = useState([]);
 
@@ -34,10 +34,10 @@ export default function Card() {
 
     // Data mapping for card display
     const cardInfo = [
-        { title: "Average Temperature", field: "temperature", icon: "temperature.svg" },
-        { title: "Average Humidity", field: "humidity", icon: "humidity.svg" },
-        { title: "Average Weight", field: "weight", icon: "weight.svg" },
-        { title: "Average Distance", field: "distance", icon: "distance.svg" }
+        { title: "Average Temperature", field: "temperature", icon: "service.svg" },
+        { title: "Average Humidity", field: "humidity", icon: "success 2.svg" },
+        { title: "Average Weight", field: "weight", icon: "sandclock 1.svg" },
+        { title: "Average Distance", field: "distance", icon: "review.svg" }
     ];
 
     return (
@@ -60,7 +60,7 @@ export default function Card() {
                         </Left>
                         <Right>
                             <Icon>
-                                <img src={`/assets/icons/${card.icon}`} width="40" height="40" alt={card.title} />
+                                <img src={`../../src/assets/icons/${card.icon}`} width="40" height="40" alt={card.title} />
                                 <PlaceHolder></PlaceHolder>
                             </Icon>
                         </Right>

@@ -4,23 +4,40 @@ export const Wrapper = styled.div`
     display: flex;
     flex-wrap: wrap;
     width: 100%;
-    gap: 20px;
+    gap: 16px; /* Reduce gap to prevent wrapping */
     margin-bottom: 30px;
     box-sizing: border-box;
 `;
 
 export const Box = styled.div`
-    min-width: 281px;
-    max-width: 345px;
-    width: 100%;
-    padding: 0 32px;
+    flex: 1 1 calc(25% - 16px); /* Ensures 4 cards per row, accounting for the gap */
+    padding: 20px; /* Adjusted for spacing */
     border-radius: 4px;
     background: #fff;
     min-height: 170px;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
+    transition: 0.3s ease all;
+    &:hover{
+        cursor: pointer;
+        box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+    }
+
+    @media (max-width: 1200px) {
+        flex: 1 1 calc(33.33% - 16px); /* 3 cards per row */
+    }
+
+    @media (max-width: 900px) {
+        flex: 1 1 calc(50% - 16px); /* 2 cards per row */
+    }
+
+    @media (max-width: 600px) {
+        flex: 1 1 100%; /* 1 card per row */
+    }
 `;
+
 
 export const DetailWrapper = styled.div`
     width: 100%;
