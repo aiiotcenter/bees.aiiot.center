@@ -14,7 +14,7 @@ export default function DashBoard() {
                 <Container>
                     <HeadingWrapper>
                         <Typography variant="h1">Dashboard</Typography>
-                        <Typography variant="p">Lorem ipsum dolor sit amet, consectetur.</Typography>
+                        <Typography variant="p">Our AI-powered Bee Monitoring Dashboard provides real-time insights into hive conditions and bee activity. It collects and visualizes key data points such as bee status, hive health, temperature, humidity, and distance detection to ensure optimal hive management. With interactive charts and analytics, beekeepers can track environmental changes, detect anomalies, and make data-driven decisions to enhance bee productivity and well-being.</Typography>
                     </HeadingWrapper>
                     <CardsWrapper>
                        <Card/>

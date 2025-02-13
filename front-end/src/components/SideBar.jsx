@@ -23,15 +23,15 @@ const Sidebar = () => {
         </NavItem>
         <NavItem onClick={() => navigate('/proposals')}>
           <FileText size={20} />
-          My Proposals
+          AI Model
         </NavItem>
         <NavItem onClick={() => navigate('/saved')}>
           <Heart size={20} />
-          Saved
+          Diseases
         </NavItem>
         <NavItem onClick={() => navigate('/messages')}>
           <Mail size={20} />
-          Messages
+          Live Streaming
         </NavItem>
       </NavSection>
 

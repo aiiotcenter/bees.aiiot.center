@@ -1,50 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Wrapper } from '../../Style/Charts/Tempracture';
 import { Box, Grid, Card, CardContent, useTheme, MenuItem, Select, FormControl } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, Area, CartesianGrid } from 'recharts';
 
-// Mock data for different time filters
-const temperatureData = {
-    week: [
-        { name: 'Mon', temperature: 5 },
-        { name: 'Tue', temperature: 10 },
-        { name: 'Wed', temperature: 12 },
-        { name: 'Thu', temperature: 15 },
-        { name: 'Fri', temperature: 18 },
-        { name: 'Sat', temperature: 20 },
-        { name: 'Sun', temperature: 22 }
-    ],
-    month: [
-        { name: 'Week 1', temperature: 10 },
-        { name: 'Week 2', temperature: 15 },
-        { name: 'Week 3', temperature: 20 },
-        { name: 'Week 4', temperature: 25 }
-    ],
-    year: [
-        { name: 'Jan', temperature: -2 },
-        { name: 'Feb', temperature: 0 },
-        { name: 'Mar', temperature: 5 },
-        { name: 'Apr', temperature: 10 },
-        { name: 'May', temperature: 15 },
-        { name: 'Jun', temperature: 20 },
-        { name: 'Jul', temperature: 25 },
-        { name: 'Aug', temperature: 23 },
-        { name: 'Sep', temperature: 18 },
-        { name: 'Oct', temperature: 10 },
-        { name: 'Nov', temperature: 5 },
-        { name: 'Dec', temperature: 0 }
-    ]
-};
-
 export default function TemperatureChart() {
     const theme = useTheme();
     const [selectedFilter, setSelectedFilter] = useState('year');
-    const [chartData, setChartData] = useState(temperatureData[selectedFilter]);
+    const [chartData, setChartData] = useState([]);
+    const [dataLimit, setDataLimit] = useState(50); // Default limit to 100
+
+    // Function to fetch data from the API
+    const fetchData = async () => {
+        try {
+            const response = await fetch('https://bees-backend.aiiot.center/api/data');
+            const data = await response.json();
+
+            // Process data and limit results
+            const formattedData = data
+                .slice(0, dataLimit) // Limit the number of entries
+                .map(entry => ({
+                    id: entry.id,
+                    temperature: entry.temperature,
+                    created_at: new Date(entry.created_at).toLocaleString(), // Format the date
+                }));
+
+            setChartData(formattedData);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+
+        // Set up interval to fetch data every 5 minutes (300000 ms)
+        const interval = setInterval(fetchData, 300000);
+
+        // Clean up interval on component unmount
+        return () => clearInterval(interval);
+    }, [dataLimit]); // Re-fetch data when limit changes
 
     const handleFilterChange = (event) => {
-        const newFilter = event.target.value;
-        setSelectedFilter(newFilter);
-        setChartData(temperatureData[newFilter]);
+        setSelectedFilter(event.target.value);
+    };
+
+    const handleDataLimitChange = (event) => {
+        setDataLimit(event.target.value);
     };
 
     return (
@@ -54,24 +55,31 @@ export default function TemperatureChart() {
                     <Grid item xs={12} md={12}>
                         <Card sx={{ borderRadius: '8px', boxShadow: theme.shadows[1] }}>
                             <CardContent>
-                                {/* Header Section with Filter Dropdown */}
+                                {/* Header Section with Filter Dropdowns */}
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className='header'>
                                     <h3 style={{ color: theme.palette.text.primary }}>Temperature</h3>
-                                    <FormControl size="small">
-                                        <Select
-                                            value={selectedFilter}
-                                            onChange={handleFilterChange}
-                                            sx={{
-                                                backgroundColor: theme.palette.background.default,
-                                                border: 'none', // Remove border
-                                                '& fieldset': { border: 'none' }, // Remove default border from MUI
-                                              }}
-                                        >
-                                            <MenuItem value="week">This Week</MenuItem>
-                                            <MenuItem value="month">This Month</MenuItem>
-                                            <MenuItem value="year">This Year</MenuItem>
-                                        </Select>
-                                    </FormControl>
+
+                                    {/* Filters Section */}
+                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                        {/* Time Range Filter */}
+
+                                        {/* Data Limit Filter */}
+                                        <FormControl size="small">
+                                            <Select
+                                                value={dataLimit}
+                                                onChange={handleDataLimitChange}
+                                                sx={{
+                                                    backgroundColor: theme.palette.background.default,
+                                                    border: 'none',
+                                                    '& fieldset': { border: 'none' },
+                                                }}
+                                            >
+                                                <MenuItem value={50}>50</MenuItem>
+                                                <MenuItem value={100}>100</MenuItem>
+                                                <MenuItem value={150}>150</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </div>
                                 </div>
 
                                 {/* Temperature Line Chart */}
@@ -84,7 +92,7 @@ export default function TemperatureChart() {
                                             </linearGradient>
                                         </defs>
                                         <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="name" stroke={theme.palette.text.primary} />
+                                        <XAxis dataKey="id" stroke={theme.palette.text.primary} />
                                         <YAxis stroke={theme.palette.text.primary} />
                                         <Tooltip contentStyle={{ backgroundColor: theme.palette.background.paper, color: theme.palette.text.primary }} />
                                         <Legend />
