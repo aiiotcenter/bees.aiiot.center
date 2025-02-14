@@ -26,7 +26,7 @@ export default function DashBoard() {
                     </CardsWrapper>
                 </Container>
             </PageWrapper>
-            <Notifications/>
+            {/* <Notifications/> */}
         </>
     )
 }
