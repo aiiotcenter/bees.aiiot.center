@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+
 export const MainWrapper = styled.div`
   display: flex;
   align-items: flex-start;
@@ -96,4 +97,32 @@ export const Input = styled.input`
       outline: none;
       border-color: #1F4B3F;
     }
+`;
+
+export const Button = styled.button`
+  background-color: #4caf50;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin: 20px 0px;
+  &:focus{
+    outline: unset;
+  }
+
+  &:hover {
+    background-color: #43a047;
+  }
+`;
+
+
+export const ErrorText = styled.span`
+
 `;

@@ -6,11 +6,15 @@ export const Wrapper = styled.div`
     background: #fff;
     padding: 30px;
     border-radius: 4px;
+    margin-bottom: 60px;
     
     h3{
         padding-bottom: 20px;
         border-bottom: 1px solid #E9E9E9;
         margin-bottom: 30px;
+    }
+    p{
+        margin: 0px !important;
     }
  
 `;
@@ -77,7 +81,10 @@ export const IRUpload = styled.div`
 `;
 
 export const FormWrapper = styled.div`
-
+figure{
+    width: 90px !important;
+    height: 90px !important;
+}
 `;
 
 export const InputGroup = styled.div`
