@@ -11,7 +11,7 @@ export default function Profile() {
             <Container>
                 <Wrapper>
                     <Typography variant="h1">My Profile</Typography>
-                    <Typography variant="p" style={{margin:'0'}}>Lorem ipsum dolor sit amet, consectetur.</Typography>
+                    <Typography variant="p" style={{margin:'0'}}>Welcome to your profile dashboard! Easily manage your personal details, including your photo, name, email, phone number, and country. Keep your information up to date for a seamless experience!</Typography>
                 </Wrapper>
                 <Card/>
             </Container>

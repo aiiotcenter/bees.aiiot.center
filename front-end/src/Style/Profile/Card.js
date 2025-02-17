@@ -31,6 +31,17 @@ export const ImageWrapper = styled.div`
      display: flex;
      align-items: center;
      gap: 20px;
+     figure{
+        height: 90px;
+        width: 90px;
+        display: flex;
+        align-items: center; 
+        justify-content: center;
+        img{
+            height: 90px;
+            width: 90px;
+        }
+     }
 `;
 
 export const IL = styled.div`
@@ -81,10 +92,7 @@ export const IRUpload = styled.div`
 `;
 
 export const FormWrapper = styled.div`
-figure{
-    width: 90px !important;
-    height: 90px !important;
-}
+
 `;
 
 export const InputGroup = styled.div`
@@ -97,4 +105,8 @@ export const Label = styled.div`
 
 export const Input = styled.div`
     
+`;
+
+export const ButtonWrapper = styled.div`
+    width: 100%;
 `;

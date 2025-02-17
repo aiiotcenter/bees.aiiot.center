@@ -41,6 +41,7 @@ export const Image = styled.img`
   max-width: 100%;
   height: auto;
   border-radius: 8px;
+  object-fit: cover;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   
 `;
@@ -112,7 +113,7 @@ export const Button = styled.button`
   gap: 8px;
   cursor: pointer;
   transition: background 0.3s ease;
-  margin: 20px 0px;
+  margin: 0px 0px;
   &:focus{
     outline: unset;
   }
@@ -124,5 +125,7 @@ export const Button = styled.button`
 
 
 export const ErrorText = styled.span`
-
+  color: red;
+  font-size: 14px;
+  padding: 3px 0px;
 `;
