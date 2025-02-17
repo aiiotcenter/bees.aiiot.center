@@ -13,7 +13,7 @@ const variants = {
   },
   h3: {
     fontSize: "17px",
-    fontWeight: "500",
+    fontWeight: "700",
     color: "#222222",
   },
   p: {

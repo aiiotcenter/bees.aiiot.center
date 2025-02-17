@@ -9,6 +9,7 @@ import { Main, MainWrapper } from './Style/GlobalStyle';
 import '../src/App.css';
 import Footer from './components/Footer';
 import Profile from './components/Profile';
+import Streaming from './components/Streaming.jsx/Streaming';
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
             <Route path="/dashboard" element={<DashBoard />} />
             <Route path="/proposals" element={<h2>My Proposals Page</h2>} />
             <Route path="/saved" element={<h2>Saved Page</h2>} />
-            <Route path="/messages" element={<h2>Messages Page</h2>} />
+            <Route path="/streaming" element={<Streaming/>} />
             <Route path="/reviews" element={<h2>Reviews Page</h2>} />
             <Route path="/invoices" element={<h2>Invoices Page</h2>} />
             <Route path="/payouts" element={<h2>Payouts Page</h2>} />

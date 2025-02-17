@@ -92,28 +92,27 @@ export default function Card() {
   return (
     <Wrapper>
       <Typography variant="h3">Profile Details</Typography>
-
       <DetailWrapper>
         <ImageWrapper>
           <IL>
             <Figure>
-              <Image 
-                src={imagePreview} 
-                alt="Profile" 
-                width={90} 
-                height={90} 
-                style={{ borderRadius: "50%" }} 
+              <Image
+                src={imagePreview}
+                alt="Profile"
+                width={90}
+                height={90}
+                style={{ borderRadius: "50%" }}
               />
             </Figure>
           </IL>
           <IR>
             <IRIconWrapper>
-              <input 
-                type="file" 
-                accept="image/*" 
-                ref={fileInputRef} 
-                onChange={handleImageUpload} 
-                style={{ display: "none" }} 
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                onChange={handleImageUpload}
+                style={{ display: "none" }}
               />
               <IRUpload onClick={handleUploadClick}>Upload Image</IRUpload>
             </IRIconWrapper>
@@ -126,12 +125,12 @@ export default function Card() {
         {["username", "email", "phone", "country"].map((field) => (
           <InputGroup key={field}>
             <Label>{field.charAt(0).toUpperCase() + field.slice(1)}</Label>
-            <Input 
-              type={field === "email" ? "email" : field === "phone" ? "tel" : "text"} 
-              name={field} 
-              placeholder={`Enter ${field}`} 
-              value={formData[field]} 
-              onChange={handleInputChange} 
+            <Input
+              type={field === "email" ? "email" : field === "phone" ? "tel" : "text"}
+              name={field}
+              placeholder={`Enter ${field}`}
+              value={formData[field]}
+              onChange={handleInputChange}
             />
             {errors[field] && <ErrorText>{errors[field]}</ErrorText>}
           </InputGroup>

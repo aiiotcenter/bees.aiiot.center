@@ -29,7 +29,7 @@ const Sidebar = () => {
           <Heart size={20} />
           Diseases
         </NavItem>
-        <NavItem onClick={() => navigate('/messages')}>
+        <NavItem onClick={() => navigate('/streaming')}>
           <Mail size={20} />
           Live Streaming
         </NavItem>
