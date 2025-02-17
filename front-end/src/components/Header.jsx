@@ -6,115 +6,8 @@ import styled from 'styled-components';
 import Notifications from '../../src/Sections/Notifications';
 import { motion } from "framer-motion";
 import SideBar from './Header/SideBar';
+import { HeaderContainer, SideBarControl, SearchBarWrapper, UserActions, Paper,  NotificationContainer, NotificationBox, NotificationIconStyled  } from '../Style/Header/Style';
 
-const HeaderContainer = styled.header`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 20px 20px 0px;
-  background: white;
-  box-shadow: 0 4px 4px -2px rgba(0, 0, 0, 0.05);
-  width: 100%;
-  position: fixed;
-  z-index: 999;
-  box-sizing: border-box;
-  width: -webkit-fill-available;
-  .profile.icon{
-    transition: transform 0.2s ease-in-out;
-
-&:hover {
-  transform: scale(1.1);
-}
-  }
-`;
-
-const SideBarControl = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 20px;
-
-  img {
-
-  }
-`;
-
-const SearchBarWrapper = styled.div`
-  flex: 1;
-  margin: 0px;
-  position: relative;
-  max-width: 628px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  gap: 40px;
-  
-
-  input {
-    max-width: 540px;
-    width: 100%;
-    padding: 16px 18px;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    font-size: 14px;
-    transition: 0.3s ease all;
-    /* height: 50px; */
-    &::placeholder{
-      color: #6B7177;
-      font-size: 15px;
-    }
-    &:hover{
-      border-color: #1F4B3F;
-    }
-    &:focus{
-      outline: none;
-      border-color: #1F4B3F;
-    }
-  }
-`;
-
-const UserActions = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 30px;
-
-  img {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    object-fit: cover;
-    transition: 0.3s ease all;
-    &:hover{
-      cursor: pointer;
-    }
-  }
-`;
-
-const Paper = styled.span`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 0.3s ease all;
-  &:hover{
-    cursor: pointer;
-  }
-
-`;
-
-const NotificationContainer = styled.div`
-  position: relative;
-`;
-
-const NotificationBox = styled(motion.div)`
-  position: absolute;
-  right: -15px;
-  width: 360px;
-  padding: 1rem;
-  top:-162px !important;
-`;
-
-const NotificationIconStyled = styled(Paper)`
-  cursor: pointer;
-`;
 
 const Header = ({ activeComponent }) => {
   const [open, setOpen] = useState(false);
@@ -150,17 +43,6 @@ const Header = ({ activeComponent }) => {
               </NotificationBox>
             )}
           </NotificationContainer>
-          {/* <Paper>
-            <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16.4773 2.84101L10.0007 8.5482L3.52269 2.84093C3.26475 2.61368 2.87157 2.63866 2.64441 2.89643C2.41733 3.15429 2.44205 3.54747 2.7 3.77472L9.58946 9.84447C9.70702 9.94801 9.85395 9.99978 10.0008 9.99978C10.1477 9.99978 10.2947 9.94801 10.4122 9.84438L17.3003 3.77463C17.5581 3.54747 17.5829 3.15421 17.3557 2.89635C17.1284 2.63874 16.7353 2.61385 16.4773 2.84101Z" fill="#1F4B3F" />
-              <path d="M18.1333 0.196594H1.86675C0.837464 0.196594 0 1.03398 0 2.06334V11.9365C0 12.9659 0.837464 13.8033 1.86675 13.8033H18.1333C19.1625 13.8033 20 12.9659 20 11.9365V2.06334C20 1.03406 19.1625 0.196594 18.1333 0.196594ZM18.7555 11.9365C18.7555 12.2796 18.4764 12.5588 18.1333 12.5588H1.86675C1.5236 12.5588 1.2445 12.2796 1.2445 11.9365V2.06334C1.2445 1.72027 1.5236 1.44109 1.86675 1.44109H18.1333C18.4764 1.44109 18.7555 1.72027 18.7555 2.06334V11.9365Z" fill="#1F4B3F" />
-            </svg>
-          </Paper> */}
-          {/* <Paper>
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M9.55499 18.98C9.67249 19.1 9.83249 19.1667 9.99999 19.1667C10.1675 19.1667 10.3275 19.1 10.445 18.98L18.44 10.8792C20.5158 8.77669 20.5158 5.35419 18.44 3.25085C17.4317 2.22919 16.0908 1.66669 14.6633 1.66669C13.2358 1.66669 11.8958 2.22919 10.8875 3.25002L9.99999 4.15002L9.11249 3.25085C8.10416 2.22919 6.76332 1.66669 5.33666 1.66669C3.90916 1.66669 2.56832 2.22919 1.55999 3.25085C-0.515846 5.35419 -0.515846 8.77669 1.55999 10.8784L9.55499 18.98ZM2.44916 4.12835C3.22082 3.34752 4.24666 2.91669 5.33582 2.91669C6.42582 2.91669 7.45082 3.34752 8.22166 4.12919L9.55416 5.47919C9.78833 5.71669 10.2092 5.71669 10.4433 5.47919L11.7758 4.12835C12.5492 3.34752 13.5742 2.91669 14.6633 2.91669C15.7533 2.91669 16.7783 3.34752 17.55 4.12835C19.1475 5.74752 19.1475 8.38169 17.55 10.0017L9.99999 17.6525L2.44916 10.0009C0.851655 8.38252 0.851655 5.74752 2.44916 4.12835Z" fill="#1F4B3F" />
-            </svg>
-          </Paper> */}
           <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150" alt="Profile" className='profile-icon' onClick={() => setSidebarOpen(!isSidebarOpen)}/>
           <SideBar isOpen={isSidebarOpen} />
         </UserActions>

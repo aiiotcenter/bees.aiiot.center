@@ -58,3 +58,11 @@ export const NavItem = styled.a`
    
   }
 `;
+
+export const CloseButton = styled.div`
+
+`;
+
+export const X = styled.div`
+
+`;
