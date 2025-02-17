@@ -42,6 +42,7 @@ export const Tab = styled.button`
   }
   &:active{
     padding: 10px 30px;
+    border: 0;
   }
 `;
 

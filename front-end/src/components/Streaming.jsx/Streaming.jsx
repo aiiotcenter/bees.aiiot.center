@@ -5,13 +5,14 @@ import Typography from '../../Style/Typography';
 import { Wrapper, TabsContainer, Tab, TabContent } from '../../Style/Streaming/Style';
 import { SearchBarWrapper } from '../../Style/Header/Style';
 import { Search } from 'lucide-react';
+import Live from './Live';
 
 export default function Streaming() {
   const [activeTab, setActiveTab] = useState('Live');
 
   // Tab Content Mapping
   const tabContent = {
-    Live: <Typography variant="p">Live Streaming Content Here...</Typography>,
+    Live: <Typography variant="p"><Live/></Typography>,
     Recorded: <Typography variant="p">Recorded Streaming Content Here...</Typography>,
     Upcoming: <Typography variant="p">Upcoming Streaming Events Here...</Typography>,
   };
