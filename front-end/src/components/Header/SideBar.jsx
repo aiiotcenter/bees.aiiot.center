@@ -22,7 +22,7 @@ const SidebarContainer = styled.div`
 `;
 
 const MenuSection = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 `;
 
 const MenuItem = styled.div`

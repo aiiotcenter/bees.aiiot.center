@@ -49,7 +49,7 @@ export const Tab = styled.button`
 // Tab Content
 export const TabContent = styled.div`
   margin-top: 20px;
-  padding: 20px;
+  padding: 0px;
   border-radius: 8px;
   min-height: 150px;
 `;

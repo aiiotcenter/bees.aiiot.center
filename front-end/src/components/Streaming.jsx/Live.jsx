@@ -3,8 +3,7 @@ import React from 'react';
 export default function Live() {
   return (
   <>
-    <div style={{ textAlign: 'center', padding: '20px' }}>
-      {/* <h2>Live Streaming</h2> */}
+    <div style={{ textAlign: 'center'}}>
       <iframe
         width="100%"
         height="500px"
