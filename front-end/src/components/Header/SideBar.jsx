@@ -61,7 +61,14 @@ const SideBar = ({ isOpen }) => {
           <FaUser/> My Profile
         </MenuItem>
         <MenuItem>
-          <FaSignOutAlt as={NavLink} to="/login"/> Logout
+        <FaSignOutAlt 
+  style={{ cursor: "pointer" }} 
+  onClick={() => {
+    localStorage.removeItem("isAuthenticated"); // Remove auth state
+    window.location.href = "/"; // Redirect to login
+  }} 
+/> Logout
+
         </MenuItem>
       </MenuSection>
     </SidebarContainer>
