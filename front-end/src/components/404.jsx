@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Container, Figure, Image, PageWrapper } from '../Style/GlobalStyle'
 import { Left, Right, Wrapper } from '../Style/404/Style'
 import Typography from '../Style/Typography'
-import Images from '../../../front-end/src/assets/images/404.jpg'
+import Images from '../../../front-end/src/assets/images/Frame.png'
 
 export default function NotFound() {
     return (
