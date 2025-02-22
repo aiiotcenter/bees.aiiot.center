@@ -10,6 +10,7 @@ import '../src/App.css';
 import Footer from './components/Footer';
 import Profile from './components/Profile';
 import Streaming from './components/Streaming.jsx/Streaming';
+import NotFound from './components/404';
 
 function App() {
   return (
@@ -21,14 +22,15 @@ function App() {
           <Routes>
             <Route path="/" element={<DashBoard />} />
             <Route path="/dashboard" element={<DashBoard />} />
-            <Route path="/proposals" element={<h2>My Proposals Page</h2>} />
-            <Route path="/saved" element={<h2>Saved Page</h2>} />
+            <Route path="/proposals" element={<NotFound/>} />
+            <Route path="/saved" element={<NotFound/>} />
             <Route path="/streaming" element={<Streaming/>} />
-            <Route path="/reviews" element={<h2>Reviews Page</h2>} />
-            <Route path="/invoices" element={<h2>Invoices Page</h2>} />
-            <Route path="/payouts" element={<h2>Payouts Page</h2>} />
+            <Route path="/reviews" element={<NotFound/>} />
+            <Route path="/invoices" element={<NotFound/>} />
+            <Route path="/payouts" element={<NotFound/>} />
             <Route path="/profile" element={<Profile/>} />
-            <Route path="/logout" element={<h2>Logging Out...</h2>} />
+            <Route path="/logout" element={<NotFound/>} />
+            <Route path="/404" element={<NotFound/>} />
           </Routes>
           <Footer/>
         </Main>
