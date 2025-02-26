@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // ✅ Use Link & useNavigate
 import { 
   Container, Form, Input, InputGroup, Label, PageWrapper, 
   PaymentBox, PaymentWrapper, ErrorText 
@@ -17,18 +17,21 @@ const schema = yup.object().shape({
 });
 
 export default function Login({ setIsAuthenticated }) {
-  const navigate = useNavigate();
-  
+  const [isAuthenticated, setAuthState] = useState(false); 
+  const navigate = useNavigate(); // ✅ Hook for navigation
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
+  // ✅ Handle form submission
   const onSubmit = (data) => {
     console.log("Login data:", data);
-    setIsAuthenticated(true); // ✅ Set authentication state
-    navigate("/dashboard"); // ✅ Redirect to Dashboard after login
+    setAuthState(true); // ✅ Simulating authentication
+    setIsAuthenticated(true); // ✅ Updating authentication state
+    navigate("/dashboard"); // ✅ Programmatic navigation
   };
 
   return (
@@ -42,12 +45,9 @@ export default function Login({ setIsAuthenticated }) {
         <Typography variant="h2">We’re glad to see you again!</Typography>
         <Typography variant="p" style={{ textAlign: "center", marginBottom: "20px" }}>
           Don't have an account?{" "}
-          <span 
-            style={{ color: "#1967D2", cursor: "pointer", fontWeight: "bold" }} 
-            onClick={() => navigate("/sign-up")}
-          >
+          <Link to="/sign-up" style={{ color: "#1967D2", fontWeight: "bold" }}>
             Sign Up!
-          </span>
+          </Link>
         </Typography>
 
         <Form onSubmit={handleSubmit(onSubmit)}>
@@ -71,6 +71,7 @@ export default function Login({ setIsAuthenticated }) {
             {errors.password && <ErrorText>{errors.password.message}</ErrorText>}
           </InputGroup>
 
+          {/* ✅ Button now redirects using navigate */}
           <Button type="submit">Login</Button>
         </Form>
 
@@ -90,11 +91,8 @@ export default function Login({ setIsAuthenticated }) {
           <span style={{ flex: 1, height: "1px", backgroundColor: "#ccc", marginLeft: "10px" }}></span>
         </Typography>
 
-        {/* Social Login Buttons */}
         <PaymentWrapper>
-          <PaymentBox variant="first">Continue with Facebook</PaymentBox>
           <PaymentBox variant="second">Continue with Google</PaymentBox>
-          <PaymentBox variant="third">Continue with Github</PaymentBox>
         </PaymentWrapper>
       </Container>
     </PageWrapper>

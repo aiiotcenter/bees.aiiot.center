@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
 import { 
   Container, Form, Input, InputGroup, Label, PageWrapper, 
   PaymentBox, PaymentWrapper, ErrorText 
@@ -18,15 +19,24 @@ const schema = yup.object().shape({
 });
 
 export default function SignUp() {
+  const [isRegistered, setIsRegistered] = useState(false); // Simulating registration status
+  const navigate = useNavigate(); // To navigate between pages
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
+  // Handle form submission and simulate registration process
   const onSubmit = (data) => {
     console.log("SignUp Data:", data);
-    // Handle user registration logic here (API call, authentication, etc.)
+    // Simulate user registration (you can replace this with actual registration logic later)
+    setIsRegistered(true); // Simulate successful registration
+
+    if (isRegistered) {
+      navigate("/login"); // Redirect to login page after successful registration
+    }
   };
 
   return (
@@ -39,7 +49,7 @@ export default function SignUp() {
       <Container>
         <Typography variant="h2">Create your account</Typography>
         <Typography variant="p">
-          Already have an account? <span>Log In!</span>
+          Already have an account? <span onClick={() => navigate("/login")}>Log In!</span>
         </Typography>
 
         <Form onSubmit={handleSubmit(onSubmit)}>
@@ -104,9 +114,7 @@ export default function SignUp() {
 
         {/* Social SignUp Options */}
         <PaymentWrapper>
-          <PaymentBox variant="first">Facebook</PaymentBox>
           <PaymentBox variant="second">Google</PaymentBox>
-          <PaymentBox variant="third">Github</PaymentBox>
         </PaymentWrapper>
       </Container>
     </PageWrapper>

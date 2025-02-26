@@ -11,47 +11,84 @@ import Streaming from './components/Streaming.jsx/Streaming';
 import NotFound from './components/404';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
+import AIModel from './components/AIModel';
+
+// ✅ Layout component for authenticated routes
+function Layout({ children }) {
+  return (
+    <MainWrapper>
+      <Sidebar />
+      <Main>
+        <Header />
+        {children}
+        <Footer />
+      </Main>
+    </MainWrapper>
+  );
+}
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // User authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   return (
     <Router>
       <Routes>
-        {/* Default route redirects to Login */}
-        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
-        
-        {/* Login and Signup Routes */}
+        {/* Public Routes */}
         <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/sign-up" element={<SignUp />} />
 
-        {/* Protected Routes - Only Accessible if Logged In */}
+        {/* Redirect Home to Login if not authenticated */}
+        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
+
+        {/* Protected Routes */}
         {isAuthenticated ? (
-          <Route
-            path="/*"
-            element={
-              <MainWrapper>
-                <Sidebar />
-                <Main>
-                  <Header />
-                  <Routes>
-                    <Route path="/dashboard" element={<DashBoard />} />
-                    <Route path="/proposals" element={<NotFound />} />
-                    <Route path="/saved" element={<NotFound />} />
-                    <Route path="/streaming" element={<Streaming />} />
-                    <Route path="/reviews" element={<NotFound />} />
-                    <Route path="/invoices" element={<NotFound />} />
-                    <Route path="/payouts" element={<NotFound />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/logout" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                  <Footer />
-                </Main>
-              </MainWrapper>
-            }
-          />
+          <>
+            <Route
+              path="/dashboard"
+              element={
+                <Layout>
+                  <DashBoard />
+                </Layout>
+              }
+            />
+            <Route
+              path="/streaming"
+              element={
+                <Layout>
+                  <Streaming />
+                </Layout>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <Layout>
+                  <Profile />
+                </Layout>
+              }
+            />
+            {/* Example of a placeholder for other pages */}
+            <Route
+              path="/proposals"
+              element={
+                <Layout>
+                  <AIModel/>
+                </Layout>
+              }
+            />
+            <Route
+              path="/saved"
+              element={
+                <Layout>
+                  <NotFound />
+                </Layout>
+              }
+            />
+            <Route path="/logout" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+            <Route path="*" element={<NotFound />} />
+          </>
         ) : (
+          // Redirect all unknown routes to login
           <Route path="/*" element={<Navigate to="/login" />} />
         )}
       </Routes>
