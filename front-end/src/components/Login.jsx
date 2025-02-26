@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -17,7 +17,7 @@ const schema = yup.object().shape({
 });
 
 export default function Login({ setIsAuthenticated }) {
-  const [isAuthenticated, setAuthState] = useState(false); 
+  const [isAuthenticated, setAuthState] = useState(false);
   const navigate = useNavigate(); // ✅ Hook for navigation
 
   const {
@@ -26,12 +26,23 @@ export default function Login({ setIsAuthenticated }) {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
+  // ✅ Check if user is authenticated on initial load
+  useEffect(() => {
+    const authData = localStorage.getItem("isAuthenticated");
+    if (authData === "true") {
+      setAuthState(true);
+      setIsAuthenticated(true); // Update the parent component state
+      navigate("/dashboard"); // Redirect to dashboard if authenticated
+    }
+  }, [navigate, setIsAuthenticated]);
+
   // ✅ Handle form submission
   const onSubmit = (data) => {
     console.log("Login data:", data);
     setAuthState(true); // ✅ Simulating authentication
     setIsAuthenticated(true); // ✅ Updating authentication state
-    navigate("/dashboard"); // ✅ Programmatic navigation
+    localStorage.setItem("isAuthenticated", "true"); // Save authentication state to localStorage
+    navigate("/dashboard"); // ✅ Programmatic navigation to dashboard
   };
 
   return (
