@@ -125,8 +125,107 @@ export const Button = styled.button`
 `;
 
 export const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+
+  th, td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #E9E9E9;
+  }
+thead{
+  background-color: #F1FCFA;
+}
+  th {
+    
+    font-weight: 500;
+    font-size: 17px;
+    line-height: 28px;
+    padding: 21px 0px 21px 21px;
+    border-bottom: 0px;
+    &:last-child{
+      display: flex;
+    justify-content: center;
+    padding-right: 21px;
+    padding-left: 0px;
+
+    }
+
+  }
+
+  tr:hover {
+    /* background-color: #f9f9f9; */
+  }
+
+  tbody tr:nth-child(even) {
+    /* background-color: #f8f8f8; */
+  }
+
+  td {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 28px;
+    padding: 21px 0px 21px 21px;
+    height: auto;
+    &:last-child{
+      display: flex;
+    justify-content: flex-end;
+    padding-right: 21px;
+    padding-left: 0px;
+
+    }
+  }
+
+  @media (max-width: 768px) {
+    th, td {
+      padding: 10px;
+    }
+  }
+`;
+
+export const TableWrapper = styled.div`
+  overflow-x: auto; // Ensures horizontal scrolling for smaller screens
+  padding: 30px;
+  background: #FFFFFF;
+  border-radius: 4px;
+  width: 100%;
+
+  .role-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: auto;
+  border-radius: 6px;
+  padding: 6px 11.5px;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 22px;
+  letter-spacing: 0%;
+  text-align: center;
+  background: #FFF4DE;
+  color: #FFA800;
+}
+
+.status-active{
+  padding: 6px 11px;
+  background: #F1FAFF;
+  border-radius: 6px;
+  color: #00A3FF;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 22px;
+
+}
 
 `;
+
+
 
 export const ErrorText = styled.span`
   color: red;

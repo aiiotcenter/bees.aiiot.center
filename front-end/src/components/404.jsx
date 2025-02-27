@@ -1,13 +1,14 @@
 import React from 'react'
-import { Button, Container, Figure, Image, PageWrapper } from '../Style/GlobalStyle'
+import { Button, Container, Figure, Image, PageWrapper, TableWrapper } from '../Style/GlobalStyle'
 import { Left, Right, Wrapper } from '../Style/404/Style'
 import Typography from '../Style/Typography'
 import Images from '../../../front-end/src/assets/images/Frame.png'
+import Table from './Table'
 
 export default function NotFound() {
     return (
         <>
-            <PageWrapper>
+            {/* <PageWrapper>
                 <Container>
                     <Wrapper>
                         <Left>
@@ -23,7 +24,10 @@ export default function NotFound() {
                     </Right>
                     </Wrapper>
                 </Container>
-            </PageWrapper>
+            </PageWrapper> */}
+            <TableWrapper>
+               <Table/>
+            </TableWrapper>
         </>
     )
 }
