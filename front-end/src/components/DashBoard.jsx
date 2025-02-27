@@ -9,6 +9,7 @@ import Humidity from './Charts/Humidity';
 import Notifications from '../Sections/Notifications';
 import Login from './Login';
 import SignUp from './SignUp';
+import Table from './Table';
 
 export default function DashBoard() {
     return (
@@ -31,6 +32,7 @@ export default function DashBoard() {
             {/* <Notifications/> */}
             {/* <Login/>
             <SignUp/> */}
+            <Table/>
         </>
     )
 }

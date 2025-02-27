@@ -4,6 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { BarChart2, FileText, Heart, Mail, BarChart, CreditCard, UserCircle, LogOut } from 'lucide-react';
 import { SidebarContainer, Logo, NavSection, NavSectionTitle, NavItem } from '../Style/SideBar/Style';
 import LogoImage from '../assets/logo.jpg';
+import { FaDisease } from "react-icons/fa6";
+import { RiLiveFill } from "react-icons/ri";
+import { GiArtificialHive } from "react-icons/gi";
+import { MdDashboard } from "react-icons/md";
 
 const Sidebar = () => {
   const navigate = useNavigate(); // Hook for navigation
@@ -18,19 +22,20 @@ const Sidebar = () => {
       <NavSection>
         <NavSectionTitle>Main</NavSectionTitle>
         <NavItem onClick={() => navigate('/dashboard')}>
-          <BarChart2 size={20} />
+          <MdDashboard size={20} />
           Dashboard
         </NavItem>
         <NavItem onClick={() => navigate('/proposals')}>
-          <FileText size={20} />
+          <GiArtificialHive size={20} />
           AI Model
         </NavItem>
         <NavItem onClick={() => navigate('/saved')}>
-          <Heart size={20} />
+          
+          <FaDisease size={20} />
           Diseases
         </NavItem>
         <NavItem onClick={() => navigate('/streaming')}>
-          <Mail size={20} />
+          <RiLiveFill size={20} />
           Live Streaming
         </NavItem>
       </NavSection>
@@ -48,7 +53,7 @@ const Sidebar = () => {
       </NavSection>
 
       <NavSection>
-        <NavSectionTitle>Account</NavSectionTitle>
+        <NavSectionTitle>Settings</NavSectionTitle>
         <NavItem onClick={() => navigate('/profile')}>
           <UserCircle size={20} />
           My Profile

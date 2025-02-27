@@ -124,6 +124,9 @@ export const Button = styled.button`
   }
 `;
 
+export const Table = styled.table`
+
+`;
 
 export const ErrorText = styled.span`
   color: red;

@@ -73,14 +73,14 @@ export const Icon = styled.div`
     width: 58px;
     height: 52px;
     position: relative;
-    img {
+    svg {
         z-index: 99;
         position: relative;
     }
 `;
 
 export const PlaceHolder = styled.div`
-    background-color: #FBF7ED;
+    background: #FBF7ED;
     height: 40px;
     width: 40px;
     border-radius: 50%;

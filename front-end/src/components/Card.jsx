@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Box, DetailWrapper, Icon, Left, PlaceHolder, Right, TextWrapper, Wrapper } from '../Style/Card/Style';
 import Typography from '../Style/Typography';
-
-// Import icons directly from assets
-import ServiceIcon from '../assets/icons/service.svg';
-import SuccessIcon from '../assets/icons/success 2.svg';
-import SandClockIcon from '../assets/icons/sandclock 1.svg';
-import ReviewIcon from '../assets/icons/review.svg';
+import { GiBee } from "react-icons/gi";
+import { MdHive } from "react-icons/md";
+import { GiPathDistance } from "react-icons/gi";
+import { FaWeight } from "react-icons/fa";
 
 export default function Card() {
     const [apiData, setApiData] = useState([]);
@@ -46,20 +44,12 @@ export default function Card() {
         return `${percentage}%`;
     };
 
-    // Map icons to imported assets
-    const iconMap = {
-        "service.svg": ServiceIcon,
-        "success 2.svg": SuccessIcon,
-        "sandclock 1.svg": SandClockIcon,
-        "review.svg": ReviewIcon,
-    };
-
-    // Updated card data
+    // Updated card data with icon components
     const cardInfo = [
-        { title: "Bee Status", field: "sound_status", icon: "service.svg", customValue: calculateBeeStatus() },
-        { title: "Hive Status", field: "humidity", icon: "success 2.svg" },
-        { title: "Distance Detection", field: "weight", icon: "sandclock 1.svg" },
-        { title: "Hive Weight", field: "distance", icon: "review.svg" }
+        { title: "Bee Status", field: "sound_status", icon: <GiBee size={40} color="#000" />, customValue: calculateBeeStatus() },
+        { title: "Hive Status", field: "humidity", icon: <MdHive size={40} color="#000" /> },
+        { title: "Distance Detection", field: "weight", icon: <GiPathDistance size={40} color="#000" /> },
+        { title: "Hive Weight", field: "distance", icon: <FaWeight size={40} color="#000" /> }
     ];
 
     return (
@@ -83,7 +73,7 @@ export default function Card() {
                         </Left>
                         <Right>
                             <Icon>
-                                <img src={iconMap[card.icon]} width="40" height="40" alt={card.title} />
+                                {card.icon}  {/* Render icon directly */}
                                 <PlaceHolder></PlaceHolder>
                             </Icon>
                         </Right>
