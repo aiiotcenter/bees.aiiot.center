@@ -1,44 +1,48 @@
 import React from 'react';
-import { PageWrapper, Table, Container } from '../Style/GlobalStyle'; // ✅ Renamed import
+import { useLocation } from 'react-router-dom';
+import { PageWrapper, Table, Container } from '../Style/GlobalStyle';
 import { HeadingWrapper } from '../../src/Style/Dashboard/Style';
 import Typography from '../Style/Typography';
 import { MainWrapper } from '../Style/Table/Style';
 
-export default function TableComponent() { // ✅ Renamed function to avoid conflicts
+export default function TableComponent() {
+  const location = useLocation();
+  const { selectedData } = location.state || { selectedData: [] };
+
   return (
-    <PageWrapper>
+<>
+<PageWrapper>
       <Container>
         <HeadingWrapper>
           <Typography variant="h1">Details</Typography>
-          <Typography variant="p">Lorem ipsum dolor sit amet, consectetur.</Typography>
+          <Typography variant="p">Below is the data related to the selected card.</Typography>
         </HeadingWrapper>
         <MainWrapper>
-      
           <Table>
-              <thead>
-                <tr>
-                  <th style={{width:'25%'}}>ID</th>
-                  <th style={{width:'25%'}}>Name</th>
-                  <th style={{width:'25%'}}>Email</th>
-                  <th style={{width:'25%'}}>Status</th>
-                  <th style={{width:'90%'}}>Role</th>
-                </tr>
-              </thead>
-              <tbody>
-                
-                  <tr>
-                    <td>Test</td>
-                    <td>Test</td>
-                    <td>Test</td>
-                    <td><span className='status-active'> Test</span></td>
-                    <td><span className='role-badge'>Test</span></td>
+            <thead>
+              <tr>
+                <th style={{ width: '25%' }}>Index</th>
+                <th style={{ width: '75%' }}>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedData.length > 0 ? (
+                selectedData.map((item, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{Object.values(item)[0]}</td>
                   </tr>
-             
-              </tbody>
-            </Table>
-          
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="100%" style={{ textAlign: 'center', display:'table-cell' }}>No data available</td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
         </MainWrapper>
       </Container>
     </PageWrapper>
+</>
   );
 }

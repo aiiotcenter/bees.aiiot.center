@@ -191,7 +191,7 @@ thead{
 export const TableWrapper = styled.div`
   overflow-x: auto; // Ensures horizontal scrolling for smaller screens
   padding: 30px;
-  background: #FFFFFF;
+  /* background: #FFFFFF; */
   border-radius: 4px;
   width: 100%;
 

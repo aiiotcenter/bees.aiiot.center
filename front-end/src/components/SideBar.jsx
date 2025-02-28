@@ -1,67 +1,87 @@
-// src/components/Sidebar.js
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BarChart2, FileText, Heart, Mail, BarChart, CreditCard, UserCircle, LogOut } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { SidebarContainer, Logo, NavSection, NavSectionTitle, NavItem } from '../Style/SideBar/Style';
 import LogoImage from '../assets/logo.jpg';
+import { MdDashboard } from "react-icons/md";
+import { GiArtificialHive } from "react-icons/gi";
 import { FaDisease } from "react-icons/fa6";
 import { RiLiveFill } from "react-icons/ri";
-import { GiArtificialHive } from "react-icons/gi";
-import { MdDashboard } from "react-icons/md";
+import { BarChart, CreditCard, UserCircle, LogOut } from 'lucide-react';
 
 const Sidebar = () => {
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
+  const location = useLocation(); // Get current route
 
   return (
     <SidebarContainer>
-      <Logo>
-        <img src={LogoImage} alt='logo' width={25} />
+      {/* Logo Section */}
+      <Logo onClick={() => navigate('/dashboard')}>
+        <img src={LogoImage} alt='Bee-Keeping Logo' width={25} />
         Bee-Keeping
       </Logo>
 
+      {/* Main Section */}
       <NavSection>
         <NavSectionTitle>Main</NavSectionTitle>
-        <NavItem onClick={() => navigate('/dashboard')}>
-          <MdDashboard size={20} />
-          Dashboard
+        <NavItem 
+          onClick={() => navigate('/dashboard')} 
+          className={location.pathname === "/dashboard" ? "active" : ""}
+        >
+          <MdDashboard size={20} /> Dashboard
         </NavItem>
-        <NavItem onClick={() => navigate('/proposals')}>
-          <GiArtificialHive size={20} />
-          AI Model
+        <NavItem 
+          onClick={() => navigate('/ai-modal')} 
+          className={location.pathname === "/proposals" ? "active" : ""}
+        >
+          <GiArtificialHive size={20} /> AI Model
         </NavItem>
-        <NavItem onClick={() => navigate('/saved')}>
-          
-          <FaDisease size={20} />
-          Diseases
+        <NavItem 
+          onClick={() => navigate('/not-found')} 
+          className={location.pathname === "/saved" ? "active" : ""}
+        >
+          <FaDisease size={20} /> Diseases
         </NavItem>
-        <NavItem onClick={() => navigate('/streaming')}>
-          <RiLiveFill size={20} />
-          Live Streaming
+        <NavItem 
+          onClick={() => navigate('/streaming')} 
+          className={location.pathname === "/streaming" ? "active" : ""}
+        >
+          <RiLiveFill size={20} /> Live Streaming
         </NavItem>
       </NavSection>
 
+      {/* Finance Section */}
       <NavSection>
         <NavSectionTitle>Finance</NavSectionTitle>
-        <NavItem onClick={() => navigate('/reviews')}>
-          <BarChart size={20} />
-          Reviews
+        <NavItem 
+          onClick={() => navigate('/reviews')} 
+          className={location.pathname === "/reviews" ? "active" : ""}
+        >
+          <BarChart size={20} /> Reviews
         </NavItem>
-        <NavItem onClick={() => navigate('/invoices')}>
-          <CreditCard size={20} />
-          Invoices
+        <NavItem 
+          onClick={() => navigate('/invoices')} 
+          className={location.pathname === "/invoices" ? "active" : ""}
+        >
+          <CreditCard size={20} /> Invoices
         </NavItem>
       </NavSection>
 
+      {/* Settings Section */}
       <NavSection>
         <NavSectionTitle>Settings</NavSectionTitle>
-        <NavItem onClick={() => navigate('/profile')}>
-          <UserCircle size={20} />
-          My Profile
+        <NavItem 
+          onClick={() => navigate('/profile')} 
+          className={location.pathname === "/profile" ? "active" : ""}
+        >
+          <UserCircle size={20} /> My Profile
         </NavItem>
-        <NavItem onClick={() => navigate('/logout')}>
-          <LogOut size={20} />
-          Logout
+        <NavItem 
+          onClick={() => navigate('/logout')} 
+          className={location.pathname === "/logout" ? "active" : ""}
+        >
+          <LogOut size={20} /> Logout
         </NavItem>
+       
       </NavSection>
     </SidebarContainer>
   );

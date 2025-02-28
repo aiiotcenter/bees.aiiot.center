@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import { Box, DetailWrapper, Icon, Left, PlaceHolder, Right, TextWrapper, Wrapper } from '../Style/Card/Style';
 import Typography from '../Style/Typography';
 import { GiBee } from "react-icons/gi";
@@ -8,15 +9,14 @@ import { FaWeight } from "react-icons/fa";
 
 export default function Card() {
     const [apiData, setApiData] = useState([]);
+    const navigate = useNavigate(); // Hook for navigation
 
-    // Fetch data from API
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await fetch('https://bees-backend.aiiot.center/api/data');
                 if (response.ok) {
                     const data = await response.json();
-                    console.log("API Response:", data); 
                     setApiData(data || []);
                 } else {
                     console.error('Failed to fetch data.');
@@ -29,22 +29,18 @@ export default function Card() {
         fetchData();
     }, []);
 
-    // Function to calculate the average of a given field
     const calculateAverage = (field) => {
         if (!apiData.length) return 0; 
         const sum = apiData.reduce((acc, item) => acc + (item[field] || 0), 0);
         return (sum / apiData.length).toFixed(2);
     };
 
-    // Define Bee Status based on sound activity
     const calculateBeeStatus = () => {
         if (!apiData.length) return "Unknown";
         const activeBees = apiData.filter(item => item.sound_status === 1).length;
-        const percentage = ((activeBees / apiData.length) * 100).toFixed(2);
-        return `${percentage}%`;
+        return `${((activeBees / apiData.length) * 100).toFixed(2)}%`;
     };
 
-    // Updated card data with icon components
     const cardInfo = [
         { title: "Bee Status", field: "sound_status", icon: <GiBee size={40} color="#000" />, customValue: calculateBeeStatus() },
         { title: "Hive Status", field: "humidity", icon: <MdHive size={40} color="#000" /> },
@@ -52,10 +48,15 @@ export default function Card() {
         { title: "Hive Weight", field: "distance", icon: <FaWeight size={40} color="#000" /> }
     ];
 
+    const handleBoxClick = (field) => {
+        const selectedData = apiData.map(item => ({ field: item[field] }));
+        navigate('/details', { state: { selectedData } }); // Redirect with data
+    };
+
     return (
         <Wrapper>
             {cardInfo.map((card, index) => (
-                <Box key={index}>
+                <Box key={index} onClick={() => handleBoxClick(card.field)} style={{ cursor: "pointer" }}>
                     <DetailWrapper>
                         <Left>
                             <Typography variant="p">{card.title}</Typography>
@@ -73,7 +74,7 @@ export default function Card() {
                         </Left>
                         <Right>
                             <Icon>
-                                {card.icon}  {/* Render icon directly */}
+                                {card.icon}
                                 <PlaceHolder></PlaceHolder>
                             </Icon>
                         </Right>

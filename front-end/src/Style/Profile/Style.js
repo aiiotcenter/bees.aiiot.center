@@ -7,6 +7,6 @@ export const Wrapper = styled.div`
   gap: 2px;
   margin-bottom: 30px;
     p{
-        margin-bottom: 58px;
+        margin-bottom: 30px;
     }
 `;

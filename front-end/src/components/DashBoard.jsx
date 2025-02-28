@@ -6,10 +6,6 @@ import Card from './Card';
 import CardFetcher from './CardFetcher';
 import Tempracture from './Charts/Tempracture';
 import Humidity from './Charts/Humidity';
-import Notifications from '../Sections/Notifications';
-import Login from './Login';
-import SignUp from './SignUp';
-import Table from './Table';
 
 export default function DashBoard() {
     return (
@@ -21,18 +17,14 @@ export default function DashBoard() {
                         <Typography variant="p">Our AI-powered Bee Monitoring Dashboard provides real-time insights into hive conditions and bee activity. It collects and visualizes key data points such as bee status, hive health, temperature, humidity, and distance detection to ensure optimal hive management. With interactive charts and analytics, beekeepers can track environmental changes, detect anomalies, and make data-driven decisions to enhance bee productivity and well-being.</Typography>
                     </HeadingWrapper>
                     <CardsWrapper>
-                       <Card/>
-                       <ChartsWrapper>
+                        <Card />
+                        <ChartsWrapper>
                             <Tempracture />
-                            <Humidity/>
+                            <Humidity />
                         </ChartsWrapper>
                     </CardsWrapper>
                 </Container>
             </PageWrapper>
-            {/* <Notifications/> */}
-            {/* <Login/>
-            <SignUp/> */}
-         
         </>
     )
 }

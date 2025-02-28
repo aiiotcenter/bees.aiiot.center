@@ -5,7 +5,7 @@ export const HeadingWrapper = styled.div`
   align-items: flex-start;
   flex-direction: column;
   gap: 2px;
-  margin-bottom: 58px;
+  margin-bottom: 30px;
 `;
 
 export const CardsWrapper = styled.div`

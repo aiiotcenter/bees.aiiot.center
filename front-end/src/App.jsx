@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, Outlet } from 'react-router-dom';
 import Sidebar from './components/SideBar';
 import Header from './components/Header';
 import DashBoard from './components/DashBoard';
@@ -12,83 +12,61 @@ import NotFound from './components/404';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 import AIModel from './components/AIModel';
+import Table from './components/Table';
 
-// ✅ Layout component for authenticated routes
-function Layout({ children }) {
+// ✅ Layout component with Sidebar & Header
+const Layout = () => {
+  const location = useLocation();
+
+  // Hide sidebar for login/signup pages
+  const hideSidebar = location.pathname === "/login" || location.pathname === "/sign-up";
+
   return (
     <MainWrapper>
-      <Sidebar />
+      {!hideSidebar && <Sidebar />} {/* Show sidebar only for authenticated routes */}
       <Main>
-        <Header />
-        {children}
-        <Footer />
+        {!hideSidebar && <Header />}
+        <Outlet />  {/* ✅ This renders child routes dynamically */}
+        {!hideSidebar && <Footer />}
       </Main>
     </MainWrapper>
   );
-}
+};
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // ✅ Check authentication status on page load
+  useEffect(() => {
+    const storedAuth = localStorage.getItem('isAuthenticated');
+    setIsAuthenticated(storedAuth === 'true');
+  }, []);
+
   return (
     <Router>
       <Routes>
-        {/* Public Routes */}
+        {/* ✅ Public Routes */}
         <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/sign-up" element={<SignUp />} />
 
-        {/* Redirect Home to Login if not authenticated */}
-        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
+        {/* ✅ Redirect Home Based on Authentication */}
+        <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
 
-        {/* Protected Routes */}
+        {/* ✅ Protected Routes with Sidebar & Layout */}
         {isAuthenticated ? (
-          <>
-            <Route
-              path="/dashboard"
-              element={
-                <Layout>
-                  <DashBoard />
-                </Layout>
-              }
-            />
-            <Route
-              path="/streaming"
-              element={
-                <Layout>
-                  <Streaming />
-                </Layout>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <Layout>
-                  <Profile />
-                </Layout>
-              }
-            />
-            {/* Example of a placeholder for other pages */}
-            <Route
-              path="/proposals"
-              element={
-                <Layout>
-                  <AIModel/>
-                </Layout>
-              }
-            />
-            <Route
-              path="/saved"
-              element={
-                <Layout>
-                  <NotFound />
-                </Layout>
-              }
-            />
+          <Route element={<Layout />}>  {/* ✅ This wraps all protected routes */}
+            <Route path="/dashboard" element={<DashBoard />} />
+            <Route path="/streaming" element={<Streaming />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/ai-modal" element={<AIModel />} />
+            <Route path="/not-found" element={<NotFound />} />
+            <Route path="/disease" element={<NotFound />} />
+            <Route path="/detail" element={<Table />} />
             <Route path="/logout" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
             <Route path="*" element={<NotFound />} />
-          </>
+          </Route>
         ) : (
-          // Redirect all unknown routes to login
+          // Redirect unknown routes to login when unauthenticated
           <Route path="/*" element={<Navigate to="/login" />} />
         )}
       </Routes>
