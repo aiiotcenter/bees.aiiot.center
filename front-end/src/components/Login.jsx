@@ -1,110 +1,82 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Link, useNavigate } from "react-router-dom"; // ✅ Use Link & useNavigate
-import { 
-  Container, Form, Input, InputGroup, Label, PageWrapper, 
-  PaymentBox, PaymentWrapper, ErrorText 
-} from "../Style/Login/Style";
+import { Link, useNavigate } from "react-router-dom";
+import { CognitoUser, AuthenticationDetails } from "amazon-cognito-identity-js";
+import { Container, Form, Input, InputGroup, Label, PageWrapper, ErrorText } from "../Style/Login/Style";
 import Typography from "../Style/Typography";
 import { Button } from "../Style/GlobalStyle";
+import { CognitoUserPool } from "amazon-cognito-identity-js";
 
-// ✅ Validation Schema
+// AWS Cognito Configuration
+const userPool = new CognitoUserPool({
+  UserPoolId: "eu-west-2_K6L5O2HfY", // Your Cognito User Pool ID
+  ClientId: "4njc2pp1cpfi7ecmspudfvggf4", // Your Cognito App Client ID
+});
+
+// Validation Schema
 const schema = yup.object().shape({
   email: yup.string().email("Invalid email format").required("Email is required"),
   password: yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
 });
 
 export default function Login({ setIsAuthenticated }) {
-  const [isAuthenticated, setAuthState] = useState(false);
-  const navigate = useNavigate(); // ✅ Hook for navigation
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({ resolver: yupResolver(schema) });
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(schema)
+  });
 
-  // ✅ Check if user is authenticated on initial load
-  useEffect(() => {
-    const authData = localStorage.getItem("isAuthenticated");
-    if (authData === "true") {
-      setAuthState(true);
-      setIsAuthenticated(true); // Update the parent component state
-      navigate("/dashboard"); // Redirect to dashboard if authenticated
-    }
-  }, [navigate, setIsAuthenticated]);
-
-  // ✅ Handle form submission
+  // Login Function
   const onSubmit = (data) => {
-    console.log("Login data:", data);
-    setAuthState(true); // ✅ Simulating authentication
-    setIsAuthenticated(true); // ✅ Updating authentication state
-    localStorage.setItem("isAuthenticated", "true"); // Save authentication state to localStorage
-    navigate("/dashboard"); // ✅ Programmatic navigation to dashboard
+    const { email, password } = data;
+
+    const user = new CognitoUser({ Username: email, Pool: userPool });
+    const authDetails = new AuthenticationDetails({ Username: email, Password: password });
+
+    user.authenticateUser(authDetails, {
+      onSuccess: (result) => {
+        console.log("Login successful:", result);
+        localStorage.setItem("isAuthenticated", "true");
+        setIsAuthenticated(true);
+        navigate("/dashboard"); // Redirect to dashboard
+      },
+      onFailure: (err) => {
+        setError(err.message);
+      },
+    });
   };
 
   return (
     <PageWrapper>
       <Typography variant="h1">Log In</Typography>
-      <Typography variant="p" style={{ textAlign: "center" }}>
-        Welcome back! Please enter your details to continue.
-      </Typography>
-      
       <Container>
-        <Typography variant="h2">We’re glad to see you again!</Typography>
-        <Typography variant="p" style={{ textAlign: "center", marginBottom: "20px" }}>
-          Don't have an account?{" "}
-          <Link to="/sign-up" style={{ color: "#1967D2", fontWeight: "bold" }}>
-            Sign Up!
-          </Link>
-        </Typography>
+        <Typography variant="h2">Welcome Back!</Typography>
+
+        {error && <ErrorText>{error}</ErrorText>} {/* Show error if any */}
 
         <Form onSubmit={handleSubmit(onSubmit)}>
           <InputGroup>
-            <Label>Email Address</Label>
-            <Input 
-              placeholder="your-email@example.com" 
-              type="email" 
-              {...register("email")}
-            />
+            <Label>Email</Label>
+            <Input type="email" {...register("email")} placeholder="you@example.com" />
             {errors.email && <ErrorText>{errors.email.message}</ErrorText>}
           </InputGroup>
 
           <InputGroup>
             <Label>Password</Label>
-            <Input 
-              placeholder="Enter your password" 
-              type="password" 
-              {...register("password")}
-            />
+            <Input type="password" {...register("password")} placeholder="Enter your password" />
             {errors.password && <ErrorText>{errors.password.message}</ErrorText>}
           </InputGroup>
 
-          {/* ✅ Button now redirects using navigate */}
           <Button type="submit">Login</Button>
         </Form>
 
-        {/* OR with Horizontal Lines */}
-        <Typography 
-          variant="p" 
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-            marginTop: "20px",
-          }}
-        >
-          <span style={{ flex: 1, height: "1px", backgroundColor: "#ccc", marginRight: "10px" }}></span>
-          OR
-          <span style={{ flex: 1, height: "1px", backgroundColor: "#ccc", marginLeft: "10px" }}></span>
+        <Typography variant="p" style={{ textAlign: "center", marginTop: "10px" }}>
+          Don't have an account?{" "}
+          <Link to="/sign-up" style={{ color: "#1967D2", fontWeight: "bold" }}>Sign Up</Link>
         </Typography>
-
-        <PaymentWrapper>
-          <PaymentBox variant="second">Continue with Google</PaymentBox>
-        </PaymentWrapper>
       </Container>
     </PageWrapper>
   );

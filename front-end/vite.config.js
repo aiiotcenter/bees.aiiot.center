@@ -1,14 +1,28 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
+import { NodeModulesPolyfillPlugin } from "@esbuild-plugins/node-modules-polyfill";
 
 export default defineConfig({
   plugins: [react()],
-  build: {
-    outDir: 'dist', // Ensures the build output goes to the correct folder
-    assetsDir: 'assets', // Organizes static files
-    emptyOutDir: true, // Clears old files before building
+  optimizeDeps: {
+    esbuildOptions: {
+      define: {
+        global: "globalThis", // Fix for "global is not defined"
+      },
+      plugins: [
+        NodeGlobalsPolyfillPlugin({
+          buffer: true,
+          process: true,
+        }),
+        NodeModulesPolyfillPlugin(),
+      ],
+    },
   },
-  server: {
-    historyApiFallback: true, // Ensures React SPA routing works
+  resolve: {
+    alias: {
+      process: "process/browser",
+      buffer: "buffer",
+    },
   },
 });

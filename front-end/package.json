@@ -10,13 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@aws-amplify/auth": "^6.11.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@hookform/resolvers": "^4.1.1",
     "@mui/material": "^6.4.3",
     "aiiot-center-npm-pkg": "^2.9.0",
-    "aws-amplify": "^6.13.1",
+    "amazon-cognito-identity-js": "^6.3.12",
     "axios": "^1.8.1",
     "lucide-react": "^0.474.0",
     "oidc-client-ts": "^3.1.0",
@@ -32,6 +31,8 @@
     "yup": "^1.6.1"
   },
   "devDependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+    "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
     "@eslint/js": "^9.19.0",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
