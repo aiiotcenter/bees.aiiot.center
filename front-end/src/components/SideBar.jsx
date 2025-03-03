@@ -50,7 +50,7 @@ const Sidebar = () => {
       </NavSection>
 
       {/* Finance Section */}
-      <NavSection>
+      {/* <NavSection>
         <NavSectionTitle>Finance</NavSectionTitle>
         <NavItem 
           onClick={() => navigate('/reviews')} 
@@ -64,7 +64,7 @@ const Sidebar = () => {
         >
           <CreditCard size={20} /> Invoices
         </NavItem>
-      </NavSection>
+      </NavSection> */}
 
       {/* Settings Section */}
       <NavSection>
