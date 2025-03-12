@@ -7,7 +7,7 @@ export default function Live() {
       <iframe
         width="100%"
         height="500px"
-        src="https://www.youtube.com/embed/live_stream?channel=YOUR_CHANNEL_ID"
+        src="https://beesscamera.pagekite.me/?action=stream"
         title="Live Streaming"
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
