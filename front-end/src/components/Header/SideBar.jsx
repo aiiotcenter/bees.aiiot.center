@@ -33,14 +33,16 @@ const MenuItem = styled.div`
   cursor: pointer;
   color: #333;
   border-radius: 5px;
-  transition: background 0.2s ease-in-out;
+  transition: 0.2s ease all;
 
   &:hover {
-    background: #f4f4f4;
+    /* background: #f4f4f4; */
+    background: #78091e;
+    color: #fff;
   }
 
   &.active {
-    background: #000;
+    background: #78091e;
     color: #fff;
   }
 
@@ -57,7 +59,7 @@ const SideBar = ({ isOpen }) => {
 
 
       <MenuSection>
-        <MenuItem as={NavLink} to="/profile" className="active">
+        <MenuItem as={NavLink} to="/profile">
           <FaUser/> My Profile
         </MenuItem>
         <MenuItem>

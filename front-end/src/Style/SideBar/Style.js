@@ -48,12 +48,12 @@ export const NavItem = styled.a`
   max-height: 55px;
   transition: 0.3s ease all;
   &:hover{
-    background-color: #222222;
+    background-color: #78091e;
     color: #fff;
   }
 
   &.active {
-    background-color: #222222;
+    background-color: #78091e;
     color: #fff;
    
   }

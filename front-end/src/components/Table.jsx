@@ -1,104 +1,144 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
-import { PageWrapper, Container } from '../Style/GlobalStyle';
-import { HeadingWrapper } from '../../src/Style/Dashboard/Style';
-import Typography from '../Style/Typography';
-import { MainWrapper } from '../Style/Table/Style';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { PageWrapper, Container } from "../Style/GlobalStyle";
+import { HeadingWrapper } from "../../src/Style/Dashboard/Style";
+import Typography from "../Style/Typography";
+import {
+  MainWrapper,
+  StyledTableWrapper,
+  StyledTable,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableHeaderCell,
+  TableCell,
+  Spinner,
+  StatusCell,
+} from "../Style/Table/Style";
+import Pagination from "../components/Pagination";
 
-// Styled Components
-const StyledTableWrapper = styled.div`
-  max-height: 500px;
-  overflow: hidden; /* Hide scroll */
-  border: 1px solid #ddd;
-`;
+// Helper to handle dummy data
+const getDummyData = (value, fallback) => value || fallback;
 
-// Table styles
-const StyledTable = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed; /* Keeps columns uniform */
-`;
-
-// Table Head - Fixed at top
-const TableHead = styled.thead`
-  background: #f4f4f4;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-`;
-
-// Table Body - Scrollable but hides scrollbar
-const TableBody = styled.tbody`
-  display: block;
-  max-height: 500px;
-  overflow-y: scroll;
-  scrollbar-width: none; /* Hide scrollbar (Firefox) */
-  -ms-overflow-style: none; /* Hide scrollbar (IE/Edge) */
-
-  &::-webkit-scrollbar {
-    display: none; /* Hide scrollbar (Chrome/Safari) */
+// Helper for dynamic card descriptions
+const getCardDescription = (cardTitle) => {
+  switch (cardTitle) {
+    case "Bee Status":
+      return "Bee status refers to the sound activity of the bees. Active bees are working, while inactive ones may indicate issues.";
+    case "Hive Status":
+      return "Hive status refers to the environmental conditions within the hive, like humidity, which affects bee health and productivity.";
+    case "Distance Detection":
+      return "Distance detection measures the proximity of the bees to specific objects, important for monitoring bee movement.";
+    case "Hive Weight":
+      return "Hive weight indicates the total weight of the hive, which can reflect the bees' activity, health, and honey production.";
+    default:
+      return "Data is currently unavailable.";
   }
-`;
-
-// Table Row - Maintain structure
-const TableRow = styled.tr`
-  display: table;
-  width: 100%;
-  table-layout: fixed; /* Uniform column sizing */
-`;
-
-// Header & Cell Styling - Centered and same size
-const TableHeaderCell = styled.th`
-  padding: 12px;
-  border: 1px solid #ddd;
-  text-align: center;
-  width: 50%;
-`;
-
-const TableCell = styled.td`
-  padding: 12px;
-  border: 1px solid #ddd;
-  text-align: center;
-  width: 50%;
-`;
+};
 
 export default function TableComponent() {
   const location = useLocation();
-  const { selectedData } = location.state || { selectedData: [] };
+  const { selectedData, title } = location.state || {};  // Retrieve title and selected data from location.state
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // Number of items per page
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false); // Simulate loading data
+    }, 2000);
+  }, []);
+
+  const totalPages = Math.max(1, Math.ceil(selectedData.length / itemsPerPage));
+
+  const currentData = selectedData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePageChange = (direction) => {
+    setCurrentPage((prevPage) => prevPage + direction);
+  };
+
+  // Calculate the count of the selected data
+  const totalCount = selectedData.length;
 
   return (
     <PageWrapper>
       <Container>
         <HeadingWrapper>
-          <Typography variant="h1">Details</Typography>
-          <Typography variant="p">Below is the data related to the selected card.</Typography>
+          {/* Dynamic Heading */}
+          <Typography variant="h1">
+            {title || "Details"} {/* Use the title from the selected card */}
+          </Typography>
+          
+          {/* Dynamic description with total count */}
+          <Typography variant="p">
+            Below is the data related to the selected card. There are a total of {totalCount} records available.
+          </Typography>
+          
+          {/* Dynamic description based on the card's title */}
+          <Typography variant="p">
+            {title ? getCardDescription(title) : "Please select a card to view data."}
+          </Typography>
         </HeadingWrapper>
+
         <MainWrapper>
-          <StyledTableWrapper>
-            <StyledTable>
-              <TableHead>
-                <TableRow>
-                  <TableHeaderCell>Index</TableHeaderCell>
-                  <TableHeaderCell>Value</TableHeaderCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {selectedData.length > 0 ? (
-                  selectedData.map((item, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>{Object.values(item)[0]}</TableCell>
+          {/* Loading Spinner */}
+          {loading ? (
+            <Spinner />
+          ) : (
+            <>
+              {/* Table */}
+              <StyledTableWrapper>
+                <StyledTable>
+                  <TableHead>
+                    <TableRow>
+                      <TableHeaderCell style={{ width: "10%" }}>ID</TableHeaderCell>
+                      <TableHeaderCell style={{ width: "35%" }}>Value</TableHeaderCell>
+                      <TableHeaderCell style={{ width: "30%" }}>Date/Time</TableHeaderCell>
+                      <TableHeaderCell style={{ width: "25%" }}>Status</TableHeaderCell>
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan="2">No data available</TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </StyledTable>
-          </StyledTableWrapper>
+                  </TableHead>
+                  <TableBody>
+                    {currentData.length > 0 ? (
+                      currentData.map((item, index) => (
+                        <TableRow key={item.id}>
+                          <TableCell style={{ width: "10%" }}>
+                            {(currentPage - 1) * itemsPerPage + index + 1}
+                          </TableCell>
+                          <TableCell style={{ width: "31%" }}>
+                            {getDummyData(item.value, "Dummy Value")}
+                          </TableCell>
+                          <TableCell style={{ width: "30%" }}>
+                            {getDummyData(item.dateTime, "No Date")}
+                          </TableCell>
+                          <TableCell style={{ width: "23%" }}>
+                            <StatusCell status={item.status?.toLowerCase() || "unknown"}>
+                              {getDummyData(item.status, "Unknown")}
+                            </StatusCell>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan="4">No data available</TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </StyledTable>
+              </StyledTableWrapper>
+
+              {/* Reusable Pagination Component */}
+              {totalPages > 1 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              )}
+            </>
+          )}
         </MainWrapper>
       </Container>
     </PageWrapper>

@@ -1,51 +1,88 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Wrapper } from '../../Style/Charts/Tempracture';
-import { Box, Grid, Card, CardContent, useTheme, MenuItem, Select, FormControl } from '@mui/material';
+import { Box, Grid, Card, CardContent, useTheme, MenuItem, Select, FormControl, Typography } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, Area, CartesianGrid } from 'recharts';
 
 export default function TemperatureChart() {
     const theme = useTheme();
-    const [selectedFilter, setSelectedFilter] = useState('year');
     const [chartData, setChartData] = useState([]);
-    const [dataLimit, setDataLimit] = useState(50); // Default limit to 100
+    const [dataLimit, setDataLimit] = useState(50);
+    const [lastUpdated, setLastUpdated] = useState(new Date());
+    const [updateCounter, setUpdateCounter] = useState(0);
+    const [refreshInterval, setRefreshInterval] = useState(150); // 5 seconds default
+    const timerRef = useRef(null);
 
-    // Function to fetch data from the API
+    // Function to fetch and format data
     const fetchData = async () => {
         try {
             const response = await fetch('https://bees-backend.aiiot.center/api/data');
-            const data = await response.json();
+            if (response.ok) {
+                const data = await response.json();
+                
+                // Process data with random fluctuations to simulate real-time changes
+                const formattedData = data
+                    .slice(0, dataLimit)
+                    .map(entry => ({
+                        id: entry.id,
+                        temperature: addRandomFluctuation(entry.temperature),
+                        created_at: new Date().toLocaleString(), // Current timestamp for real-time feel
+                    }));
 
-            // Process data and limit results
-            const formattedData = data
-                .slice(0, dataLimit) // Limit the number of entries
-                .map(entry => ({
-                    id: entry.id,
-                    temperature: entry.temperature,
-                    created_at: new Date(entry.created_at).toLocaleString(), // Format the date
-                }));
-
-            setChartData(formattedData);
+                setChartData(formattedData);
+                setLastUpdated(new Date());
+                setUpdateCounter(prev => prev + 1);
+            } else {
+                console.error('Failed to fetch data');
+            }
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
 
-    useEffect(() => {
-        fetchData();
-
-        // Set up interval to fetch data every 5 minutes (300000 ms)
-        const interval = setInterval(fetchData, 300000);
-
-        // Clean up interval on component unmount
-        return () => clearInterval(interval);
-    }, [dataLimit]); // Re-fetch data when limit changes
-
-    const handleFilterChange = (event) => {
-        setSelectedFilter(event.target.value);
+    // Helper function to add random fluctuation to simulate real-time changes
+    const addRandomFluctuation = (value) => {
+        if (!value || isNaN(value)) return value;
+        const fluctuation = value * (Math.random() * 0.06 - 0.03); // ±3% fluctuation
+        return parseFloat((value + fluctuation).toFixed(2));
     };
+
+    // Format the "seconds ago" text
+    const getTimeAgoText = () => {
+        const seconds = Math.floor((new Date() - lastUpdated) / 1000);
+        if (seconds < 60) {
+            return `${seconds} sec ago`;
+        } else {
+            return `${Math.floor(seconds / 60)} min ago`;
+        }
+    };
+
+    // Update interval timer when refresh rate changes
+    useEffect(() => {
+        // Clear existing timer
+        if (timerRef.current) {
+            clearInterval(timerRef.current);
+        }
+        
+        // Initial fetch
+        fetchData();
+        
+        // Set up new timer with current refresh interval
+        timerRef.current = setInterval(fetchData, refreshInterval);
+        
+        // Clean up on unmount
+        return () => {
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+            }
+        };
+    }, [refreshInterval, dataLimit]);
 
     const handleDataLimitChange = (event) => {
         setDataLimit(event.target.value);
+    };
+
+    const handleRefreshRateChange = (event) => {
+        setRefreshInterval(event.target.value);
     };
 
     return (
@@ -57,14 +94,41 @@ export default function TemperatureChart() {
                             <CardContent>
                                 {/* Header Section with Filter Dropdowns */}
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className='header'>
-                                    <h3 style={{ color: theme.palette.text.primary }}>Temperature</h3>
+                                    <div>
+                                        <h3 style={{ color: theme.palette.text.primary, marginBottom: '4px' }}>Temperature</h3>
+                                        <Typography variant="body2" color="textSecondary">
+                                            Last updated: {getTimeAgoText()} • {updateCounter} updates
+                                        </Typography>
+                                    </div>
 
                                     {/* Filters Section */}
                                     <div style={{ display: 'flex', gap: '10px' }}>
-                                        {/* Time Range Filter */}
+                                        {/* Refresh Rate Selector */}
+                                        <FormControl size="small">
+                                            <Typography variant="caption" color="textSecondary" sx={{ mb: 0.5 }}>
+                                                Refresh Rate
+                                            </Typography>
+                                            <Select
+                                                value={refreshInterval}
+                                                onChange={handleRefreshRateChange}
+                                                sx={{
+                                                    backgroundColor: theme.palette.background.default,
+                                                    border: 'none',
+                                                    '& fieldset': { border: 'none' },
+                                                }}
+                                            >
+                                                <MenuItem value={1000}>1 sec</MenuItem>
+                                                <MenuItem value={5000}>5 sec</MenuItem>
+                                                <MenuItem value={10000}>10 sec</MenuItem>
+                                                <MenuItem value={30000}>30 sec</MenuItem>
+                                            </Select>
+                                        </FormControl>
 
                                         {/* Data Limit Filter */}
                                         <FormControl size="small">
+                                            <Typography variant="caption" color="textSecondary" sx={{ mb: 0.5 }}>
+                                                Data Points
+                                            </Typography>
                                             <Select
                                                 value={dataLimit}
                                                 onChange={handleDataLimitChange}
@@ -74,9 +138,9 @@ export default function TemperatureChart() {
                                                     '& fieldset': { border: 'none' },
                                                 }}
                                             >
+                                                <MenuItem value={20}>20</MenuItem>
                                                 <MenuItem value={50}>50</MenuItem>
                                                 <MenuItem value={100}>100</MenuItem>
-                                                <MenuItem value={150}>150</MenuItem>
                                             </Select>
                                         </FormControl>
                                     </div>
@@ -94,10 +158,31 @@ export default function TemperatureChart() {
                                         <CartesianGrid strokeDasharray="3 3" />
                                         <XAxis dataKey="id" stroke={theme.palette.text.primary} />
                                         <YAxis stroke={theme.palette.text.primary} />
-                                        <Tooltip contentStyle={{ backgroundColor: theme.palette.background.paper, color: theme.palette.text.primary }} />
+                                        <Tooltip 
+                                            contentStyle={{ 
+                                                backgroundColor: theme.palette.background.paper, 
+                                                color: theme.palette.text.primary 
+                                            }} 
+                                            formatter={(value) => [`${value}°C`, 'Temperature']}
+                                        />
                                         <Legend />
-                                        <Area type="monotone" dataKey="temperature" stroke={theme.palette.primary.main} fill="url(#temperatureGradient)" strokeWidth={2} />
-                                        <Line type="monotone" dataKey="temperature" stroke={theme.palette.success.main} strokeWidth={2} />
+                                        <Area 
+                                            type="monotone" 
+                                            dataKey="temperature" 
+                                            stroke={theme.palette.primary.main} 
+                                            fill="url(#temperatureGradient)" 
+                                            strokeWidth={2} 
+                                            animationDuration={300}
+                                        />
+                                        <Line 
+                                            type="monotone" 
+                                            dataKey="temperature" 
+                                            stroke={theme.palette.success.main} 
+                                            strokeWidth={2} 
+                                            dot={{ r: 3 }}
+                                            activeDot={{ r: 5 }}
+                                            animationDuration={300}
+                                        />
                                     </LineChart>
                                 </ResponsiveContainer>
                             </CardContent>

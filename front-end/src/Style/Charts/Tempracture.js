@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Wrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
-  width: 64.9%;
+  width: 62.9%;
   border-radius: 4px;
   .header{
     border-bottom: 1px solid #E9E9E9;
