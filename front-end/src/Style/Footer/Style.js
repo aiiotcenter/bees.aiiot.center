@@ -14,7 +14,7 @@ export const Wrapper = styled.div`
     background-color: #fff;
     padding: 20px 30px; /* Adjust padding for spacing */
     border-top: 0px solid #e0e0e0; /* Optional: Adds a subtle border on top */
-    z-index: 1000; /* Makes sure it stays above other elements */
+    z-index: 0; /* Makes sure it stays above other elements */
 `;
 
 export const Left = styled.div`

@@ -11,6 +11,7 @@ export default function TemperatureChart() {
     const [updateCounter, setUpdateCounter] = useState(0);
     const [refreshInterval, setRefreshInterval] = useState(150); // 5 seconds default
     const timerRef = useRef(null);
+    const [isDataUpdated, setIsDataUpdated] = useState(false);
 
     // Function to fetch and format data
     const fetchData = async () => {
@@ -18,7 +19,7 @@ export default function TemperatureChart() {
             const response = await fetch('https://bees-backend.aiiot.center/api/data');
             if (response.ok) {
                 const data = await response.json();
-                
+
                 // Process data with random fluctuations to simulate real-time changes
                 const formattedData = data
                     .slice(0, dataLimit)
@@ -28,9 +29,15 @@ export default function TemperatureChart() {
                         created_at: new Date().toLocaleString(), // Current timestamp for real-time feel
                     }));
 
-                setChartData(formattedData);
-                setLastUpdated(new Date());
-                setUpdateCounter(prev => prev + 1);
+                // Check if data has changed by comparing with the previous data
+                if (JSON.stringify(formattedData) !== JSON.stringify(chartData)) {
+                    setChartData(formattedData);
+                    setIsDataUpdated(true); // Set flag to true if data is updated
+                    setLastUpdated(new Date());
+                    setUpdateCounter(prev => prev + 1);
+                } else {
+                    setIsDataUpdated(false); // No new data, so keep old data
+                }
             } else {
                 console.error('Failed to fetch data');
             }
@@ -62,13 +69,13 @@ export default function TemperatureChart() {
         if (timerRef.current) {
             clearInterval(timerRef.current);
         }
-        
+
         // Initial fetch
         fetchData();
-        
+
         // Set up new timer with current refresh interval
         timerRef.current = setInterval(fetchData, refreshInterval);
-        
+
         // Clean up on unmount
         return () => {
             if (timerRef.current) {
@@ -99,6 +106,12 @@ export default function TemperatureChart() {
                                         <Typography variant="body2" color="textSecondary">
                                             Last updated: {getTimeAgoText()} • {updateCounter} updates
                                         </Typography>
+                                        {/* If no update, show previous data message */}
+                                        {!isDataUpdated && (
+                                            <Typography variant="body2" color="textSecondary" style={{ marginTop: '10px', color: 'red' }}>
+                                                No new data. Showing previous data.
+                                            </Typography>
+                                        )}
                                     </div>
 
                                     {/* Filters Section */}

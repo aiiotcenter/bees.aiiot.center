@@ -25,7 +25,7 @@ export default function HumidityChart() {
         // Add random fluctuations to humidity values to simulate real-time changes
         const dataWithFluctuations = filteredData.map(entry => ({
           ...entry,
-          humidity: addRandomFluctuation(entry.humidity)
+          humidity: addRandomFluctuation(entry.humidity),
         }));
 
         // Process the humidity levels into categories
@@ -65,13 +65,13 @@ export default function HumidityChart() {
     if (timerRef.current) {
       clearInterval(timerRef.current);
     }
-    
+
     // Initial fetch
     fetchData();
-    
+
     // Set up new timer with current refresh interval
     timerRef.current = setInterval(fetchData, refreshInterval);
-    
+
     // Clean up on unmount
     return () => {
       if (timerRef.current) {
@@ -130,13 +130,13 @@ export default function HumidityChart() {
             {/* Header with Filter Dropdown and Update Info */}
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }} className="header">
               <div>
-              <h3 style={{ color: theme.palette.text.primary, marginBottom: '4px' }}>Humidity</h3>
+                <h3 style={{ color: theme.palette.text.primary, marginBottom: '4px' }}>Humidity</h3>
                 <Typography variant="body2" color="textSecondary">
                   Last updated: {getTimeAgoText()}
-                   {/* • {updateCounter} updates */}
+                  {/* • {updateCounter} updates */}
                 </Typography>
               </div>
-              
+
               <Box sx={{ display: 'flex', gap: 2 }}>
                 {/* Refresh Rate Control */}
                 <FormControl size="small">
@@ -158,7 +158,7 @@ export default function HumidityChart() {
                     <MenuItem value={30000}>30 sec</MenuItem>
                   </Select>
                 </FormControl>
-                
+
                 {/* Time Range Filter */}
                 <FormControl size="small">
                   <Typography variant="caption" color="textSecondary" sx={{ mb: 0.5 }}>
@@ -221,7 +221,7 @@ export default function HumidityChart() {
                 />
               </PieChart>
             </ResponsiveContainer>
-            
+
             {/* Summary statistics below chart */}
             <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-around', textAlign: 'center' }}>
               {chartData.map((category) => (

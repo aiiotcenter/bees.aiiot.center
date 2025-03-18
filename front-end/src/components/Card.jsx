@@ -75,7 +75,38 @@ export default function Card() {
     const calculateBeeStatus = () => {
         if (!apiData.length) return "Unknown";
         const activeBees = apiData.filter(item => item.sound_status === 1).length;
-        return `${((activeBees / apiData.length) * 100).toFixed(2)}%`;
+        const percentage = ((activeBees / apiData.length) * 100).toFixed(2);
+        
+        if (percentage > 75) return "High Activity";  // More than 75% active = High Activity
+        if (percentage > 40) return "Moderate Activity"; // 40% - 75% active = Moderate Activity
+        return "Low Acti...";  // Less than 40% active = Low Activity
+    };
+
+    const calculateHiveStatus = () => {
+        if (!apiData.length) return "Unknown";
+        const avgHumidity = calculateAverage("humidity");
+        
+        if (avgHumidity > 75) return "Optimal"; // Humidity > 75% is optimal for the hive
+        if (avgHumidity > 50) return "Stable"; // Humidity between 50%-75% is stable
+        return "Critical"; // Humidity below 50% is critical
+    };
+
+    const calculateDistanceStatus = () => {
+        if (!apiData.length) return "Unknown";
+        const avgDistance = calculateAverage("distance");
+
+        if (avgDistance < 10) return "Normal";  // Distance below 10 indicates normal operation
+        if (avgDistance < 30) return "Warning"; // Distance between 10-30 indicates caution
+        return "Danger"; // Distance above 30 indicates dangerous proximity
+    };
+
+    const calculateWeightStatus = () => {
+        if (!apiData.length) return "Unknown";
+        const avgWeight = calculateAverage("weight");
+
+        if (avgWeight > 100) return "Stable"; // Weight above 100 is considered stable
+        if (avgWeight > 50) return "Warning"; // Weight between 50-100 indicates caution
+        return "Critical"; // Weight below 50 indicates critical condition
     };
 
     // Format the "seconds ago" text
@@ -89,10 +120,10 @@ export default function Card() {
     };
 
     const cardInfo = [
-        { title: "Bee Status", field: "sound_status", icon: <GiBee size={40} color="#000" />, customValue: calculateBeeStatus() },
-        { title: "Hive Status", field: "humidity", icon: <MdHive size={40} color="#000" /> },
-        { title: "Distance Detection", field: "distance", icon: <GiPathDistance size={40} color="#000" /> },
-        { title: "Hive Weight", field: "weight", icon: <FaWeight size={40} color="#000" /> }
+        { title: "Bee Activity Status", field: "sound_status", icon: <GiBee size={40} color="#000" />, customValue: calculateBeeStatus() },
+        { title: "Hive Status", field: "humidity", icon: <MdHive size={40} color="#000" />, customValue: calculateHiveStatus() },
+        { title: "Distance Detection", field: "distance", icon: <GiPathDistance size={40} color="#000" />, customValue: calculateDistanceStatus() },
+        { title: "Hive Weight", field: "weight", icon: <FaWeight size={40} color="#000" />, customValue: calculateWeightStatus() }
     ];
 
     const handleBoxClick = (field, title) => {

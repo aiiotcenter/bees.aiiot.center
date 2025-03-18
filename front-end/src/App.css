@@ -28,3 +28,7 @@ body {
 /* .recharts-responsive-container{
   max-height: 290px !important;
 } */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
