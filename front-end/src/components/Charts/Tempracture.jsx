@@ -6,37 +6,53 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, Ar
 export default function TemperatureChart() {
     const theme = useTheme();
     const [chartData, setChartData] = useState([]);
+    const [rawData, setRawData] = useState([]);
     const [dataLimit, setDataLimit] = useState(50);
     const [lastUpdated, setLastUpdated] = useState(new Date());
     const [updateCounter, setUpdateCounter] = useState(0);
-    const [refreshInterval, setRefreshInterval] = useState(150); // 5 seconds default
+    const [refreshInterval, setRefreshInterval] = useState(5000); // 5 seconds default
     const timerRef = useRef(null);
     const [isDataUpdated, setIsDataUpdated] = useState(false);
+    const [lastDataHash, setLastDataHash] = useState('');
 
-    // Function to fetch and format data
+    // Function to create a hash of the raw data for comparison
+    const hashData = (data) => {
+        if (!Array.isArray(data) || data.length === 0) return '';
+        return JSON.stringify(data.slice(0, dataLimit).map(item => item.id));
+    };
+
+    // Function to fetch data
     const fetchData = async () => {
         try {
             const response = await fetch('https://bees-backend.aiiot.center/api/data');
             if (response.ok) {
                 const data = await response.json();
-
-                // Process data with random fluctuations to simulate real-time changes
-                const formattedData = data
-                    .slice(0, dataLimit)
-                    .map(entry => ({
-                        id: entry.id,
-                        temperature: addRandomFluctuation(entry.temperature),
-                        created_at: new Date().toLocaleString(), // Current timestamp for real-time feel
-                    }));
-
-                // Check if data has changed by comparing with the previous data
-                if (JSON.stringify(formattedData) !== JSON.stringify(chartData)) {
+                
+                // Calculate hash of the new data
+                const newDataHash = hashData(data);
+                
+                // Only process and update if data has changed
+                if (newDataHash !== lastDataHash) {
+                    console.log("Temperature data changed, updating chart");
+                    setRawData(data);
+                    setLastDataHash(newDataHash);
+                    
+                    // Process data with random fluctuations to simulate real-time changes
+                    const formattedData = data
+                        .slice(0, dataLimit)
+                        .map(entry => ({
+                            id: entry.id,
+                            temperature: addRandomFluctuation(entry.temperature),
+                            created_at: new Date(entry.created_at || Date.now()).toLocaleString(),
+                        }));
+                    
                     setChartData(formattedData);
-                    setIsDataUpdated(true); // Set flag to true if data is updated
+                    setIsDataUpdated(true);
                     setLastUpdated(new Date());
                     setUpdateCounter(prev => prev + 1);
                 } else {
-                    setIsDataUpdated(false); // No new data, so keep old data
+                    console.log("No temperature data change detected, skipping update");
+                    setIsDataUpdated(false);
                 }
             } else {
                 console.error('Failed to fetch data');
@@ -63,7 +79,25 @@ export default function TemperatureChart() {
         }
     };
 
-    // Update interval timer when refresh rate changes
+    // Effect to handle data limit changes
+    useEffect(() => {
+        if (rawData.length > 0) {
+            // When data limit changes, reformat the existing raw data
+            const formattedData = rawData
+                .slice(0, dataLimit)
+                .map(entry => ({
+                    id: entry.id,
+                    temperature: addRandomFluctuation(entry.temperature),
+                    created_at: new Date(entry.created_at || Date.now()).toLocaleString(),
+                }));
+            
+            setChartData(formattedData);
+            setIsDataUpdated(true);
+            setLastUpdated(new Date());
+        }
+    }, [dataLimit]);
+
+    // Effect to handle refresh interval changes and initial data fetch
     useEffect(() => {
         // Clear existing timer
         if (timerRef.current) {
@@ -82,7 +116,7 @@ export default function TemperatureChart() {
                 clearInterval(timerRef.current);
             }
         };
-    }, [refreshInterval, dataLimit]);
+    }, [refreshInterval]);
 
     const handleDataLimitChange = (event) => {
         setDataLimit(event.target.value);
@@ -107,8 +141,8 @@ export default function TemperatureChart() {
                                             Last updated: {getTimeAgoText()} • {updateCounter} updates
                                         </Typography>
                                         {/* If no update, show previous data message */}
-                                        {!isDataUpdated && (
-                                            <Typography variant="body2" color="textSecondary" style={{ marginTop: '10px', color: 'red' }}>
+                                        {!isDataUpdated && updateCounter > 0 && (
+                                            <Typography variant="body2" color="textSecondary" style={{ marginTop: '10px', color: 'orange' }}>
                                                 No new data. Showing previous data.
                                             </Typography>
                                         )}

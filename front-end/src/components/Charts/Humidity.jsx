@@ -7,39 +7,73 @@ export default function HumidityChart() {
   const theme = useTheme();
   const [selectedFilter, setSelectedFilter] = useState('year');
   const [chartData, setChartData] = useState([]);
+  const [rawData, setRawData] = useState([]);
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [updateCounter, setUpdateCounter] = useState(0);
   const [refreshInterval, setRefreshInterval] = useState(5000); // 5 seconds default
+  const [isDataUpdated, setIsDataUpdated] = useState(false);
+  const [lastDataHash, setLastDataHash] = useState('');
   const timerRef = useRef(null);
 
-  // Fetch humidity data from API with real-time simulation
+  // Function to create a hash of the raw data for comparison
+  const hashData = (data) => {
+    if (!Array.isArray(data) || data.length === 0) return '';
+    // Use IDs and timestamps to create a fingerprint of the data
+    return JSON.stringify(data.map(item => ({
+      id: item.id,
+      timestamp: item.created_at
+    })));
+  };
+
+  // Fetch humidity data from API
   const fetchData = async () => {
     try {
       const response = await fetch('https://bees-backend.aiiot.center/api/data');
       if (response.ok) {
         const data = await response.json();
-
-        // Filter data based on the selected time range
-        const filteredData = filterDataByTime(data, selectedFilter);
-
-        // Add random fluctuations to humidity values to simulate real-time changes
-        const dataWithFluctuations = filteredData.map(entry => ({
-          ...entry,
-          humidity: addRandomFluctuation(entry.humidity),
-        }));
-
-        // Process the humidity levels into categories
-        const humidityLevels = categorizeHumidity(dataWithFluctuations);
-
-        setChartData(humidityLevels);
-        setLastUpdated(new Date());
-        setUpdateCounter(prev => prev + 1);
+        
+        // Calculate hash of the new data
+        const newDataHash = hashData(data);
+        
+        // Only process and update if data has changed
+        if (newDataHash !== lastDataHash) {
+          console.log("Humidity data changed, updating chart");
+          setRawData(data);
+          setLastDataHash(newDataHash);
+          
+          // Process the data after confirming it's changed
+          processData(data);
+          
+          setIsDataUpdated(true);
+          setLastUpdated(new Date());
+          setUpdateCounter(prev => prev + 1);
+        } else {
+          console.log("No humidity data change detected, skipping update");
+          setIsDataUpdated(false);
+        }
       } else {
         console.error('Failed to fetch humidity data');
       }
     } catch (error) {
       console.error('Error fetching humidity data:', error);
     }
+  };
+
+  // Process the data into chart format
+  const processData = (data) => {
+    // Filter data based on the selected time range
+    const filteredData = filterDataByTime(data, selectedFilter);
+
+    // Add random fluctuations to humidity values to simulate real-time changes
+    const dataWithFluctuations = filteredData.map(entry => ({
+      ...entry,
+      humidity: addRandomFluctuation(entry.humidity),
+    }));
+
+    // Process the humidity levels into categories
+    const humidityLevels = categorizeHumidity(dataWithFluctuations);
+    
+    setChartData(humidityLevels);
   };
 
   // Helper function to add random fluctuation to simulate real-time changes
@@ -58,6 +92,16 @@ export default function HumidityChart() {
       return `${Math.floor(seconds / 60)} min ago`;
     }
   };
+
+  // Effect to handle time filter changes
+  useEffect(() => {
+    if (rawData.length > 0) {
+      // When filter changes, reprocess the existing raw data
+      processData(rawData);
+      setIsDataUpdated(true);
+      setLastUpdated(new Date());
+    }
+  }, [selectedFilter]);
 
   // Update interval timer when refresh rate changes
   useEffect(() => {
@@ -78,7 +122,7 @@ export default function HumidityChart() {
         clearInterval(timerRef.current);
       }
     };
-  }, [refreshInterval, selectedFilter]);
+  }, [refreshInterval]);
 
   // Handle filter change
   const handleFilterChange = (event) => {
@@ -132,9 +176,14 @@ export default function HumidityChart() {
               <div>
                 <h3 style={{ color: theme.palette.text.primary, marginBottom: '4px' }}>Humidity</h3>
                 <Typography variant="body2" color="textSecondary">
-                  Last updated: {getTimeAgoText()}
-                  {/* • {updateCounter} updates */}
+                  Last updated: {getTimeAgoText()} • {updateCounter} updates
                 </Typography>
+                {/* If no update, show previous data message */}
+                {!isDataUpdated && updateCounter > 0 && (
+                  <Typography variant="body2" color="textSecondary" style={{ marginTop: '4px', color: 'orange' }}>
+                    No new data. Showing previous data.
+                  </Typography>
+                )}
               </div>
 
               <Box sx={{ display: 'flex', gap: 2 }}>

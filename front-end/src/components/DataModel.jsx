@@ -16,7 +16,6 @@ const Container = styled(motion.div)`
   background-size: cover;
   margin-left: 0px;
   border-radius: 8px;
-  overflow: hidden;
 `;
 
 const BannerWrap = styled.div`
@@ -32,8 +31,6 @@ const BannerWrap = styled.div`
 const BannerContent = styled(motion.div)`
   position: relative;
   background: rgba(0, 0, 0, 0.6);
-  border-radius: 0px;
-  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
   width: 100%;
   height: 280px;
   display: flex;
@@ -55,36 +52,34 @@ const HeadingBanner = styled.div`
   color: #ffffff;
 `;
 
-const PhoneNumber = styled.div`
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-top: 5px;
-  color: #ffeb3b;
-`;
-
 export default function DataModel() {
   const [isDataLive, setIsDataLive] = useState(false);
-  const [lastUpdateTime, setLastUpdateTime] = useState(null);
+  const [lastDataHash, setLastDataHash] = useState('');
 
-  // Fetch data from the API to determine if it's live
+  // Function to create a hash of the raw data for comparison
+  const hashData = (data) => {
+    if (!Array.isArray(data) || data.length === 0) return '';
+    return JSON.stringify(data.map(item => ({ id: item.id, timestamp: item.created_at })));
+  };
+
+  // Fetch data from API and check if data has changed
   const fetchData = async () => {
     try {
       const response = await fetch('https://bees-backend.aiiot.center/api/data');
       if (response.ok) {
         const data = await response.json();
         
-        // Assuming data has a "created_at" field (you can adjust as per your actual data structure)
-        const latestData = data[data.length - 1]; // Get the latest data
-        const latestTimestamp = new Date(latestData.created_at);
+        // Calculate hash of the new data
+        const newDataHash = hashData(data);
         
-        // Set last update time and determine if the data is live
-        setLastUpdateTime(latestTimestamp);
-        
-        // Check if the data was updated recently (e.g., within the last 60 seconds)
-        const currentTime = new Date();
-        const timeDiff = (currentTime - latestTimestamp) / 1000; // time difference in seconds
-
-        setIsDataLive(timeDiff < 60); // Consider it live if updated within the last minute
+        if (newDataHash !== lastDataHash) {
+          console.log('New live data received');
+          setIsDataLive(true);
+          setLastDataHash(newDataHash);
+        } else {
+          console.log('No new data detected');
+          setIsDataLive(false);
+        }
       } else {
         console.error('Failed to fetch data');
       }
@@ -97,33 +92,19 @@ export default function DataModel() {
   useEffect(() => {
     fetchData();
     const intervalId = setInterval(fetchData, 10000); // Check every 10 seconds
-
-    // Cleanup the interval on unmount
     return () => clearInterval(intervalId);
   }, []);
 
   return (
-    <Container
-      initial={{ opacity: 0, y: -50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1, ease: 'easeOut' }}
-    >
+    <Container>
       <BannerWrap>
-        <BannerContent
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.5 }}
-        >
+        <BannerContent>
           <TitleBanner>Welcome to the AI-based Beekeeping and Hive Monitoring System</TitleBanner>
-
-          {/* Conditionally render the HeadingBanner */}
           <HeadingBanner>
             {isDataLive
               ? 'Live data from the Bee Colony or Bee Hives is being transmitted in real-time.'
               : 'We are providing access to previously recorded data.'}
           </HeadingBanner>
-
-          {/* <PhoneNumber>+555 666 999 00</PhoneNumber> */}
         </BannerContent>
       </BannerWrap>
     </Container>
