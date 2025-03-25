@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Button,
   Container,
@@ -17,6 +18,7 @@ import {
 } from "../Style/AIModal/Style";
 import Typography from "../Style/Typography";
 import { HeadingWrapper } from "../Style/Dashboard/Style";
+import Imageinsert from '../assets/images/image-insert.png'
 
 export default function AIModel() {
   const [file, setFile] = useState(null);
@@ -27,8 +29,8 @@ export default function AIModel() {
   const [error, setError] = useState(null);
   const [progress, setProgress] = useState(0);
 
-  const API_URL = "https://detect.roboflow.com/bee-detection-h59jf/1"; // Roboflow model endpoint
-  const API_KEY = "GfNceoaR4aeKM6ihreVc";  // Your Roboflow API key
+  const API_URL = "https://detect.roboflow.com/bee-detection-h59jf/1";
+  const API_KEY = "GfNceoaR4aeKM6ihreVc";
 
   // Function to convert the file to base64
   const loadImageBase64 = (file) => {
@@ -45,12 +47,22 @@ export default function AIModel() {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
-      setUploadedImage(URL.createObjectURL(selectedFile)); // Show uploaded image
+      setUploadedImage(URL.createObjectURL(selectedFile));
       setError(null);
       setProgress(0);
       setBeeCount(0);
-      setProcessedImage(null); // Reset previous detection
+      setProcessedImage(null);
     }
+  };
+
+  // Clear/Remove image
+  const handleClearImage = () => {
+    setFile(null);
+    setUploadedImage(null);
+    setProcessedImage(null);
+    setBeeCount(0);
+    setError(null);
+    setProgress(0);
   };
 
   // Handle form submission
@@ -97,8 +109,8 @@ export default function AIModel() {
         const predictions = response.data.predictions;
   
         // Assuming the predictions contain the bees count
-        setBeeCount(predictions.length); // Assuming each prediction represents a bee
-        setProcessedImage(response.data.image_url); // Assuming there's an image_url in the response
+        setBeeCount(predictions.length);
+        setProcessedImage(response.data.image_url);
   
         console.log(`Detected Bees Count: ${predictions.length}`);
       } else {
@@ -111,7 +123,6 @@ export default function AIModel() {
       setLoading(false);
     }
   };
-  
 
   return (
     <PageWrapper>
@@ -126,73 +137,154 @@ export default function AIModel() {
         <Wrapper>
           <Header>
             <Typography variant="h1">Bees Detection</Typography>
-            {beeCount > 0 && (
-              <div>
-                <strong>🐝 Total Bees Detected: {beeCount}</strong>
-              </div>
-            )}
+            <AnimatePresence>
+              {beeCount > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <strong>🐝 Total Bees Detected: {beeCount}</strong>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </Header>
 
           <Section>
             {progress > 0 && progress < 100 && (
-              <div style={{ width: "100%", backgroundColor: "#ccc", marginTop: "10px" }}>
-                <div
-                  style={{
-                    width: `${progress}%`,
-                    height: "8px",
-                    backgroundColor: "#4caf50",
-                    transition: "width 0.3s ease-in-out",
-                  }}
-                />
-              </div>
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: 0.3 }}
+                style={{ 
+                  height: "8px", 
+                  backgroundColor: "#78091e", 
+                  marginTop: "10px" 
+                }}
+              />
             )}
 
             <Main>
               <Content>
-                <div style={{ display: "flex", gap: "20px", justifyContent: "center" }}>
-                  {/* Show uploaded image */}
-                  {uploadedImage && (
-                    <div>
-                      <Typography variant="h3">Uploaded Image</Typography>
-                      <img
-                        src={uploadedImage}
-                        alt="Uploaded"
-                        style={{ width: "100%", maxWidth: "250px", borderRadius: "10px" }}
-                      />
-                    </div>
-                  )}
+                <div style={{ display: "flex", gap: "20px", justifyContent: "center", alignItems: "center" }}>
+                  <AnimatePresence>
+                    {uploadedImage ? (
+                      <motion.div
+                        key="uploaded-image"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <div style={{ position: 'relative', textAlign: 'center' }}>
+                          <Typography variant="h3">Uploaded Image</Typography>
+                          <img
+                            src={uploadedImage}
+                            alt="Uploaded"
+                            style={{ 
+                              width: "100%", 
+                              maxWidth: "250px", 
+                              borderRadius: "10px",
+                              boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                            }}
+                          />
+                          <Button 
+                            type="button" 
+                            onClick={handleClearImage}
+                            style={{ 
+                              marginTop: '10px', 
+                              backgroundColor: '#ff4d4d', 
+                              color: 'white' 
+                            }}
+                          >
+                            Remove Image
+                          </Button>
+                        </div>
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="placeholder"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3 }}
+                        style={{
+                          width: "250px",
+                          height: "250px",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          border: "2px dashed #ccc",
+                          borderRadius: "10px",
+                          cursor: "pointer",
+                          background: `url(${Imageinsert}) no-repeat center center`,
+                          backgroundSize: "contain",
+                        }}
+                      >
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          style={{ opacity: 0, width: "100%", height: "100%", cursor: "pointer" }}
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
-                  {/* Show processed image with detected bees */}
-                  {processedImage && (
-                    <div>
-                      <Typography variant="h3">Detected Bees</Typography>
-                      <img
-                        src={processedImage}
-                        alt="Detection Result"
-                        style={{ width: "100%", maxWidth: "250px", borderRadius: "10px" }}
-                      />
-                    </div>
-                  )}
+                  <AnimatePresence>
+                    {processedImage && (
+                      <motion.div
+                        key="processed-image"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <Typography variant="h3">Detected Bees</Typography>
+                        <img
+                          src={processedImage}
+                          alt="Detection Result"
+                          style={{ 
+                            width: "100%", 
+                            maxWidth: "250px", 
+                            borderRadius: "10px",
+                            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                          }}
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </Content>
             </Main>
 
             <Footer>
               <FormWrapper onSubmit={handleSubmit}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  style={{ display: "inline-block", padding: "10px", cursor: "pointer" }}
-                />
-                <Button type="submit" disabled={loading} style={{ marginLeft: "10px" }}>
+                <Button 
+                  type="submit" 
+                  disabled={loading || !uploadedImage} 
+                  style={{ 
+                    marginLeft: "10px", 
+                    opacity: uploadedImage ? 1 : 0.5 
+                  }}
+                >
                   {loading ? "Processing..." : "Detect Bees"}
                 </Button>
               </FormWrapper>
             </Footer>
           </Section>
 
-          {error && <ErrorText style={{ color: "red" }}>{error}</ErrorText>}
+          <AnimatePresence>
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ErrorText style={{ color: "red" }}>{error}</ErrorText>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </Wrapper>
       </Container>
     </PageWrapper>

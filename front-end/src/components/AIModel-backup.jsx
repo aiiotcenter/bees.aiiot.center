@@ -96,7 +96,7 @@ export default function AIModel() {
                   style={{
                     width: `${progress}%`,
                     height: "8px",
-                    backgroundColor: "#4caf50",
+                    backgroundColor: "#78091e",
                     transition: "width 0.3s ease-in-out",
                   }}
                 />

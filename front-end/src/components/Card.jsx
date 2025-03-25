@@ -7,6 +7,7 @@ import { MdHive } from "react-icons/md";
 import { GiPathDistance } from "react-icons/gi";
 import { FaWeight } from "react-icons/fa";
 
+
 export default function Card() {
     const [apiData, setApiData] = useState([]);
     const [lastUpdated, setLastUpdated] = useState(null);
@@ -14,7 +15,7 @@ export default function Card() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [lastDataHash, setLastDataHash] = useState('');
-    
+
     const timerRef = useRef(null);
     const navigate = useNavigate();
 
@@ -26,13 +27,13 @@ export default function Card() {
 
     useEffect(() => {
         let abortController = new AbortController();
-        
+
         fetchData(abortController.signal);
 
         timerRef.current = setInterval(() => {
             fetchData(abortController.signal);
-        }, 5000); // Still poll every 5 seconds, but only update UI if data changes
-        
+        }, 5000); // Poll every 5 seconds
+
         return () => {
             clearInterval(timerRef.current);
             abortController.abort();
@@ -52,11 +53,11 @@ export default function Card() {
             if (!response.ok) throw new Error(`API error: ${response.status}`);
 
             const data = await response.json();
-            
+
             if (Array.isArray(data) && data.length > 0) {
                 // Calculate hash of the new data
                 const newDataHash = hashData(data);
-                
+
                 // Only update state if data has changed
                 if (newDataHash !== lastDataHash) {
                     console.log("Data changed, updating UI");
@@ -92,30 +93,9 @@ export default function Card() {
         return (sum / apiData.length).toFixed(2);
     };
 
-    const getStatus = (type) => {
-        if (!Array.isArray(apiData) || apiData.length === 0) return "Unknown";
-
-        switch (type) {
-            case "beeActivity":
-                const activeBees = apiData.filter(item => item.sound_status === 1).length;
-                const percentage = ((activeBees / apiData.length) * 100).toFixed(2);
-                return percentage > 75 ? "High Activity" : percentage > 40 ? "Moderate Activity" : "Low Activity";
-
-            case "hive":
-                const avgHumidity = calculateAverage("humidity");
-                return avgHumidity > 75 ? "Optimal" : avgHumidity > 50 ? "Stable" : "Critical";
-
-            case "distance":
-                const avgDistance = calculateAverage("distance");
-                return avgDistance < 10 ? "Normal" : avgDistance < 30 ? "Warning" : "Danger";
-
-            case "weight":
-                const avgWeight = calculateAverage("weight");
-                return avgWeight > 100 ? "Stable" : avgWeight > 50 ? "Warning" : "Critical";
-
-            default:
-                return "Unknown";
-        }
+    const calculatePercentageActiveBees = () => {
+        const activeBees = apiData.filter(item => item.sound_status === 1).length;
+        return ((activeBees / apiData.length) * 100).toFixed(2);
     };
 
     const getTimeAgoText = () => {
@@ -125,10 +105,30 @@ export default function Card() {
     };
 
     const cardInfo = [
-        { title: "Bee Activity Status", field: "sound_status", icon: <GiBee size={40} color="#000" />, customValue: getStatus("beeActivity") },
-        { title: "Hive Status", field: "humidity", icon: <MdHive size={40} color="#000" />, customValue: getStatus("hive") },
-        { title: "Distance Detection", field: "distance", icon: <GiPathDistance size={40} color="#000" />, customValue: getStatus("distance") },
-        { title: "Hive Weight", field: "weight", icon: <FaWeight size={40} color="#000" />, customValue: getStatus("weight") }
+        { 
+            title: "Bee Activity Status", 
+            field: "sound_status", 
+            icon: <GiBee size={40} color="#000" />, 
+            customValue: calculatePercentageActiveBees() + "%" 
+        },
+        { 
+            title: "Hive Status", 
+            field: "humidity", 
+            icon: <MdHive size={40} color="#000" />, 
+            customValue: calculateAverage("humidity") + " %"
+        },
+        { 
+            title: "Distance Detection", 
+            field: "distance", 
+            icon: <GiPathDistance size={40} color="#000" />, 
+            customValue: calculateAverage("distance") + " m"
+        },
+        { 
+            title: "Hive Weight", 
+            field: "weight", 
+            icon: <FaWeight size={40} color="#000" />, 
+            customValue: calculateAverage("weight") + " kg"
+        }
     ];
 
     const handleBoxClick = (field, title) => {
@@ -159,7 +159,7 @@ export default function Card() {
                             <Left>
                                 <Typography variant="p">{card.title}</Typography>
                                 <Typography variant="h2">
-                                    {card.customValue || calculateAverage(card.field)}
+                                    {card.customValue}
                                 </Typography>
                                 <TextWrapper>
                                     <Typography variant="span" style={{ color: '#5aa75a' }}>

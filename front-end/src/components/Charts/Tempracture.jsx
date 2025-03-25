@@ -10,63 +10,112 @@ export default function TemperatureChart() {
     const [dataLimit, setDataLimit] = useState(50);
     const [lastUpdated, setLastUpdated] = useState(new Date());
     const [updateCounter, setUpdateCounter] = useState(0);
-    const [refreshInterval, setRefreshInterval] = useState(5000); // 5 seconds default
     const timerRef = useRef(null);
     const [isDataUpdated, setIsDataUpdated] = useState(false);
     const [lastDataHash, setLastDataHash] = useState('');
+    const abortControllerRef = useRef(null);
 
-    // Function to create a hash of the raw data for comparison
+    // Function to create a deep hash of the data for precise comparison
     const hashData = (data) => {
         if (!Array.isArray(data) || data.length === 0) return '';
-        return JSON.stringify(data.slice(0, dataLimit).map(item => item.id));
+        return JSON.stringify(data.slice(0, dataLimit).map(item => ({
+            id: item.id,
+            temperature: item.temperature,
+            timestamp: item.created_at
+        })));
     };
 
-    // Function to fetch data
+    // Function to fetch data with optimized cancellation
     const fetchData = async () => {
+        // Cancel any existing request
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
+        
+        // Create new abort controller
+        abortControllerRef.current = new AbortController();
+        const signal = abortControllerRef.current.signal;
+
         try {
-            const response = await fetch('https://bees-backend.aiiot.center/api/data');
-            if (response.ok) {
-                const data = await response.json();
+            const response = await fetch('https://bees-backend.aiiot.center/api/data', { signal });
+            
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            
+            const data = await response.json();
+            
+            // Calculate hash of the new data
+            const newDataHash = hashData(data);
+            
+            // Only process and update if data has changed
+            if (newDataHash !== lastDataHash) {
+                console.log("Data changed, updating chart");
                 
-                // Calculate hash of the new data
-                const newDataHash = hashData(data);
+                // Process data with minimal fluctuations
+                const formattedData = data
+                    .slice(0, dataLimit)
+                    .map(entry => ({
+                        id: entry.id,
+                        temperature: parseFloat((entry.temperature + (Math.random() * 0.2 - 0.1)).toFixed(2)),
+                        created_at: new Date(entry.created_at || Date.now()).toLocaleString(),
+                    }));
                 
-                // Only process and update if data has changed
-                if (newDataHash !== lastDataHash) {
-                    console.log("Temperature data changed, updating chart");
-                    setRawData(data);
-                    setLastDataHash(newDataHash);
-                    
-                    // Process data with random fluctuations to simulate real-time changes
-                    const formattedData = data
-                        .slice(0, dataLimit)
-                        .map(entry => ({
-                            id: entry.id,
-                            temperature: addRandomFluctuation(entry.temperature),
-                            created_at: new Date(entry.created_at || Date.now()).toLocaleString(),
-                        }));
-                    
-                    setChartData(formattedData);
-                    setIsDataUpdated(true);
-                    setLastUpdated(new Date());
-                    setUpdateCounter(prev => prev + 1);
-                } else {
-                    console.log("No temperature data change detected, skipping update");
-                    setIsDataUpdated(false);
-                }
+                // Update states
+                setRawData(data);
+                setChartData(formattedData);
+                setLastDataHash(newDataHash);
+                setIsDataUpdated(true);
+                setLastUpdated(new Date());
+                setUpdateCounter(prev => prev + 1);
             } else {
-                console.error('Failed to fetch data');
+                console.log("No data change detected, skipping update");
+                setIsDataUpdated(false);
             }
         } catch (error) {
-            console.error('Error fetching data:', error);
+            // Only log error if it's not an abort error
+            if (error.name !== 'AbortError') {
+                console.error('Error fetching data:', error);
+            }
         }
     };
 
-    // Helper function to add random fluctuation to simulate real-time changes
-    const addRandomFluctuation = (value) => {
-        if (!value || isNaN(value)) return value;
-        const fluctuation = value * (Math.random() * 0.06 - 0.03); // ±3% fluctuation
-        return parseFloat((value + fluctuation).toFixed(2));
+    // Effect to handle data limit changes
+    useEffect(() => {
+        if (rawData.length > 0) {
+            const formattedData = rawData
+                .slice(0, dataLimit)
+                .map(entry => ({
+                    id: entry.id,
+                    temperature: parseFloat((entry.temperature + (Math.random() * 0.2 - 0.1)).toFixed(2)),
+                    created_at: new Date(entry.created_at || Date.now()).toLocaleString(),
+                }));
+            
+            setChartData(formattedData);
+        }
+    }, [dataLimit]);
+
+    // Effect to handle initial data fetch
+    useEffect(() => {
+        // Fetch data immediately
+        fetchData();
+
+        // Set up timer to fetch data every 5 seconds
+        const intervalId = setInterval(fetchData, 5000);
+
+        // Clean up on unmount
+        return () => {
+            clearInterval(intervalId);
+            // Abort any ongoing fetch
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+        };
+    }, []);
+
+    // Handler for data limit change
+    const handleDataLimitChange = (event) => {
+        setDataLimit(event.target.value);
     };
 
     // Format the "seconds ago" text
@@ -79,53 +128,6 @@ export default function TemperatureChart() {
         }
     };
 
-    // Effect to handle data limit changes
-    useEffect(() => {
-        if (rawData.length > 0) {
-            // When data limit changes, reformat the existing raw data
-            const formattedData = rawData
-                .slice(0, dataLimit)
-                .map(entry => ({
-                    id: entry.id,
-                    temperature: addRandomFluctuation(entry.temperature),
-                    created_at: new Date(entry.created_at || Date.now()).toLocaleString(),
-                }));
-            
-            setChartData(formattedData);
-            setIsDataUpdated(true);
-            setLastUpdated(new Date());
-        }
-    }, [dataLimit]);
-
-    // Effect to handle refresh interval changes and initial data fetch
-    useEffect(() => {
-        // Clear existing timer
-        if (timerRef.current) {
-            clearInterval(timerRef.current);
-        }
-
-        // Initial fetch
-        fetchData();
-
-        // Set up new timer with current refresh interval
-        timerRef.current = setInterval(fetchData, refreshInterval);
-
-        // Clean up on unmount
-        return () => {
-            if (timerRef.current) {
-                clearInterval(timerRef.current);
-            }
-        };
-    }, [refreshInterval]);
-
-    const handleDataLimitChange = (event) => {
-        setDataLimit(event.target.value);
-    };
-
-    const handleRefreshRateChange = (event) => {
-        setRefreshInterval(event.target.value);
-    };
-
     return (
         <Wrapper>
             <Box className="box">
@@ -133,7 +135,7 @@ export default function TemperatureChart() {
                     <Grid item xs={12} md={12}>
                         <Card sx={{ borderRadius: '8px', boxShadow: theme.shadows[1] }}>
                             <CardContent>
-                                {/* Header Section with Filter Dropdowns */}
+                                {/* Header Section */}
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className='header'>
                                     <div>
                                         <h3 style={{ color: theme.palette.text.primary, marginBottom: '4px' }}>Temperature</h3>
@@ -148,49 +150,25 @@ export default function TemperatureChart() {
                                         )}
                                     </div>
 
-                                    {/* Filters Section */}
-                                    <div style={{ display: 'flex', gap: '10px' }}>
-                                        {/* Refresh Rate Selector */}
-                                        <FormControl size="small">
-                                            <Typography variant="caption" color="textSecondary" sx={{ mb: 0.5 }}>
-                                                Refresh Rate
-                                            </Typography>
-                                            <Select
-                                                value={refreshInterval}
-                                                onChange={handleRefreshRateChange}
-                                                sx={{
-                                                    backgroundColor: theme.palette.background.default,
-                                                    border: 'none',
-                                                    '& fieldset': { border: 'none' },
-                                                }}
-                                            >
-                                                <MenuItem value={1000}>1 sec</MenuItem>
-                                                <MenuItem value={5000}>5 sec</MenuItem>
-                                                <MenuItem value={10000}>10 sec</MenuItem>
-                                                <MenuItem value={30000}>30 sec</MenuItem>
-                                            </Select>
-                                        </FormControl>
-
-                                        {/* Data Limit Filter */}
-                                        <FormControl size="small">
-                                            <Typography variant="caption" color="textSecondary" sx={{ mb: 0.5 }}>
-                                                Data Points
-                                            </Typography>
-                                            <Select
-                                                value={dataLimit}
-                                                onChange={handleDataLimitChange}
-                                                sx={{
-                                                    backgroundColor: theme.palette.background.default,
-                                                    border: 'none',
-                                                    '& fieldset': { border: 'none' },
-                                                }}
-                                            >
-                                                <MenuItem value={20}>20</MenuItem>
-                                                <MenuItem value={50}>50</MenuItem>
-                                                <MenuItem value={100}>100</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </div>
+                                    {/* Data Limit Filter */}
+                                    <FormControl size="small">
+                                        <Typography variant="caption" color="textSecondary" sx={{ mb: 0.5 }}>
+                                            Data Points
+                                        </Typography>
+                                        <Select
+                                            value={dataLimit}
+                                            onChange={handleDataLimitChange}
+                                            sx={{
+                                                backgroundColor: theme.palette.background.default,
+                                                border: 'none',
+                                                '& fieldset': { border: 'none' },
+                                            }}
+                                        >
+                                            <MenuItem value={20}>20</MenuItem>
+                                            <MenuItem value={50}>50</MenuItem>
+                                            <MenuItem value={100}>100</MenuItem>
+                                        </Select>
+                                    </FormControl>
                                 </div>
 
                                 {/* Temperature Line Chart */}

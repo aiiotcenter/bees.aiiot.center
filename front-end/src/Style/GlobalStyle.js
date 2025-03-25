@@ -102,7 +102,7 @@ export const Input = styled.input`
 `;
 
 export const Button = styled.button`
-  background-color: #4caf50;
+  background-color: #78091e;
   color: white;
   font-size: 16px;
   font-weight: 500;
@@ -120,7 +120,7 @@ export const Button = styled.button`
   }
 
   &:hover {
-    background-color: #43a047;
+    background-color: #78091e;
   }
 `;
 
