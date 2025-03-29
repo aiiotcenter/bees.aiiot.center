@@ -270,7 +270,7 @@ export default function AIModel() {
                   {loading ? "Processing..." : "Detect Bees"}
                 </Button>
               </FormWrapper>
-              <strong style={{paddingRight:'50px'}}>🐝 Total Bees Detected: {beeCount}</strong>
+              <strong>🐝 Total Bees Detected: {beeCount}</strong>
             </Footer>
           </Section>
 
