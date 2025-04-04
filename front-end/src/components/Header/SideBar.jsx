@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
-import { FaTachometerAlt, FaHeart, FaEnvelope, FaStar, FaFileInvoice, FaMoneyCheck, FaFileAlt, FaCog, FaBriefcase, FaProjectDiagram, FaUser, FaSignOutAlt } from "react-icons/fa";
+import { FaUser, FaSignOutAlt } from "react-icons/fa";
 
 // Styled Components
 const SidebarContainer = styled.div`
@@ -11,7 +11,7 @@ const SidebarContainer = styled.div`
   padding: 15px;
   border-radius: 10px;
   position: fixed;
-  top: 70px; /* Positioned below the header */
+  top: 70px;
   transform: translate(-50%, ${({ isOpen }) => (isOpen ? "0" : "-10px")}) scale(${({ isOpen }) => (isOpen ? "1" : "0.95")});
   opacity: ${({ isOpen }) => (isOpen ? "1" : "0")};
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
@@ -36,7 +36,6 @@ const MenuItem = styled.div`
   transition: 0.2s ease all;
 
   &:hover {
-    /* background: #f4f4f4; */
     background: #78091e;
     color: #fff;
   }
@@ -51,26 +50,43 @@ const MenuItem = styled.div`
   }
 `;
 
-const SideBar = ({ isOpen }) => {
+const SideBar = ({ isOpen, onClose }) => {
+  const sidebarRef = useRef(null);
+
+  // Detect outside clicks to close the sidebar
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        onClose(); // Close the sidebar
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, onClose]);
+
   return (
-    <SidebarContainer isOpen={isOpen}>
-
-
-
-
+    <SidebarContainer isOpen={isOpen} ref={sidebarRef}>
       <MenuSection>
         <MenuItem as={NavLink} to="/profile">
-          <FaUser/> My Profile
+          <FaUser /> My Profile
         </MenuItem>
         <MenuItem>
-        <FaSignOutAlt 
-  style={{ cursor: "pointer" }} 
-  onClick={() => {
-    localStorage.removeItem("isAuthenticated"); // Remove auth state
-    window.location.href = "/"; // Redirect to login
-  }} 
-/> Logout
-
+          <FaSignOutAlt
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              localStorage.removeItem("isAuthenticated");
+              window.location.href = "/";
+            }}
+          />{" "}
+          Logout
         </MenuItem>
       </MenuSection>
     </SidebarContainer>
