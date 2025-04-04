@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import styled from 'styled-components';
+import { Button } from "../Style/GlobalStyle";
 
 // Styled Components
 const PageWrapper = styled.div`
@@ -24,24 +25,24 @@ const HeadingWrapper = styled.div`
   }
 `;
 
-const Button = styled.button`
-  background-color: #f0c14b;
-  border: 1px solid #a88734;
-  border-radius: 4px;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.3s;
+// const Button = styled.button`
+//   background-color: #f0c14b;
+//   border: 1px solid #a88734;
+//   border-radius: 4px;
+//   padding: 8px 16px;
+//   cursor: pointer;
+//   font-weight: bold;
+//   transition: all 0.3s;
   
-  &:hover {
-    background-color: #ddb347;
-  }
+//   &:hover {
+//     background-color: #ddb347;
+//   }
   
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-`;
+//   &:disabled {
+//     opacity: 0.6;
+//     cursor: not-allowed;
+//   }
+// `;
 
 const FormWrapper = styled.form`
   width: 100%;
@@ -134,6 +135,7 @@ const SummarySection = styled.div`
   border-radius: 4px;
   margin-bottom: 15px;
   min-height: 60px;
+
 `;
 
 const AdviceSection = styled.div`
@@ -143,6 +145,7 @@ const AdviceSection = styled.div`
   border-radius: 4px;
   margin-bottom: 15px;
   min-height: 60px;
+  box-sizing: border-box;
 `;
 
 const Footer = styled.div`
@@ -151,7 +154,7 @@ const Footer = styled.div`
   justify-content: space-between;
   width: 100%;  
   box-sizing: border-box;
-  position: absolute;
+  /* position: absolute; */
   bottom: 25px;
 
   form {
@@ -171,7 +174,7 @@ const Footer = styled.div`
 const ActionButton = styled(Button)`
   width: 100%;
   padding: 12px;
-  background-color: ${props => props.secondary ? "#e9e9e9" : "#f0c14b"};
+  background-color: ${props => props.secondary ? "#e9e9e9" : "#78091e"};
   margin-top: 10px;
 `;
 
@@ -197,6 +200,7 @@ const UploadArea = styled.div`
     width: 100%;
     height: 100%;
     cursor: pointer;
+    box-sizing: border-box;
   }
 `;
 

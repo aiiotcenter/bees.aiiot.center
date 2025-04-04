@@ -122,6 +122,10 @@ export const Button = styled.button`
   &:hover {
     background-color: #78091e;
   }
+  &:disabled {
+     opacity: 0.6;
+     cursor: not-allowed;
+   }
 `;
 
 export const Table = styled.table`
